@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SqlBuilder - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>SqlBuilder</h1>
+      <p>フレームワーク部品 [com.onepg.db]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.db</p>
+        <p><strong>クラス名:</strong> SqlBuilder</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>SQLビルダー.<br>
+<ul>
+<li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
+<li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
+<li>add* のメソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
+<li>SQL内の 2文字以上のブランクを1文字ブランクに置き換えして SQL追加します。</li>
+</ul>
+<pre>
+［例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
+［例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
+［例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
+［例４］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId);</code>
+［例５］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId).addQnotB("AND a.user_nm LIKE ? ", '%' + name + '%');</code>
+</pre>
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>定数・変数一覧</h2>
+      <div class="field-list">
+        <div class="field-item" id="PROTOCOL_ERR_AVOID_SQL">
+          <h3 class="field-name">PROTOCOL_ERR_AVOID_SQL</h3>
+          <div class="field-signature">
+            <code>public String PROTOCOL_ERR_AVOID_SQL</code>
+          </div>
+          <div class="field-description">
+            プロトコル違反回避SQL.<br>
+<a href="https://support.oracle.com/knowledge/Middleware/2707017_1.html">support.oracle.com（参考情報）</a>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="length">
+        <h3 class="method-name">length</h3>
+        <div class="method-signature">
+          <code>public int length()</code>
+        </div>
+        <div class="method-description">
+          SQL文字列長さ取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - SQL文字列長さ</p>
+        </div>
+      </div>
+      <div class="method" id="addSqlBuilder">
+        <h3 class="method-name">addSqlBuilder</h3>
+        <div class="method-signature">
+          <code>public void addSqlBuilder(SqlBuilder sb)</code>
+        </div>
+        <div class="method-description">
+          SQLビルダー追加.<br>
+<ul>
+<li>SQLとパラメーターを引き継ぐ。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sb</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="addQuery">
+        <h3 class="method-name">addQuery</h3>
+        <div class="method-signature">
+          <code>public SqlBuilder addQuery(String sql, Object... params)</code>
+        </div>
+        <div class="method-description">
+          SQL＆パラメーター追加.<br>
+<ul>
+<li>パラメーター引数は省略可能で単一または複数で渡すことも可能です。</li>
+</ul>
+<pre>
+［例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
+［例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
+［例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
+</pre>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sql</code></td>
+                <td><code>String</code></td>
+                <td>SQL</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>Object...</code></td>
+                <td>パラメーター（複数可能）（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="addParam">
+        <h3 class="method-name">addParam</h3>
+        <div class="method-signature">
+          <code>public SqlBuilder addParam(Object... params)</code>
+        </div>
+        <div class="method-description">
+          パラメーター追加.<br>
+<ul>
+<li>複数渡すことも可能です。</li>
+</ul>
+<pre>
+［例１］ <code>sqlBuilder.addParam(userId);</code>
+［例２］ <code>sqlBuilder.addParam(birthDtFrom, birthDtTo);</code>
+</pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>Object...</code></td>
+                <td>パラメーター（複数可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="addListInBind">
+        <h3 class="method-name">addListInBind</h3>
+        <div class="method-signature">
+          <code>public SqlBuilder addListInBind(List&lt;Object&gt; params)</code>
+        </div>
+        <div class="method-description">
+          カンマ区切りバインド文字SQL追加.<br>
+<ul>
+<li>リスト内の要素数だけカンマ区切りでバインド文字 "?" をSQLに追加します。</li>
+<li>リスト内の要素数が 3 の場合は "?,?,?" がSQLに追加されます。</li>
+<li>リスト内の値はバインド文字パラメーターとして追加されます。</li>
+<li>バインド文字数が可変の IN句で使用する想定です。</li>
+</ul>
+<pre>
+［例］<code>sqlBuilder.addQuery("AND type_cs IN (").addListInBind(list).addQuery(")");</code>
+</pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>List&lt;Object&gt;</code></td>
+                <td>パラメーターリスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="addQueryWithParamNotBlank">
+        <h3 class="method-name">addQueryWithParamNotBlank</h3>
+        <div class="method-signature">
+          <code>public SqlBuilder addQueryWithParamNotBlank(String sql, Object param)</code>
+        </div>
+        <div class="method-description">
+          パラメーターが <code>null</code>以外かつブランク以外 の場合のみ SQLとパラメーターを追加.<br>
+<ul>
+<li>パラメーターが <code>null</code>・ブランク以外の場合のみ SQLとパラメーターを追加します。</li>
+<li>それ以外の仕様は <code>#addQuery(String, Object...)</code>と同じです。</li>
+<li>基本的には本メソッドのショートカット <code>#addQnotB(String, Object)</code> を使用してください。</li>
+</ul>
+<pre>下記例では <code>userId</code> が <code>null</code>・ブランク以外の場合のみ SQLが追加されます。
+［例］ <code>sqlBuilder.addQueryWithParamNotBlank("AND user_id = ? ", userId);</code>
+</pre>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sql</code></td>
+                <td><code>String</code></td>
+                <td>SQL</td>
+              </tr>
+              <tr>
+                <td><code>param</code></td>
+                <td><code>Object</code></td>
+                <td>パラメーター（単一のみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBuilder</code> - 自インスタンス</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#addQuery">#addQuery(String, Object...)</a></li>
+            <li><a href="#addQnotB">#addQnotB(String, Object)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="addQnotB">
+        <h3 class="method-name">addQnotB</h3>
+        <div class="method-signature">
+          <code>public SqlBuilder addQnotB(String sql, Object param)</code>
+        </div>
+        <div class="method-description">
+          パラメーターが <code>null</code>以外かつブランク以外 の場合のみ SQLとパラメーターを追加.<br>
+<ul>
+<li><code>#addQueryWithParamNotBlank(String, Object)</code> のショートカット。</li>
+<li>パラメーターが <code>null</code>・ブランク以外の場合のみ SQLとパラメーターを追加します。</li>
+<li>それ以外の仕様は <code>#addQuery(String, Object...)</code>と同じです。</li>
+</ul>
+<pre>下記例では <code>userId</code> が <code>null</code>・ブランク以外の場合のみ SQLが追加されます。
+［例］ <code>sqlBuilder.addQnotB("AND user_id = ? ", userId);</code>
+</pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sql</code></td>
+                <td><code>String</code></td>
+                <td>SQL</td>
+              </tr>
+              <tr>
+                <td><code>param</code></td>
+                <td><code>Object</code></td>
+                <td>パラメーター（単一のみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBuilder</code> - 自インスタンス</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#addQueryWithParamNotBlank">#addQueryWithParamNotBlank(String, Object)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="deleteLastChar">
+        <h3 class="method-name">deleteLastChar</h3>
+        <div class="method-signature">
+          <code>public void deleteLastChar(int deleteCharCount)</code>
+        </div>
+        <div class="method-description">
+          最終SQL削除.
+<ul>
+<li>SQLの最後から指定文字数を削除します。</li>
+</ul>
+<pre>［例］
+<code>for (final String key : params.keySet()) {
+  sb.addQuery(key).addQuery("=?", params.get(key)).addQuery(",");
+}
+// 最後のカンマ削除
+sb.deleteLastChar(1);
+</code></pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>deleteCharCount</code></td>
+                <td><code>int</code></td>
+                <td>削除文字数</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="clearParameters">
+        <h3 class="method-name">clearParameters</h3>
+        <div class="method-signature">
+          <code>public void clearParameters()</code>
+        </div>
+        <div class="method-description">
+          パラメータークリア.
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

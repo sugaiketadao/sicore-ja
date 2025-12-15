@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FileUtil - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>FileUtil</h1>
+      <p>フレームワーク部品 [com.onepg.util]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.util</p>
+        <p><strong>クラス名:</strong> FileUtil</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>ファイル操作ユーティリティクラス.
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="getOsTemporaryPath">
+        <h3 class="method-name">getOsTemporaryPath</h3>
+        <div class="method-signature">
+          <code>public String getOsTemporaryPath()</code>
+        </div>
+        <div class="method-description">
+          OS一時ディレクトリパス取得.<br>
+<ul>
+<li>具体的には Java の java.io.tmpdir システムプロパティのパスを返す。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - OS一時ディレクトリパス</p>
+        </div>
+      </div>
+      <div class="method" id="joinPath">
+        <h3 class="method-name">joinPath</h3>
+        <div class="method-signature">
+          <code>public String joinPath(String... paths)</code>
+        </div>
+        <div class="method-description">
+          ファイルパス結合.<br>
+<ul>
+<li>引数の最後にブランクを渡すと / または \ 終わりのパスを返す。</li>
+<li>区切文字は OS に沿った文字となる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>paths</code></td>
+                <td><code>String...</code></td>
+                <td>ファイルパス（複数指定）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - ファイルパス</p>
+        </div>
+      </div>
+      <div class="method" id="convOsPath">
+        <h3 class="method-name">convOsPath</h3>
+        <div class="method-signature">
+          <code>public String convOsPath(String path)</code>
+        </div>
+        <div class="method-description">
+          OSパス変換.<br>
+<ul>
+<li>区切文字が OS に沿った文字に置換される。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>path</code></td>
+                <td><code>String</code></td>
+                <td>ファイルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - ファイルパス</p>
+        </div>
+      </div>
+      <div class="method" id="convAbsolutePath">
+        <h3 class="method-name">convAbsolutePath</h3>
+        <div class="method-signature">
+          <code>public String convAbsolutePath(String path)</code>
+        </div>
+        <div class="method-description">
+          絶対パス変換.<br>
+<ul>
+<li>相対パスがあれば絶対パスに変換される。</li>
+<li>区切文字が OS に沿った文字に置換される。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>path</code></td>
+                <td><code>String</code></td>
+                <td>相対パス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 絶対パス</p>
+        </div>
+      </div>
+      <div class="method" id="exists">
+        <h3 class="method-name">exists</h3>
+        <div class="method-signature">
+          <code>public boolean exists(String checkPath)</code>
+        </div>
+        <div class="method-description">
+          ファイル存在確認（ディレクトリも可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>checkPath</code></td>
+                <td><code>String</code></td>
+                <td>確認パス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="existsParent">
+        <h3 class="method-name">existsParent</h3>
+        <div class="method-signature">
+          <code>public boolean existsParent(String checkPath)</code>
+        </div>
+        <div class="method-description">
+          親ディレクトリ存在確認（ディレクトリも可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>checkPath</code></td>
+                <td><code>String</code></td>
+                <td>確認パス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="getFileName">
+        <h3 class="method-name">getFileName</h3>
+        <div class="method-signature">
+          <code>public String getFileName(String fullPath)</code>
+        </div>
+        <div class="method-description">
+          フルパスからファイル名取得（ディレクトリも可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fullPath</code></td>
+                <td><code>String</code></td>
+                <td>フルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - ファイル名のみ</p>
+        </div>
+      </div>
+      <div class="method" id="getParentPath">
+        <h3 class="method-name">getParentPath</h3>
+        <div class="method-signature">
+          <code>public String getParentPath(String fullPath)</code>
+        </div>
+        <div class="method-description">
+          フルパスから親ディレクトリパス取得（ディレクトリも可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fullPath</code></td>
+                <td><code>String</code></td>
+                <td>フルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 親ディレクトリパス</p>
+        </div>
+      </div>
+      <div class="method" id="getFileModifiedDateTime">
+        <h3 class="method-name">getFileModifiedDateTime</h3>
+        <div class="method-signature">
+          <code>public String getFileModifiedDateTime(String fullPath)</code>
+        </div>
+        <div class="method-description">
+          ファイル更新日時取得.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fullPath</code></td>
+                <td><code>String</code></td>
+                <td>フルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - ファイル更新日時（yyyyMMddHHmmss）</p>
+        </div>
+      </div>
+      <div class="method" id="splitFileTypeMark">
+        <h3 class="method-name">splitFileTypeMark</h3>
+        <div class="method-signature">
+          <code>public String[] splitFileTypeMark(String fileName)</code>
+        </div>
+        <div class="method-description">
+          ファイル名またはフルパスを拡張子とそれ以外に分割.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fileName</code></td>
+                <td><code>String</code></td>
+                <td>ファイル名またはフルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String[]</code> - 文字配列｛拡張子より前の部分、拡張子｝（いずれもドットは含まない）</p>
+        </div>
+      </div>
+      <div class="method" id="getFileList">
+        <h3 class="method-name">getFileList</h3>
+        <div class="method-signature">
+          <code>public List&lt;String&gt; getFileList(String dirPath, String typeMark, String prefixMatch, String middleMatch, String suffixMatch)</code>
+        </div>
+        <div class="method-description">
+          ファイルパス（絶対パス）リスト取得.<br>
+<ul>
+<li>ファイル名、拡張子の検索文字は大文字小文字を区別しない。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>dirPath</code></td>
+                <td><code>String</code></td>
+                <td>対象ディレクトリパス</td>
+              </tr>
+              <tr>
+                <td><code>typeMark</code></td>
+                <td><code>String</code></td>
+                <td>検索拡張子（省略可能）省略した場合は <code>null</code> ※ドット文字不要</td>
+              </tr>
+              <tr>
+                <td><code>prefixMatch</code></td>
+                <td><code>String</code></td>
+                <td>検索ファイル名 前方一致（省略可能）省略した場合は <code>null</code></td>
+              </tr>
+              <tr>
+                <td><code>middleMatch</code></td>
+                <td><code>String</code></td>
+                <td>検索ファイル名 中間一致（省略可能）省略した場合は <code>null</code></td>
+              </tr>
+              <tr>
+                <td><code>suffixMatch</code></td>
+                <td><code>String</code></td>
+                <td>検索ファイル名 後方一致（省略可能）省略した場合は <code>null</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>List&lt;String&gt;</code> - ファイルパス（絶対パス）リスト</p>
+        </div>
+      </div>
+      <div class="method" id="move">
+        <h3 class="method-name">move</h3>
+        <div class="method-signature">
+          <code>public File move(String srcFilePath, String destFilePath)</code>
+        </div>
+        <div class="method-description">
+          ファイル移動.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcFilePath</code></td>
+                <td><code>String</code></td>
+                <td>移動元ファイルパス</td>
+              </tr>
+              <tr>
+                <td><code>destFilePath</code></td>
+                <td><code>String</code></td>
+                <td>移動先ファイルパス（ディレクトリ指定可）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>File</code> - 移動先ファイルオブジェクト</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#move">#move(File, File)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="move">
+        <h3 class="method-name">move</h3>
+        <div class="method-signature">
+          <code>public File move(File srcFile, File destFile)</code>
+        </div>
+        <div class="method-description">
+          ファイル移動.<br>
+<ul>
+<li>移動先がディレクトリ指定の場合、ファイル名は移動元と同じになる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcFile</code></td>
+                <td><code>File</code></td>
+                <td>移動元ファイル</td>
+              </tr>
+              <tr>
+                <td><code>destFile</code></td>
+                <td><code>File</code></td>
+                <td>移動先ファイル（ディレクトリ指定可）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>File</code> - 移動先ファイルオブジェクト</p>
+        </div>
+      </div>
+      <div class="method" id="copy">
+        <h3 class="method-name">copy</h3>
+        <div class="method-signature">
+          <code>public File copy(String srcFilePath, String destFilePath)</code>
+        </div>
+        <div class="method-description">
+          ファイルコピー.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcFilePath</code></td>
+                <td><code>String</code></td>
+                <td>コピー元ファイルパス</td>
+              </tr>
+              <tr>
+                <td><code>destFilePath</code></td>
+                <td><code>String</code></td>
+                <td>コピー先ファイルパス（ディレクトリ指定可）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>File</code> - コピー先ファイルオブジェクト</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#copy">#copy(File, File)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="copy">
+        <h3 class="method-name">copy</h3>
+        <div class="method-signature">
+          <code>public File copy(File srcFile, File destFile)</code>
+        </div>
+        <div class="method-description">
+          ファイルコピー.<br>
+<ul>
+<li>コピー先がディレクトリ指定の場合、ファイル名はコピー元と同じになる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcFile</code></td>
+                <td><code>File</code></td>
+                <td>コピー元ファイル</td>
+              </tr>
+              <tr>
+                <td><code>destFile</code></td>
+                <td><code>File</code></td>
+                <td>コピー先ファイル（ディレクトリ指定可）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>File</code> - コピー先ファイルオブジェクト</p>
+        </div>
+      </div>
+      <div class="method" id="delete">
+        <h3 class="method-name">delete</h3>
+        <div class="method-signature">
+          <code>public boolean delete(String deleteFilePath)</code>
+        </div>
+        <div class="method-description">
+          ファイル削除.<br>
+<ul>
+<li>ファイルが無ければ <code>false</code> を返す。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>deleteFilePath</code></td>
+                <td><code>String</code></td>
+                <td>削除ファイルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - ファイルが無い場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="delete">
+        <h3 class="method-name">delete</h3>
+        <div class="method-signature">
+          <code>public boolean delete(File deleteFile)</code>
+        </div>
+        <div class="method-description">
+          ファイル削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>deleteFile</code></td>
+                <td><code>File</code></td>
+                <td>削除ファイル</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - ファイルが無い場合は <code>false</code></p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#delete">#delete(String)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="makeDir">
+        <h3 class="method-name">makeDir</h3>
+        <div class="method-signature">
+          <code>public boolean makeDir(String dirPath)</code>
+        </div>
+        <div class="method-description">
+          ディレクトリ作成.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>dirPath</code></td>
+                <td><code>String</code></td>
+                <td>ディレクトリパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 既に存在する場合は <code>false</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

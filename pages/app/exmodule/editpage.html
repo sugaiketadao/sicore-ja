@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>（例）ユーザー編集ページ</title>
+  <link href="../../lib/css/onepg-base.css" rel="stylesheet">
+  <style>
+    .item-head {
+      width: 6rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>（例）ユーザー編集ページ</div>
+    <!-- メッセージ表示 -->
+    <section id="_msg"></section>
+  </header>
+  
+  <main>
+    <!-- ヘッダデータ -->
+    <section>
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="userId">ユーザーID</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="user_id" id="userId" style="width: 6rem;">
+            <input type="hidden" name="upd_ts">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="userNm">ユーザー名</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="user_nm" id="userNm" style="width: 20rem;">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="email">Email</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="email" id="email" style="width: 30rem;">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="countryCs">出身国</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <select name="country_cs" id="countryCs">
+              <option value="" selected>未選択</option>
+              <option value="JP">日本</option>
+              <option value="US">アメリカ</option>
+              <option value="BR">ブラジル</option>
+              <option value="AU">オーストラリア</option>
+            </select>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label>性別</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <label><input type="radio" name="gender_cs" value="" checked>未選択</label>
+            <label><input type="radio" name="gender_cs" value="M">男性</label>
+            <label><input type="radio" name="gender_cs" value="F">女性</label>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label>配偶者</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <label><input type="checkbox" name="spouse_cs" value="Y" data-check-off-value="N">あり</label>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="incomeAm">年収</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="income_am" id="incomeAm" style="width: 10rem;" data-value-format-type="num" class="align-right"><span>以上</span>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+      <div class="grid-row">
+        <div class="grid-col-12">
+          <div class="item-head">
+            <label for="birthDt">誕生日</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="birth_dt" id="birthDt" style="width: 10rem;" data-value-format-type="ymd">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+      </div><!-- /.grid-row -->
+    </section>
+    <!-- /ヘッダデータ -->
+      
+    <!-- 明細データ -->
+    <section>
+      <div class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>No</th>
+              <th>ペット名</th>
+              <th>種類</th>
+              <th>性別</th>
+              <th>ワクチン接種</th>
+              <th class="align-right">体重(kg)</th>
+              <th>誕生日</th>
+            </tr>
+          </thead>
+          <tbody id="detail">
+            <script type="text/html">
+              <tr>
+                <td class="align-center"><input type="checkbox" name="detail.chk" value="1"></td>
+                <td data-name="detail.pet_no"></td>
+                <td><input type="text" name="detail.pet_nm" style="width: 10rem;"></td>
+                <td><select name="detail.type_cs" style="width: 5rem;">
+                  <option value="">未選択</option>
+                  <option value="DG">犬</option>
+                  <option value="CT">猫</option>
+                  <option value="BD">鳥</option>
+                </select></td>
+                <td> 
+                  <label><input type="radio" name="detail.gender_cs" value="">未選択</label>
+                  <label><input type="radio" name="detail.gender_cs" value="M">オス</label>
+                  <label><input type="radio" name="detail.gender_cs" value="F">メス</label>
+                </td>
+                <td>
+                  <label><input type="checkbox" name="detail.vaccine_cs" value="Y" data-check-off-value="N">接種済み</label>
+                </td>
+                <td><input type="text" name="detail.weight_kg" style="width: 4rem;" data-value-format-type="num" class="align-right"></td>
+                <td><input type="text" name="detail.birth_dt" style="width: 8rem;" data-value-format-type="ymd"></td>
+              </tr>
+            </script>
+          </tbody>
+        </table>
+      </div><!-- /.table -->
+    </section>
+    <!-- /明細データ -->
+  </main>
+
+  <footer>
+    <!-- 操作 -->
+    <section>
+      <div class="grid-row">
+        <!-- ボタン配置 -->
+        <div class="grid-col-6">
+          <button type="button" onclick="addRow()">行追加</button>
+          <button type="button" onclick="removeRow()">行削除</button>
+        </div><!-- /.grid-col-* -->
+        <div class="grid-col-6 align-right">
+          <button type="button" onclick="upsert()" >登録・更新</button>
+          <button type="button" onclick="del()" class="danger">削除</button>
+          <button type="button" onclick="cancel()">キャンセル</button>
+        </div><!-- /.grid-col-* -->
+        <!-- /ボタン配置 -->
+      </div><!-- /.grid-row -->
+    </section>
+    <!-- /操作 -->
+    <div>©サンプル</div>
+  </footer>
+
+  <script src="../../lib/js/onepg-utils.js" defer></script>
+  <script src="editpage.js" defer></script>
+</body>
+</html>

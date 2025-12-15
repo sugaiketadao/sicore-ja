@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StorageUtil - JSDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>StorageUtil</h1>
+      <p>フレームワーク部品 [onepg-utils.js]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>クラス名:</strong> StorageUtil</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>セッションストレージユーティリティクラス.<br>
+<ul>
+  <li>ブラウザのセッションストレージに下記の単位＋キーで連想配列を格納・取得する。</li>
+  <ul>
+    <li>ページ単位（URLの HTMLファイル単位、１ページ内でデータ保持）</li>
+    <li>機能単位（URLの機能ディレクトリ単位、ページ間でデータ共有）</li>
+    <li>システム単位（システム全体でデータ共有）</li>
+  </ul>
+  <li>クリティカルな処理ではない前提とし、原則として例外エラーとしない。</li>
+</ul></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method">
+        <h3 id="getPageObj" class="method-name">getPageObj</h3>
+        <div class="method-signature">
+          <code>getPageObj(key, notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          ページ単位（URLの HTMLファイル単位）データ取得. <br>
+<ul>
+  <li>ブラウザのセッションストレージからページ単位＋キーで連想配列を取得する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>取得キー</td>
+              </tr>
+              <tr>
+                <td><code>[notExistsValue]</code></td>
+                <td><code>Object</code></td>
+                <td>非存在時戻値（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Object|null</code> - 取得データ</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="getModuleObj" class="method-name">getModuleObj</h3>
+        <div class="method-signature">
+          <code>getModuleObj(key, notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          機能単位（URLの機能ディレクトリ単位）データ取得. <br>
+<ul>
+  <li>ブラウザのセッションストレージから機能単位＋キーで連想配列を取得する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>取得キー</td>
+              </tr>
+              <tr>
+                <td><code>[notExistsValue]</code></td>
+                <td><code>Object</code></td>
+                <td>非存在時戻値（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Object|null</code> - 取得データ</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="getSystemObj" class="method-name">getSystemObj</h3>
+        <div class="method-signature">
+          <code>getSystemObj(key, notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          システム単位データ取得.<br>
+<ul>
+  <li>ブラウザのセッションストレージからキーで連想配列を取得する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>取得キー</td>
+              </tr>
+              <tr>
+                <td><code>[notExistsValue]</code></td>
+                <td><code>Object</code></td>
+                <td>非存在時戻値（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Object|null</code> - 取得データ</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="setPageObj" class="method-name">setPageObj</h3>
+        <div class="method-signature">
+          <code>setPageObj(key, obj)</code>
+        </div>
+        <div class="method-description">
+          ページ単位データ（URLの HTMLファイル単位）格納.<br>
+<ul>
+  <li>ブラウザのセッションストレージにページ単位＋キーで連想配列を格納する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>格納キー</td>
+              </tr>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>格納データ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 格納成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="setModuleObj" class="method-name">setModuleObj</h3>
+        <div class="method-signature">
+          <code>setModuleObj(key, obj)</code>
+        </div>
+        <div class="method-description">
+          機能単位データ（URLの機能ディレクトリ単位）格納.<br>
+<ul>
+  <li>ブラウザのセッションストレージに機能単位＋キーで連想配列を格納する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>格納キー</td>
+              </tr>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>格納データ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 格納成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="setSystemObj" class="method-name">setSystemObj</h3>
+        <div class="method-signature">
+          <code>setSystemObj(key, obj)</code>
+        </div>
+        <div class="method-description">
+          システム単位データ格納.<br>
+<ul>
+  <li>ブラウザのセッションストレージにキーで連想配列を格納する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>格納キー</td>
+              </tr>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>格納データ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 格納成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="removePage" class="method-name">removePage</h3>
+        <div class="method-signature">
+          <code>removePage(key)</code>
+        </div>
+        <div class="method-description">
+          ページ単位データ削除.
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>キー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 削除成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="removeModule" class="method-name">removeModule</h3>
+        <div class="method-signature">
+          <code>removeModule(key)</code>
+        </div>
+        <div class="method-description">
+          機能単位データ削除.
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>キー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 削除成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="removeSystem" class="method-name">removeSystem</h3>
+        <div class="method-signature">
+          <code>removeSystem(key)</code>
+        </div>
+        <div class="method-description">
+          システム単位データ削除.
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>string</code></td>
+                <td>削除キー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 削除成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="clearAllData" class="method-name">clearAllData</h3>
+        <div class="method-signature">
+          <code>clearAllData()</code>
+        </div>
+        <div class="method-description">
+          全データクリア.<br>
+<ul>
+  <li>このユーティリティで格納されたすべてのデータを削除する。</li>
+  <li>緊急時やデバッグ用途で使用する。</li>
+</ul>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - クリア成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="clearPage" class="method-name">clearPage</h3>
+        <div class="method-signature">
+          <code>clearPage()</code>
+        </div>
+        <div class="method-description">
+          ページ単位データ全削除.<br>
+<ul>
+  <li>現在のページで格納されたすべてのデータを削除する。</li>
+</ul>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - クリア成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="clearModule" class="method-name">clearModule</h3>
+        <div class="method-signature">
+          <code>clearModule()</code>
+        </div>
+        <div class="method-description">
+          機能単位データ全削除.<br>
+<ul>
+  <li>現在の機能で格納されたすべてのデータを削除する。</li>
+</ul>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - クリア成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="clearSystem" class="method-name">clearSystem</h3>
+        <div class="method-signature">
+          <code>clearSystem()</code>
+        </div>
+        <div class="method-description">
+          システム単位データクリア.<br>
+<ul>
+  <li>システム共有で格納されたすべてのデータを削除する。</li>
+</ul>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - クリア成功時は <code>true</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JSDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

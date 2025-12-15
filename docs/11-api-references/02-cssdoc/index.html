@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フレームワーク部品 [onepg-base.css] - CSSDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>CSSDoc</h1>
+      <p>フレームワーク部品 [onepg-base.css]</p>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>目次</h2>
+      <div class="toc">
+        <ul>
+          <li><a href="#section-1">CSSクラス一覧.</a></li>
+          <li><a href="#section-2">ページ全体レイアウト.</a></li>
+          <li><a href="#section-3">グリッドレイアウト（列12分割）.</a></li>
+          <li><a href="#section-4">フォーム入力要素スタイル.</a></li>
+          <li><a href="#section-5">テーブルスタイル.</a></li>
+          <li><a href="#section-6">ユーティリティスタイル.</a></li>
+          <li><a href="#section-7">メッセージ表示／項目ハイライトスタイル.</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="section" id="section-1">
+      <h2>CSSクラス一覧.</h2>
+      <div class="section-description">
+        <ul>
+<li><code>div.grid-row</code>：グリッド行要素</li>
+<li><code>div.grid-col-1</code>：グリッド列要素 幅1/12</li>
+<li><code>div.grid-col-2</code>：グリッド列要素 幅2/12</li>
+<li><code>div.grid-col-3</code>：グリッド列要素 幅3/12</li>
+<li><code>div.grid-col-4</code>：グリッド列要素 幅4/12</li>
+<li><code>div.grid-col-5</code>：グリッド列要素 幅5/12</li>
+<li><code>div.grid-col-6</code>：グリッド列要素 幅6/12</li>
+<li><code>div.grid-col-7</code>：グリッド列要素 幅7/12</li>
+<li><code>div.grid-col-8</code>：グリッド列要素 幅8/12</li>
+<li><code>div.grid-col-9</code>：グリッド列要素 幅9/12</li>
+<li><code>div.grid-col-10</code>：グリッド列要素 幅10/12</li>
+<li><code>div.grid-col-11</code>：グリッド列要素 幅11/12</li>
+<li><code>div.grid-col-12</code>：グリッド列要素 幅12/12</li>
+<li><code>div.item-head</code>：グリッドセル内の項目ヘッダ要素</li>
+<li><code>div.item-body</code>：グリッドセル内の項目ボディ要素</li>
+<li><code>div.table</code>：テーブルを囲む要素</li>
+<li><code>.align-left</code>：テキスト左寄せ</li>
+<li><code>.align-center</code>：テキスト中央寄せ</li>
+<li><code>.align-right</code>：テキスト右寄せ</li>
+<li><code>.danger</code>：警告色で表示（削除ボタンなど）</li>
+<li><code>a.button</code>：リンク（&lt;a&gt;）をボタン風に表示</li>
+</ul>
+      </div>
+    </div>
+    <div class="section" id="section-2">
+      <h2>ページ全体レイアウト.</h2>
+      <div class="section-description">
+        <ul>
+<li><code>&lt;header&gt;</code> と <code>&lt;footer&gt;</code> は上部と下部に固定表示する。</li>
+<li><code>&lt;main&gt;</code> は <code>&lt;header&gt;</code> と <code>&lt;footer&gt;</code> 以外の残りの高さを全て使用して表示する。</li>
+<li><code>&lt;section&gt;</code> はページ左右余白とセクション間上下余白を設ける。上下余白を無くしたい場合は <code>&lt;section&gt;</code> を使わないこと。</li>
+</ul>
+<pre>［例］<code>
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;section&gt;固定ヘッダー&lt;/section&gt;
+  &lt;/header&gt;
+  &lt;main&gt;
+    &lt;section&gt;メインコンテンツ&lt;/section&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;section&gt;固定フッター&lt;/section&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+</code></pre>
+      </div>
+    </div>
+    <div class="section" id="section-3">
+      <h2>グリッドレイアウト（列12分割）.</h2>
+      <div class="section-description">
+        <ul>
+<li>ページの横幅を12等分して要素を自由に配置できるレイアウト手法を用いる。</li>
+<li>行要素は <code>div.grid-row</code> で指定し、行ごとに列幅を指定する。</li>
+<li>列要素は <code>div.grid-col-1</code> ～ <code>div.grid-col-12</code> で指定し、末尾の数値が列幅を表す。</li>
+<li>列幅は <code>1</code> から <code>12</code> までの値を使用し、合計が 12 になるよう指定する。</li>
+<li>列幅は通常12等分した幅だが、スマートフォンサイズでは全幅に変更され、列が縦並び（行）に変更される。</li>
+<li>列内は通常横並び配置だが、タブレットサイズでは縦並びに変更される。</li>
+</ul>
+<pre>［例１］<code>
+&lt;div class="grid-row"&gt;
+  &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+  &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+  &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+  &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+&lt;/div&gt;
+</code>［例２］幅は統一されていなくてもよい<code>
+&lt;div class="grid-row"&gt;
+  &lt;div class="grid-col-6"&gt;全幅の1/2幅&lt;/div&gt;
+  &lt;div class="grid-col-4"&gt;全幅の1/3幅&lt;/div&gt;
+  &lt;div class="grid-col-2"&gt;全幅の1/6幅&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+      </div>
+    </div>
+    <div class="section" id="section-4">
+      <h2>フォーム入力要素スタイル.</h2>
+      <div class="section-description">
+        <ul>
+<li>テキストボックス、セレクトボックス、テキストエリアなどのフォーム入力要素のスタイルを統一する。</li>
+<li>通常時、フォーカス時、非活性時のスタイルを統一する。</li>
+<li>フォーム入力要素と対になるラベルのスタイルを統一する。</li>
+<li>ラベル要素は <code>div.item-head</code> で囲み、フォーム入力要素は <code>div.item-body</code> で囲むことで、高さ調節およびページサイズに応じた並び方向の切り替えスタイルが適用される。
+  <pre>［例］
+<code>&lt;div class="item-head"&gt;&lt;label&gt;項目名&lt;/label&gt;&lt;/div&gt;
+ &lt;div class="item-body"&gt;&lt;input type="text"&gt;&lt;/div&gt;</code></pre></li>
+<li>チェックボックス、ラジオボタンは要素と値名称を <code>&lt;label&gt;</code> で囲む。
+  <pre>［例］<code>&lt;div class="item-body"&gt;&lt;label&gt;&lt;input type="checkbox"&gt;値名称&lt;/label&gt;&lt;/div&gt;</code></pre></li>
+</ul>
+      </div>
+    </div>
+    <div class="section" id="section-5">
+      <h2>テーブルスタイル.</h2>
+      <div class="section-description">
+        <ul>
+<li><code>&lt;table&gt;</code> のスタイルを統一する。</li>
+<li>テーブルは１行ごとにストライプ表示する。</li>
+<li><code>&lt;table&gt;</code> を <code>div.table</code> で囲むことでスタイルが適用される。
+  <pre>［例］
+<code>&lt;div class="table"&gt;&lt;table&gt;...省略...&lt;/table&gt;&lt;/div&gt;</code></pre></li>
+<li><code>&lt;th&gt;</code> は<code>&lt;thead&gt;</code>、<code>&lt;tr&gt;</code> は<code>&lt;tbody&gt;</code> で囲むことでスタイルが適用される。</li>
+<li><code>&lt;tbody&gt;</code> は１個、複数個のどちらでもよい。
+  <pre>［１個 例］<code>&lt;table&gt;...省略...&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</code>
+［複数個 例］<code>&lt;table&gt;...省略...&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</code></pre></li>
+</ul>
+      </div>
+    </div>
+    <div class="section" id="section-6">
+      <h2>ユーティリティスタイル.</h2>
+      <div class="section-description">
+        <ul>
+<li>このセクションでは頻繁に使用される汎用的なスタイルを提供する。</li>
+<li>テキスト文字寄せには下記クラスを設定する。
+  <ul>
+    <li>左寄せ：<code>.align-left</code></li>
+    <li>中央寄せ：<code>.align-center</code></li>
+    <li>右寄せ：<code>.align-right</code></li>
+  </ul></li>
+<li>操作を注意するべき要素に <code>.danger</code> を設定することで警告色で表示する（削除ボタンなどに使用）。</li>
+<li><code>&lt;a&gt;</code> に <code>.button</code> を設定することで見た目をボタン風に表示する。</li>
+</ul>
+      </div>
+    </div>
+    <div class="section" id="section-7">
+      <h2>メッセージ表示／項目ハイライトスタイル.</h2>
+      <div class="section-description">
+        <ul>
+<li>メッセージ表示エリアのHTMLは下記の形式で固定とする。<br>
+  <pre><code>&lt;section id="_msg"&gt;&lt;/section&gt;</code></pre></li>
+<li>JavaScript フレームワーク部品 <code>PageUtil#setMsg()</code> を呼び出すと、対象項目要素に下記クラスがセットされ、その項目がハイライト表示される。
+  <ul>
+    <li>情報（青系背景）： <code>.info-item</code></li>
+    <li>警告（黄系背景）： <code>.warn-item</code></li>
+    <li>エラー（赤系背景）： <code>.err-item</code></li>
+</ul></li>
+<li>ハイライト表示する項目は Java フレームワーク部品 <code>Io#putMsg()</code> の引数でメッセージ文言とともに指定する。</li>
+</ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by CssDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

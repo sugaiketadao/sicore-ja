@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>（例）ユーザー一覧ページ</title>
+  <link href="../../lib/css/onepg-base.css" rel="stylesheet">
+  <style>
+    .item-head {
+      width: 6rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>（例）ユーザー一覧ページ</div>
+    <!-- メッセージ表示 -->
+    <section id="_msg"></section>
+  </header>
+  <main>
+    <!-- DB抽出条件 -->
+    <section id="searchConditionsArea">
+      <!-- DB抽出条件１段目 -->
+      <div class="grid-row">
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="userId">ユーザーID</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="user_id" id="userId" style="width: 6rem;" title="前方一致">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="userNm">ユーザー名</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="user_nm" id="userNm" style="width: 10rem;" title="部分一致">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="email">Email</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="email" id="email" style="width: 10rem;" title="部分一致">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="countryCs">出身国</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <select name="country_cs" id="countryCs">
+              <option value="" selected>未選択</option>
+              <option value="JP">日本</option>
+              <option value="US">アメリカ</option>
+              <option value="BR">ブラジル</option>
+              <option value="AU">オーストラリア</option>
+            </select>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+      </div><!-- /.grid-row -->
+      <!-- /DB抽出条件１段目 -->
+
+      <!-- DB抽出条件２段目 -->
+      <div class="grid-row">
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label>性別</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <label><input type="radio" name="gender_cs" value="" checked>未選択</label>
+            <label><input type="radio" name="gender_cs" value="M">男性</label>
+            <label><input type="radio" name="gender_cs" value="F">女性</label>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label>配偶者</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <label><input type="checkbox" name="spouse_cs" value="Y">あり</label>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="incomeAm">年収</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="income_am" id="incomeAm" style="width: 9rem;" data-value-format-type="num" class="align-right"><span>以上</span>
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+        <div class="grid-col-3">
+          <div class="item-head">
+            <label for="birthDt">誕生日</label>
+          </div><!-- /.item-head -->
+          <div class="item-body">
+            <input type="text" name="birth_dt" id="birthDt" style="width: 6rem;" data-value-format-type="ymd">
+          </div><!-- /.item-body -->
+        </div><!-- /.grid-col-* -->
+
+      </div><!-- /.grid-row -->
+      <!-- /DB抽出条件２段目 -->
+    </section>
+    <!-- /DB抽出条件 -->
+
+    <!-- 操作 -->
+    <section>
+      <div class="grid-row">
+        <!-- ボタン配置 -->
+        <div class="grid-col-12">
+          <button type="button" onclick="search()">検索</button>
+        </div><!-- /.grid-col-* -->
+        <!-- /ボタン配置 -->
+      </div><!-- /.grid-row -->
+    </section>
+    <!-- /操作 -->
+
+    <!-- 検索結果 -->
+    <section id="searchResultsArea">
+      <div class="table">
+        <table>
+          <caption style="text-align: right;"><span data-name="list_size">0</span> 件</caption>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>名前</th>
+              <th>Email</th>
+              <th>性別</th>
+              <th class="align-right">年収</th>
+              <th>誕生日</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody id="list">
+            <script type="text/html">
+              <tr>
+                <td><input type="text" name="list.user_id" disabled style="width: 6rem;">
+                  <input type="hidden" name="list.upd_ts" ></td>
+                <td data-name="list.user_nm"></td>
+                <td data-name="list.email"></td>
+                <td data-name="list.gender_dn"></td>
+                <td data-name="list.income_am" data-value-format-type="num" class="align-right"></td>
+                <td data-name="list.birth_dt" data-value-format-type="ymd"></td>
+                <td><button onclick="editMove(this)">編集</button></td>
+              </tr>
+            </script>
+          </tbody>
+        </table>
+      </div><!-- /.table -->
+    </section>
+    <!-- /検索結果 -->
+  </main>
+  <footer>
+    <!-- 操作 -->
+    <section>
+      <div class="grid-row">
+        <!-- ボタン配置 -->
+        <div class="grid-col-12">
+          <button type="button" onclick="create()">新規登録</button>
+        </div><!-- /.grid-col-* -->
+        <!-- /ボタン配置 -->
+      </div><!-- /.grid-row -->
+    </section>
+    <!-- /操作 -->
+    <div>©サンプル</div>
+  </footer>
+  <script src="../../lib/js/onepg-utils.js" defer></script>
+  <script src="listpage.js" defer></script>
+</body>
+</html>

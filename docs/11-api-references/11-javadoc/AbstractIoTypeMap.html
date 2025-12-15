@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AbstractIoTypeMap - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>AbstractIoTypeMap <span class="abstract-badge">（抽象クラス）</span></h1>
+      <p>フレームワーク部品 [com.onepg.util]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.util</p>
+        <p><strong>クラス名:</strong> AbstractIoTypeMap <span class="abstract-badge">（抽象クラス）</span></p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>入出力可変型マップ 基底クラス.<br>
+<ul>
+<li>型ごとの値取得メソッドと値格納メソッドを持つマップクラス。</li>
+<li>内部的には文字列で値を保持する。</li>
+<li>値の格納順序を保持する。</li>
+<li>Map&lt;String, String&gt; を継承することで汎用性を持たせている。</li>
+<li>コンストラクタの引数指定で読み取り専用にできる。</li>
+<li>基本ルール・制限
+<ul>
+<li>キーとして使用できる文字は英字小文字と数字、アンダースコア、ハイフン、ドットのみに限定される。<br>
+（JSON で使用可能な文字のみ、かつ DBMS差異をなくすため英字は小文字統一とする）</li>
+<li>原則として値取得メソッドは <code>null</code> を返さない。</li>
+<li><code>null</code> を取得したい場合は意図的なメソッド［例］<code>#getStringNullable(String)</code>
+で取得する。</li>
+<li>原則として存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認するか、
+非存在時の戻値を指定する意図的なメソッド［例］<code>#getStringOrDefault(String, String)</code>
+で取得する。</li>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値を格納する場合は意図的なメソッド［例］<code>#putForce(String, String)</code>
+で格納する。</li>
+<li><code>null</code> を明示的に格納したい場合も意図的なメソッド［例］<code>#putNull(String)</code> で格納する。</li>
+<li>通常のマップとは異なり <code>#keySet()</code>、<code>#entrySet()</code>、<code>#values()</code>
+の結果は読取専用となっている。<br>
+（内部でキーを別管理しており、結果から削除されると整合性が崩れるため）</li>
+<li>タイムスタンプは小数６桁までで保持される。</li>
+</ul>
+</ul>
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="getValMap">
+        <h3 class="method-name">getValMap</h3>
+        <div class="method-signature">
+          <code>protected Map&lt;String, String&gt; getValMap()</code>
+        </div>
+        <div class="method-description">
+          値保持マップ取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Map&lt;String, String&gt;</code> - 値保持マップ</p>
+        </div>
+      </div>
+      <div class="method" id="allKeySet">
+        <h3 class="method-name">allKeySet</h3>
+        <div class="method-signature">
+          <code>protected Set&lt;String&gt; allKeySet()</code>
+        </div>
+        <div class="method-description">
+          全キーセット取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Set&lt;String&gt;</code> - 全キーセット</p>
+        </div>
+      </div>
+      <div class="method" id="validateKey">
+        <h3 class="method-name">validateKey</h3>
+        <div class="method-signature">
+          <code>protected void validateKey(String key)</code>
+        </div>
+        <div class="method-description">
+          キーバリデート.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="getVal">
+        <h3 class="method-name">getVal</h3>
+        <div class="method-signature">
+          <code>protected String getVal(String key)</code>
+        </div>
+        <div class="method-description">
+          キーバリデート＆値取得.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 値</p>
+        </div>
+      </div>
+      <div class="method" id="putVal">
+        <h3 class="method-name">putVal</h3>
+        <div class="method-signature">
+          <code>protected String putVal(String key, String value, boolean canOverwrite)</code>
+        </div>
+        <div class="method-description">
+          キーバリデート＆値格納.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>String</code></td>
+                <td>値</td>
+              </tr>
+              <tr>
+                <td><code>canOverwrite</code></td>
+                <td><code>boolean</code></td>
+                <td>上書き許可</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納値</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

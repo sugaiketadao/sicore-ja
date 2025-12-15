@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SqlUtil - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>SqlUtil</h1>
+      <p>フレームワーク部品 [com.onepg.db]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.db</p>
+        <p><strong>クラス名:</strong> SqlUtil</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>SQL実行ユーティリティクラス.
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="selectOneExists">
+        <h3 class="method-name">selectOneExists</h3>
+        <div class="method-signature">
+          <code>public IoItems selectOneExists(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          １件取得（ゼロ件エラー）.<br>
+<ul>
+<li>対象データが１件のみ存在することが前提で使用する。</li>
+<li>結果がゼロ件の場合は例外エラーを投げる。</li>
+<li>結果が複数件の場合は例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoItems</code> - 行データマップ</p>
+        </div>
+      </div>
+      <div class="method" id="selectOne">
+        <h3 class="method-name">selectOne</h3>
+        <div class="method-signature">
+          <code>public IoItems selectOne(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          １件取得.<br>
+<ul>
+<li>対象データが１件のみ存在することが前提で使用する。</li>
+<li>結果がゼロ件の場合は <code>null</code> を返す。</li>
+<li>結果が複数件の場合は例外エラーを投げる。</li>
+<li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoItems</code> - 行データマップ</p>
+        </div>
+      </div>
+      <div class="method" id="selectOneMultiIgnore">
+        <h3 class="method-name">selectOneMultiIgnore</h3>
+        <div class="method-signature">
+          <code>public IoItems selectOneMultiIgnore(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          １件取得（複数存在OK）.<br>
+<ul>
+<li>結果がゼロ件の場合は <code>null</code> を返す。</li>
+<li>複数件取得できた場合でもエラーとせず最初の１件を返す。</li>
+<li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoItems</code> - 行データマップ</p>
+        </div>
+      </div>
+      <div class="method" id="select">
+        <h3 class="method-name">select</h3>
+        <div class="method-signature">
+          <code>public SqlResultSet select(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          複数件取得.<br>
+<ul>
+<li><code>SqlResultSet</code> で返す。</li>
+<li><code>SqlResultSet</code>
+のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+<li>try 句（try-with-resources文）で使用する。</li>
+<li>本クラスではデフォルトフェッチサイズを 500 とし、全件フェッチしたい場合は <code>SqlBuilder#fetchAll()</code>
+を実行しておく。</li>
+<li>DBMSごとのフェッチサイズについて
+<ul>
+<li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
+<li>PostgreSQL はデフォルト 全件フェッチとなっており OutOfMemory になる可能性があるためフェッチサイズを指定する。</li>
+<li>PostgreSQL
+はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE
+34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。（<code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> 参照）<br>
+また処理が複雑になるが SQL の LIMIT句でデータを分割取得しても解決できる。</li>
+<li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は
+SQL の LIMIT句でデータを分割取得する必要がある。</li>
+</ul>
+</li>
+</ul>
+<pre>［例］
+<code>try (final SqlResultSet rSet = SqlUtil.select(getDbConn(), sqlBuilder);) {
+  for (final IoItems row : rSet) {
+    ：省略
+  }
+  if (rSet.getReadedCount() <= 0) {
+    // ゼロ件の場合
+  }
+}</code>
+</pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlResultSet</code> - SQL結果セット</p>
+        </div>
+      </div>
+      <div class="method" id="selectFetchAll">
+        <h3 class="method-name">selectFetchAll</h3>
+        <div class="method-signature">
+          <code>public SqlResultSet selectFetchAll(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          複数件取得（全件フェッチ）.<br>
+<ul>
+<li>基本的に本メソッドは使用しない。</li>
+<li>全件フェッチしないと不具合が発生する場合のみ使用する。</li>
+<li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlResultSet</code> - SQL結果セット</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#select">#select(Connection, SqlBuilder)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="selectBulk">
+        <h3 class="method-name">selectBulk</h3>
+        <div class="method-signature">
+          <code>public IoRows selectBulk(Connection conn, SqlBuilder sqlBuilder, int limitCount)</code>
+        </div>
+        <div class="method-description">
+          複数件一括取得.<br>
+<ul>
+<li>複数行リストを返す。</li>
+<li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
+<li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+を使用する。</li>
+<li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+              <tr>
+                <td><code>limitCount</code></td>
+                <td><code>int</code></td>
+                <td>取得件数上限</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="selectBulkAll">
+        <h3 class="method-name">selectBulkAll</h3>
+        <div class="method-signature">
+          <code>public IoRows selectBulkAll(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          複数件一括取得（全件取得）.<br>
+<ul>
+<li>複数行リストを返す。</li>
+<li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
+<li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+を使用する。</li>
+<li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="insertOne">
+        <h3 class="method-name">insertOne</h3>
+        <div class="method-signature">
+          <code>public boolean insertOne(Connection conn, String tableName, AbstractIoTypeMap params)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定１件登録.<br>
+<ul>
+<li>テーブル名を指定して１件登録します。</li>
+<li>テーブルに存在しないパラメーターは無視されます。</li>
+<li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+<li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 一意制約違反の場合は <code>false</code>、正常に１件登録された場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="insertOne">
+        <h3 class="method-name">insertOne</h3>
+        <div class="method-signature">
+          <code>public boolean insertOne(Connection conn, String tableName, AbstractIoTypeMap params, String tsItem)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定１件登録（タイムスタンプ自動セット）.<br>
+<ul>
+<li>テーブル名を指定して１件登録します。</li>
+<li>楽観排他制御用のタイムスタンプをセットします。</li>
+<li>テーブルに存在しないパラメーターは無視されます。</li>
+<li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+<li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値</td>
+              </tr>
+              <tr>
+                <td><code>tsItem</code></td>
+                <td><code>String</code></td>
+                <td>タイムスタンプ項目名（楽観排他制御用）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 一意制約違反の場合は <code>false</code>、正常に１件登録された場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="updateOne">
+        <h3 class="method-name">updateOne</h3>
+        <div class="method-signature">
+          <code>public boolean updateOne(Connection conn, String tableName, AbstractIoTypeMap params, String[] keyItems)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定1件更新.<br>
+<ul>
+<li>テーブル名を指定して1件更新します。</li>
+<li>複数件更新した場合は例外エラーとする。</li>
+<li>テーブルに存在しないパラメーターは無視されます。</li>
+<li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+<li>キー項目で WHERE句が作成される。</li>
+<li>キー項目はパラメーター値に含まれている必要があります。</li>
+<li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（キー項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>keyItems</code></td>
+                <td><code>String[]</code></td>
+                <td>キー項目名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - １件更新された場合は <code>true</code>、０件の場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="updateOne">
+        <h3 class="method-name">updateOne</h3>
+        <div class="method-signature">
+          <code>public boolean updateOne(Connection conn, String tableName, AbstractIoTypeMap params, String[] keyItems, String tsItem)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定１件更新（タイムスタンプ排他制御更新）.<br>
+<ul>
+<li>テーブル名を指定して１件更新します。</li>
+<li>複数件更新した場合は例外エラーとする。</li>
+<li>タイムスタンプで楽観排他制御を行います。</li>
+<li>テーブルに存在しないパラメーターは無視されます。</li>
+<li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+<li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
+<li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
+<li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code>
+のキールール）</li>
+<li>タイムスタンプ項目は現在日時で更新されます。</li>
+<li>タイムスタンプ排他制御不要な場合は <code>#updateOne(Connection, String, AbstractIoTypeMap, String[])</code> を使用してください。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（キー項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>keyItems</code></td>
+                <td><code>String[]</code></td>
+                <td>キー項目名</td>
+              </tr>
+              <tr>
+                <td><code>tsItem</code></td>
+                <td><code>String</code></td>
+                <td>タイムスタンプ項目名（楽観排他制御用）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - １件更新された場合は <code>true</code>、０件の場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="update">
+        <h3 class="method-name">update</h3>
+        <div class="method-signature">
+          <code>public int update(Connection conn, String tableName, AbstractIoTypeMap params, String[] whereItems)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定更新.<br>
+<ul>
+<li>テーブル名を指定して複数件更新します。</li>
+<li>テーブルに存在しないパラメーターは無視されます。</li>
+<li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+<li>抽出条件項目で WHERE句が作成される。</li>
+<li>抽出条件項目はパラメーター値に含まれている必要があります。</li>
+<li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（抽出条件項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>whereItems</code></td>
+                <td><code>String[]</code></td>
+                <td>抽出条件項目名（省略可能）省略した場合は <code>null</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 更新件数</p>
+        </div>
+      </div>
+      <div class="method" id="deleteOne">
+        <h3 class="method-name">deleteOne</h3>
+        <div class="method-signature">
+          <code>public boolean deleteOne(Connection conn, String tableName, AbstractIoTypeMap params, String[] keyItems)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定１件削除.<br>
+<ul>
+<li>テーブル名を指定して１件削除します。</li>
+<li>複数件削除した場合は例外エラーとする。</li>
+<li>キー項目で WHERE句が作成される。</li>
+<li>キー項目はパラメーター値に含まれる必要があります。</li>
+<li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（キー項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>keyItems</code></td>
+                <td><code>String[]</code></td>
+                <td>キー項目名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - １件削除された場合は <code>true</code>、０件の場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="deleteOne">
+        <h3 class="method-name">deleteOne</h3>
+        <div class="method-signature">
+          <code>public boolean deleteOne(Connection conn, String tableName, AbstractIoTypeMap params, String[] keyItems, String tsItem)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定１件削除（タイムスタンプ排他制御削除）.<br>
+<ul>
+<li>テーブル名を指定して１件削除します。</li>
+<li>複数件削除した場合は例外エラーとする。</li>
+<li>タイムスタンプで楽観排他制御を行います。</li>
+<li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
+<li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
+<li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code>
+のキールール）</li>
+<li>タイムスタンプ排他制御不要な場合は
+<code>#deleteOne(Connection, String, AbstractIoTypeMap, String[])</code>
+を使用してください。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（キー項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>keyItems</code></td>
+                <td><code>String[]</code></td>
+                <td>キー項目名</td>
+              </tr>
+              <tr>
+                <td><code>tsItem</code></td>
+                <td><code>String</code></td>
+                <td>タイムスタンプ項目名（楽観排他制御用）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - １件削除された場合は <code>true</code>、０件の場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="delete">
+        <h3 class="method-name">delete</h3>
+        <div class="method-signature">
+          <code>public int delete(Connection conn, String tableName, AbstractIoTypeMap params, String[] whereItems)</code>
+        </div>
+        <div class="method-description">
+          テーブル指定削除.<br>
+<ul>
+<li>テーブル名を指定して複数件削除します。</li>
+<li>抽出条件項目で WHERE句が作成される。</li>
+<li>抽出条件項目はパラメーター値に含まれる必要があります。</li>
+<li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値（抽出条件項目名を含む）</td>
+              </tr>
+              <tr>
+                <td><code>whereItems</code></td>
+                <td><code>String[]</code></td>
+                <td>抽出条件項目名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 削除件数</p>
+        </div>
+      </div>
+      <div class="method" id="executeOne">
+        <h3 class="method-name">executeOne</h3>
+        <div class="method-signature">
+          <code>public boolean executeOne(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          SQL １件登録・更新・削除.<br>
+<ul>
+<li>反映件数が複数件の場合は例外エラーとする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 反映件数が１件の場合は <code>true</code>、０件の場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="execute">
+        <h3 class="method-name">execute</h3>
+        <div class="method-signature">
+          <code>public int execute(Connection conn, SqlBuilder sqlBuilder)</code>
+        </div>
+        <div class="method-description">
+          SQL 登録・更新・削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>sqlBuilder</code></td>
+                <td><code>SqlBuilder</code></td>
+                <td>SQLビルダー</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 反映件数</p>
+        </div>
+      </div>
+      <div class="method" id="getToday">
+        <h3 class="method-name">getToday</h3>
+        <div class="method-signature">
+          <code>public String getToday(Connection conn)</code>
+        </div>
+        <div class="method-description">
+          DBMS別 現在日付取得.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 現在日付（YYYYMMDD形式）</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

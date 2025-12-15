@@ -1,0 +1,3200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Io - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>Io</h1>
+      <p>フレームワーク部品 [com.onepg.util]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.util</p>
+        <p><strong>クラス名:</strong> Io</p>
+        <p><strong>継承:</strong> <a href="AbstractIoTypeMap.html">AbstractIoTypeMap</a></p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>入出力マップクラス.<br>
+<ul>
+<li>文字列リストを保持することができる。</li>
+<li>ネストされた可変型マップを保持することができる。</li>
+<li>複数行の可変型マップをリストで保持することができる。</li>
+<li>文字列配列（リスト）をリストで保持することができる。</li>
+<li>上記のデータ構造は格納時・取得時ともにディープコピーされる。</li>
+<li>JSON を入出力することができる。</li>
+<li>URLパラメーター を入出力することができる。</li>
+<li>基本ルール・制限は <code>AbstractIoTypeMap</code> に準拠する。</li>
+
+<li>文字列リストについて
+<ul>
+<li><code>#getList(String)</code>、<code>#putList(String, List)</code>、<code>#containsKeyList(String)</code>、
+<code>#removeList(String)</code> などの **List メソッドから扱う。</li>
+<li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
+<code>#keySet()</code>
+などの結果に文字列リストは含まれない。<br>
+ただし <code>#clear()</code> では文字列リストの保持もクリアされる。</li>
+<li><code>#getList(String)</code> から取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li><code>#putList(String, List)</code>
+で格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li>文字列リストは CSV 出力の対象にはならない。</li>
+<li>文字列リストを含む URLパラメーター は文字列長さに注意する。</li>
+<li>ディープコピーを行うため、リストの格納・取得を繰り返す処理や、サイズの大きいリストを扱う処理では性能が低下する可能性がある。</li>
+</ul>
+</li>
+
+<li>ネストマップについて
+<ul>
+<li><code>#getNest(String)</code>、<code>#putNest(String, Map)</code>、<code>#containsKeyNest(String)</code>、
+<code>#removeNest(String)</code> などの **Nest メソッドから扱う。</li>
+<li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
+<code>#keySet()</code>
+などの結果にネストマップは含まれない。<br>
+ただし <code>#clear()</code> ではネストマップの保持もクリアされる。</li>
+<li><code>#getNest(String)</code> から取得したマップに要素を追加しても本クラスで保持しているマップに影響しない。</li>
+<li><code>#putNest(String, List)</code>
+で格納した元のマップに要素を追加しても本クラスで保持しているマップに影響しない。</li>
+<li>ネストマップは CSV 出力、URLパラメーター出力の対象にはならない。</li>
+<li>ディープコピーを行うため、リストの格納・取得を繰り返す処理や、サイズの大きいリストを扱う処理では性能が低下する可能性がある。</li>
+</ul>
+</li>
+
+<li>複数行リストについて
+<ul>
+<li><code>#getRows(String)</code>、<code>#putRows(String, Collection)</code>、
+<code>#containsKeyRows(String)</code>、<code>#removeRows(List)</code> などの **Rows
+メソッドから扱う。</li>
+<li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
+<code>#keySet()</code>
+などの結果に複数行リストは含まれない。<br>
+ただし <code>#clear()</code> では複数行リストの保持もクリアされる。</li>
+<li><code>#getRows(String)</code> から取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li><code>#putRows(String, Collection)</code>
+で格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li>複数行リストは CSV 出力、URLパラメーター出力の対象にはならない。</li>
+<li>ディープコピーを行うため、リストの格納・取得を繰り返す処理や、サイズの大きいリストを扱う処理では性能が低下する可能性がある。</li>
+</ul>
+</li>
+
+<li>配列リストについて
+<ul>
+<li><code>#getArys(String)</code>、<code>#putArys(String, Collection)</code>、
+<code>#containsKeyArys(String)</code>、<code>#removeArys(List)</code> などの **Arys
+メソッドから扱う。</li>
+<li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
+<code>#keySet()</code>
+などの結果に配列リストは含まれない。<br>
+ただし <code>#clear()</code> では配列リストの保持もクリアされる。</li>
+<li><code>#getArys(String)</code> から取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li><code>#putArys(String, Collection)</code>
+で格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。</li>
+<li>配列リストは CSV 出力、URLパラメーター出力の対象にはならない。</li>
+<li>ディープコピーを行うため、リストの格納・取得を繰り返す処理や、サイズの大きいリストを扱う処理では性能が低下する可能性がある。</li>
+</ul>
+</li>
+
+<li>JSON で４階層（次元）以上の配列には対応しない。
+<ul>
+<li>{ [ [ ] ] } は対応。→配列リスト</li>
+<li>{ [ { } ] } は対応。→複数行リスト</li>
+<li>{ [ [ [ ] ] ] } は非対応。</li>
+<li>{ [ [ { } ] ] } は非対応。</li>
+</ul>
+</li>
+
+<li>メッセージについて
+<ul>
+<li>メッセージIDと対象項目名等を保持することができ、メッセージは JSON 出力時に合わせて出力される。</li>
+<li>JSON 出力時にメッセージテキストを引数渡しすることで保持しているメッセージ文言も合わせて出力される。</li>
+<li>メッセージテキスト内の <code>{0}, {1}, ...</code> はメッセージ追加時の引数で渡された文字列で置換される。</li>
+</ul>
+</li>
+
+</ul>
+</div>
+      </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="AbstractIoTypeMap.html">AbstractIoTypeMap</a></li>
+          </ul>
+        </div>
+    </div>
+    <div class="section">
+      <h2>列挙型一覧</h2>
+      <div class="enum-list">
+        <div class="enum-item" id="MsgType">
+          <h3 class="enum-name">MsgType</h3>
+          <div class="enum-signature">
+            <code>public enum MsgType</code>
+          </div>
+          <div class="enum-description">
+            メッセージタイプ. 
+          </div>
+          <div class="enum-constants">
+            <h4>定数</h4>
+            <ul>
+              <li><code>ERROR</code></li>
+              <li><code>WARN</code></li>
+              <li><code>INFO</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="getString">
+        <h3 class="method-name">getString <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String getString(String key)</code>
+        </div>
+        <div class="method-description">
+          文字列取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はゼロバイト文字を返す。（<code>null</code> は返らない）</li>
+<li><code>null</code> を取得したい場合は <code>#getStringNullable(String)</code> で取得する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 文字列</p>
+        </div>
+      </div>
+      <div class="method" id="getStringOrDefault">
+        <h3 class="method-name">getStringOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String getStringOrDefault(String key, String notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          文字列取得.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>格納されている値が <code>null</code> の場合はゼロバイト文字を返す。（<code>null</code> は返らない）</li>
+<li><code>null</code> を取得したい場合は <code>#getStringNullableOrDefault(String, String)</code> で取得する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>String</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 文字列</p>
+        </div>
+      </div>
+      <div class="method" id="getStringNullable">
+        <h3 class="method-name">getStringNullable <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String getStringNullable(String key)</code>
+        </div>
+        <div class="method-description">
+          文字列取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 文字列（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getStringNullableOrDefault">
+        <h3 class="method-name">getStringNullableOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String getStringNullableOrDefault(String key, String notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          文字列取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>String</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 文字列（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getBigDecimal">
+        <h3 class="method-name">getBigDecimal <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public BigDecimal getBigDecimal(String key)</code>
+        </div>
+        <div class="method-description">
+          数値取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。（<code>null</code> は返らない）</li>
+<li><code>null</code> を取得したい場合は <code>#getBigDecimalNullable(String)</code> で取得する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>BigDecimal</code> - 数値</p>
+        </div>
+      </div>
+      <div class="method" id="getBigDecimalOrDefault">
+        <h3 class="method-name">getBigDecimalOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public BigDecimal getBigDecimalOrDefault(String key, BigDecimal notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          数値取得.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。（<code>null</code> は返らない）</li>
+<li><code>null</code> を取得したい場合は <code>#getBigDecimalNullableOrDefault(String)</code> で取得する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>BigDecimal</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>BigDecimal</code> - 数値</p>
+        </div>
+      </div>
+      <div class="method" id="getBigDecimalNullable">
+        <h3 class="method-name">getBigDecimalNullable <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public BigDecimal getBigDecimalNullable(String key)</code>
+        </div>
+        <div class="method-description">
+          数値取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>BigDecimal</code> - 数値（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getBigDecimalNullableOrDefault">
+        <h3 class="method-name">getBigDecimalNullableOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public BigDecimal getBigDecimalNullableOrDefault(String key, BigDecimal notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          数値取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>BigDecimal</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>BigDecimal</code> - 数値（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getInt">
+        <h3 class="method-name">getInt <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public int getInt(String key)</code>
+        </div>
+        <div class="method-description">
+          int 値取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。</li>
+<li>int 値許容範囲外の場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - int 値</p>
+        </div>
+      </div>
+      <div class="method" id="getIntOrDefault">
+        <h3 class="method-name">getIntOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public int getIntOrDefault(String key, int notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          int 値取得.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。</li>
+<li>int 値許容範囲外の場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>int</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - int 値</p>
+        </div>
+      </div>
+      <div class="method" id="getLong">
+        <h3 class="method-name">getLong <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public long getLong(String key)</code>
+        </div>
+        <div class="method-description">
+          long 値取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。</li>
+<li>long 値許容範囲外の場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>long</code> - long 値</p>
+        </div>
+      </div>
+      <div class="method" id="getLongOrDefault">
+        <h3 class="method-name">getLongOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public long getLongOrDefault(String key, long notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          long 値取得.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>格納されている値が <code>null</code> の場合はゼロを返す。</li>
+<li>long 値許容範囲外の場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>long</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>long</code> - long 値</p>
+        </div>
+      </div>
+      <div class="method" id="getDateNullable">
+        <h3 class="method-name">getDateNullable <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public LocalDate getDateNullable(String key)</code>
+        </div>
+        <div class="method-description">
+          日付取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>日付変換できない場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LocalDate</code> - 日付（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getDateNullableOrDefault">
+        <h3 class="method-name">getDateNullableOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public LocalDate getDateNullableOrDefault(String key, LocalDate notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          日付取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>日付変換できない場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>LocalDate</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LocalDate</code> - 日付（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getDateTimeNullable">
+        <h3 class="method-name">getDateTimeNullable <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public LocalDateTime getDateTimeNullable(String key)</code>
+        </div>
+        <div class="method-description">
+          日時取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>日時変換できない場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LocalDateTime</code> - 日時（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getDateTimeNullableOrDefault">
+        <h3 class="method-name">getDateTimeNullableOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public LocalDateTime getDateTimeNullableOrDefault(String key, LocalDateTime notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          日時取得（<code>null</code> 有り）.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>日時変換できない場合、例外エラーを投げる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>LocalDateTime</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LocalDateTime</code> - 日時（<code>null</code> 有り）</p>
+        </div>
+      </div>
+      <div class="method" id="getBoolean">
+        <h3 class="method-name">getBoolean <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean getBoolean(String key)</code>
+        </div>
+        <div class="method-description">
+          真偽値取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認する。</li>
+<li>真偽値の評価は <code>ValUtil.isTrue(String)</code> に準拠する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 真偽値</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="ValUtil.html#isTrue">ValUtil#isTrue(String)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="getBooleanOrDefault">
+        <h3 class="method-name">getBooleanOrDefault <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean getBooleanOrDefault(String key, boolean notExistsValue)</code>
+        </div>
+        <div class="method-description">
+          真偽値取得.<br>
+<ul>
+<li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
+<li>値の評価は <code>ValUtil.isTrue(String)</code> に準拠する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー</td>
+              </tr>
+              <tr>
+                <td><code>notExistsValue</code></td>
+                <td><code>boolean</code></td>
+                <td>非存在時戻値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 真偽値</p>
+        </div>
+      </div>
+      <div class="method" id="putNull">
+        <h3 class="method-name">putNull <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putNull(String key)</code>
+        </div>
+        <div class="method-description">
+          <code>null</code> 格納.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putNullForce">
+        <h3 class="method-name">putNullForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putNullForce(String key)</code>
+        </div>
+        <div class="method-description">
+          <code>null</code> 格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, String value)</code>
+        </div>
+        <div class="method-description">
+          文字列格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, String)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>String</code></td>
+                <td>値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, BigDecimal value)</code>
+        </div>
+        <div class="method-description">
+          数値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, BigDecimal)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>BigDecimal</code></td>
+                <td>数値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, int value)</code>
+        </div>
+        <div class="method-description">
+          int 値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, int)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>int</code></td>
+                <td>int 値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, long value)</code>
+        </div>
+        <div class="method-description">
+          long 値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, long)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>long</code></td>
+                <td>long 値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, LocalDate value)</code>
+        </div>
+        <div class="method-description">
+          日付格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, LocalDate)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>LocalDate</code></td>
+                <td>日付</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, LocalDateTime value)</code>
+        </div>
+        <div class="method-description">
+          日時格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, LocalDateTime)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>LocalDateTime</code></td>
+                <td>日時</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, java.util.Date value)</code>
+        </div>
+        <div class="method-description">
+          UTIL日付格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, java.util.Date)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>java.util.Date</code></td>
+                <td>日付（<code>java.sql.Date</code> 含む）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, java.sql.Timestamp value)</code>
+        </div>
+        <div class="method-description">
+          SQLタイムスタンプ格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, java.sql.Timestamp)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>java.sql.Timestamp</code></td>
+                <td>タイムスタンプ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="put">
+        <h3 class="method-name">put <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String put(String key, boolean value)</code>
+        </div>
+        <div class="method-description">
+          真偽値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putForce(String, boolean)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>boolean</code></td>
+                <td>真偽値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, String value)</code>
+        </div>
+        <div class="method-description">
+          文字列格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>String</code></td>
+                <td>値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, BigDecimal value)</code>
+        </div>
+        <div class="method-description">
+          数値格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>BigDecimal</code></td>
+                <td>数値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, int value)</code>
+        </div>
+        <div class="method-description">
+          int 値格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>int</code></td>
+                <td>int 値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, long value)</code>
+        </div>
+        <div class="method-description">
+          long 値格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>long</code></td>
+                <td>long 値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, LocalDate value)</code>
+        </div>
+        <div class="method-description">
+          日付格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>LocalDate</code></td>
+                <td>日付</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, LocalDateTime value)</code>
+        </div>
+        <div class="method-description">
+          日時格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>LocalDateTime</code></td>
+                <td>日時</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, java.util.Date value)</code>
+        </div>
+        <div class="method-description">
+          UTIL日付格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>java.util.Date</code></td>
+                <td>日付（<code>java.sql.Date</code> 含む）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, java.sql.Timestamp value)</code>
+        </div>
+        <div class="method-description">
+          SQLタイムスタンプ格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>java.sql.Timestamp</code></td>
+                <td>タイムスタンプ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putForce">
+        <h3 class="method-name">putForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String putForce(String key, boolean value)</code>
+        </div>
+        <div class="method-description">
+          真偽値格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>boolean</code></td>
+                <td>真偽値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 前回の格納文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putAll">
+        <h3 class="method-name">putAll <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public void putAll(Map&lt;? extends String, ? extends String&gt; map)</code>
+        </div>
+        <div class="method-description">
+          全値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーが含まれる場合は <code>#putAllForce(Map)</code> で格納する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>map</code></td>
+                <td><code>Map&lt;? extends String, ? extends String&gt;</code></td>
+                <td>マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putAllForce">
+        <h3 class="method-name">putAllForce <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public void putAllForce(Map&lt;? extends String, ? extends String&gt; map)</code>
+        </div>
+        <div class="method-description">
+          全値格納（上書き許可）.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>map</code></td>
+                <td><code>Map&lt;? extends String, ? extends String&gt;</code></td>
+                <td>マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="size">
+        <h3 class="method-name">size <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public int size()</code>
+        </div>
+        <div class="method-description">
+          マップサイズ取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - マップサイズ</p>
+        </div>
+      </div>
+      <div class="method" id="isEmpty">
+        <h3 class="method-name">isEmpty <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean isEmpty()</code>
+        </div>
+        <div class="method-description">
+          マップゼロ件判断.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - ゼロ件の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="containsKey">
+        <h3 class="method-name">containsKey <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean containsKey(Object key)</code>
+        </div>
+        <div class="method-description">
+          マップキー存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>Object</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="containsValue">
+        <h3 class="method-name">containsValue <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean containsValue(Object value)</code>
+        </div>
+        <div class="method-description">
+          マップ値存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>Object</code></td>
+                <td>値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="remove">
+        <h3 class="method-name">remove <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public String remove(Object key)</code>
+        </div>
+        <div class="method-description">
+          マップ値削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>Object</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 削除された値</p>
+        </div>
+      </div>
+      <div class="method" id="clear">
+        <h3 class="method-name">clear <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public void clear()</code>
+        </div>
+        <div class="method-description">
+          クリア.
+  
+        </div>
+      </div>
+      <div class="method" id="keySet">
+        <h3 class="method-name">keySet <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public Set&lt;String&gt; keySet()</code>
+        </div>
+        <div class="method-description">
+          キーセット取得.<br>
+<ul>
+<li>削除されると内部の整合性が崩れるため読取専用としている。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Set&lt;String&gt;</code> - キーセット</p>
+        </div>
+      </div>
+      <div class="method" id="values">
+        <h3 class="method-name">values <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public Collection&lt;String&gt; values()</code>
+        </div>
+        <div class="method-description">
+          値セット取得.<br>
+<ul>
+<li>削除されると内部の整合性が崩れるため読取専用としている。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Collection&lt;String&gt;</code> - 値セット</p>
+        </div>
+      </div>
+      <div class="method" id="entrySet">
+        <h3 class="method-name">entrySet <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public Set&lt;Entry&lt;String, String&gt;&gt; entrySet()</code>
+        </div>
+        <div class="method-description">
+          エントリーセット取得.<br>
+<ul>
+<li>削除されると内部の整合性が崩れるため読取専用としている。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Set&lt;Entry&lt;String, String&gt;&gt;</code> - エントリーセット</p>
+        </div>
+      </div>
+      <div class="method" id="getList">
+        <h3 class="method-name">getList</h3>
+        <div class="method-signature">
+          <code>public List&lt;String&gt; getList(String key)</code>
+        </div>
+        <div class="method-description">
+          文字列リスト取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKeyList(String)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はサイズゼロのリストを返す。（<code>null</code> は返らない）</li>
+<li>取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>List&lt;String&gt;</code> - 文字列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putList">
+        <h3 class="method-name">putList</h3>
+        <div class="method-signature">
+          <code>public List&lt;String&gt; putList(String key, List&lt;String&gt; list)</code>
+        </div>
+        <div class="method-description">
+          文字列リスト格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putListForce(String, List)</code> で格納する。</li>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>list</code></td>
+                <td><code>List&lt;String&gt;</code></td>
+                <td>文字列リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>List&lt;String&gt;</code> - 前回の格納文字列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putListForce">
+        <h3 class="method-name">putListForce</h3>
+        <div class="method-signature">
+          <code>public List&lt;String&gt; putListForce(String key, List&lt;String&gt; list)</code>
+        </div>
+        <div class="method-description">
+          文字列リスト格納（上書き許可）.<br>
+<ul>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>list</code></td>
+                <td><code>List&lt;String&gt;</code></td>
+                <td>文字列リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>List&lt;String&gt;</code> - 前回の格納文字列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="getNest">
+        <h3 class="method-name">getNest</h3>
+        <div class="method-signature">
+          <code>public Io getNest(String key)</code>
+        </div>
+        <div class="method-description">
+          ネストマップ取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKeyNest(String)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はサイズゼロのマップを返す。（<code>null</code> は返らない）</li>
+<li>取得したマップに要素を追加しても本クラスで保持しているマップに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいマップを扱ったり、マップの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Io</code> - ネストマップ</p>
+        </div>
+      </div>
+      <div class="method" id="putNest">
+        <h3 class="method-name">putNest</h3>
+        <div class="method-signature">
+          <code>public Io putNest(String key, Io nest)</code>
+        </div>
+        <div class="method-description">
+          ネストマップ格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putNestForce(String, Nest)</code> で格納する。</li>
+<li>格納した元のマップに要素を追加しても本クラスで保持しているマップに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいマップを扱ったり、マップの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>nest</code></td>
+                <td><code>Io</code></td>
+                <td>ネストマップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Io</code> - 前回の格納ネストマップ</p>
+        </div>
+      </div>
+      <div class="method" id="putNestForce">
+        <h3 class="method-name">putNestForce</h3>
+        <div class="method-signature">
+          <code>public Io putNestForce(String key, Io nest)</code>
+        </div>
+        <div class="method-description">
+          ネストマップ格納（上書き許可）.<br>
+<ul>
+<li>格納した元のマップに要素を追加しても本クラスで保持しているマップに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいマップを扱ったり、マップの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>nest</code></td>
+                <td><code>Io</code></td>
+                <td>ネストマップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Io</code> - 前回の格納ネストマップ</p>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#putNest">#putNest(String, Nest)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="getRows">
+        <h3 class="method-name">getRows</h3>
+        <div class="method-signature">
+          <code>public IoRows getRows(String key)</code>
+        </div>
+        <div class="method-description">
+          複数行リスト取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKeyRows(String)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はサイズゼロのリストを返す。（<code>null</code> は返らない）</li>
+<li>取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putRows">
+        <h3 class="method-name">putRows</h3>
+        <div class="method-signature">
+          <code>public IoRows putRows(String key, Collection&lt;? extends Map&lt;? extends String, ? extends String&gt;&gt; rows)</code>
+        </div>
+        <div class="method-description">
+          複数行リスト格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putRowsForce(String, List)</code> で格納する。</li>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>rows</code></td>
+                <td><code>Collection&lt;? extends Map&lt;? extends String, ? extends String&gt;&gt;</code></td>
+                <td>複数行リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 前回の格納複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putRowsForce">
+        <h3 class="method-name">putRowsForce</h3>
+        <div class="method-signature">
+          <code>public IoRows putRowsForce(String key, Collection&lt;? extends IoItems&gt; rows)</code>
+        </div>
+        <div class="method-description">
+          複数行リスト格納（上書き許可）.<br>
+<ul>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>rows</code></td>
+                <td><code>Collection&lt;? extends IoItems&gt;</code></td>
+                <td>複数行リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 前回の格納複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="getArys">
+        <h3 class="method-name">getArys</h3>
+        <div class="method-signature">
+          <code>public IoArrays getArys(String key)</code>
+        </div>
+        <div class="method-description">
+          配列リスト取得.<br>
+<ul>
+<li>存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKeyArys(String)</code> にて事前に存在確認する。</li>
+<li>格納されている値が <code>null</code> の場合はサイズゼロのリストを返す。（<code>null</code> は返らない）</li>
+<li>取得したリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoArrays</code> - 配列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putArys">
+        <h3 class="method-name">putArys</h3>
+        <div class="method-signature">
+          <code>public IoArrays putArys(String key, Collection&lt;? extends List&lt;String&gt;&gt; arys)</code>
+        </div>
+        <div class="method-description">
+          配列リスト格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値格納する場合は <code>#putArysForce(String, List)</code> で格納する。</li>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>arys</code></td>
+                <td><code>Collection&lt;? extends List&lt;String&gt;&gt;</code></td>
+                <td>配列リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoArrays</code> - 前回の格納配列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putArysForce">
+        <h3 class="method-name">putArysForce</h3>
+        <div class="method-signature">
+          <code>public IoArrays putArysForce(String key, Collection&lt;? extends List&lt;String&gt;&gt; arys)</code>
+        </div>
+        <div class="method-description">
+          配列リスト格納（上書き許可）.<br>
+<ul>
+<li>格納した元のリストに要素を追加しても本クラスで保持しているリストに影響しない。（ディープコピーとなる）</li>
+<li>サイズが大きいリストを扱ったり、リストの格納と取得を繰り返したりすると性能が悪化する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+              <tr>
+                <td><code>arys</code></td>
+                <td><code>Collection&lt;? extends List&lt;String&gt;&gt;</code></td>
+                <td>配列リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoArrays</code> - 前回の格納配列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="createUrlParam">
+        <h3 class="method-name">createUrlParam</h3>
+        <div class="method-signature">
+          <code>public String createUrlParam()</code>
+        </div>
+        <div class="method-description">
+          URLパラメーター（URLの?より後ろの部分）作成.<br>
+<ul>
+<li>文字列リストはカンマ区切りのパラメーターとなる。</li>
+<li>ネストマップと複数行リスト、配列リストは出力されない。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - URLエンコードされたGETパラメーター</p>
+        </div>
+      </div>
+      <div class="method" id="createJson">
+        <h3 class="method-name">createJson</h3>
+        <div class="method-signature">
+          <code>public String createJson()</code>
+        </div>
+        <div class="method-description">
+          JSON作成.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - JSON文字列</p>
+        </div>
+      </div>
+      <div class="method" id="createJsonWithMsg">
+        <h3 class="method-name">createJsonWithMsg</h3>
+        <div class="method-signature">
+          <code>public String createJsonWithMsg(Map&lt;String, String&gt; msgTextMap)</code>
+        </div>
+        <div class="method-description">
+          メッセージ付き JSON作成.
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>msgTextMap</code></td>
+                <td><code>Map&lt;String, String&gt;</code></td>
+                <td>メッセージテキストマップ＜メッセージID, メッセージテキスト＞</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - JSON文字列</p>
+        </div>
+      </div>
+      <div class="method" id="putAll">
+        <h3 class="method-name">putAll</h3>
+        <div class="method-signature">
+          <code>public void putAll(Io map)</code>
+        </div>
+        <div class="method-description">
+          全値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーが含まれる場合は <code>#putAllForce(Map)</code> で格納する。</li>
+<li>メッセージもコピーされる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>map</code></td>
+                <td><code>Io</code></td>
+                <td>入出力マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putAllForce">
+        <h3 class="method-name">putAllForce</h3>
+        <div class="method-signature">
+          <code>public void putAllForce(Io map)</code>
+        </div>
+        <div class="method-description">
+          全値格納（上書き許可）.
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>map</code></td>
+                <td><code>Io</code></td>
+                <td>入出力マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="#putAll">#putAll(Io)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method" id="putAllByUrlParam">
+        <h3 class="method-name">putAllByUrlParam</h3>
+        <div class="method-signature">
+          <code>public int putAllByUrlParam(String url)</code>
+        </div>
+        <div class="method-description">
+          URLパラメーター（URLの?より後ろの部分）値格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>url</code></td>
+                <td><code>String</code></td>
+                <td>URL全体 または URLパラメーター</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 格納パラメーター数</p>
+        </div>
+      </div>
+      <div class="method" id="putAllByJson">
+        <h3 class="method-name">putAllByJson</h3>
+        <div class="method-signature">
+          <code>public int putAllByJson(String json)</code>
+        </div>
+        <div class="method-description">
+          JSON格納.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>json</code></td>
+                <td><code>String</code></td>
+                <td>JSON文字列</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 格納項目数</p>
+        </div>
+      </div>
+      <div class="method" id="containsKeyList">
+        <h3 class="method-name">containsKeyList</h3>
+        <div class="method-signature">
+          <code>public boolean containsKeyList(String key)</code>
+        </div>
+        <div class="method-description">
+          文字列リストキー存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="removeList">
+        <h3 class="method-name">removeList</h3>
+        <div class="method-signature">
+          <code>public List&lt;String&gt; removeList(String key)</code>
+        </div>
+        <div class="method-description">
+          文字列リスト削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>List&lt;String&gt;</code> - 削除したリスト</p>
+        </div>
+      </div>
+      <div class="method" id="containsKeyNest">
+        <h3 class="method-name">containsKeyNest</h3>
+        <div class="method-signature">
+          <code>public boolean containsKeyNest(String key)</code>
+        </div>
+        <div class="method-description">
+          ネストマップキー存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="removeNest">
+        <h3 class="method-name">removeNest</h3>
+        <div class="method-signature">
+          <code>public Io removeNest(String key)</code>
+        </div>
+        <div class="method-description">
+          ネストマップ削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Io</code> - 削除したネストマップ</p>
+        </div>
+      </div>
+      <div class="method" id="containsKeyRows">
+        <h3 class="method-name">containsKeyRows</h3>
+        <div class="method-signature">
+          <code>public boolean containsKeyRows(String key)</code>
+        </div>
+        <div class="method-description">
+          複数行リストキー存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="removeRows">
+        <h3 class="method-name">removeRows</h3>
+        <div class="method-signature">
+          <code>public IoRows removeRows(String key)</code>
+        </div>
+        <div class="method-description">
+          複数行リスト削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoRows</code> - 削除した複数行リスト</p>
+        </div>
+      </div>
+      <div class="method" id="containsKeyArys">
+        <h3 class="method-name">containsKeyArys</h3>
+        <div class="method-signature">
+          <code>public boolean containsKeyArys(String key)</code>
+        </div>
+        <div class="method-description">
+          配列リストキー存在確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="removeArys">
+        <h3 class="method-name">removeArys</h3>
+        <div class="method-signature">
+          <code>public IoArrays removeArys(String key)</code>
+        </div>
+        <div class="method-description">
+          配列リスト削除.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>key</code></td>
+                <td><code>String</code></td>
+                <td>キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>IoArrays</code> - 削除した配列リスト</p>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId, String[] replaceVals)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+              <tr>
+                <td><code>replaceVals</code></td>
+                <td><code>String[]</code></td>
+                <td>メッセージ内置換文字列（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId, String itemId)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+              <tr>
+                <td><code>itemId</code></td>
+                <td><code>String</code></td>
+                <td>対象項目ID（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId, String[] replaceVals, String itemId)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+              <tr>
+                <td><code>replaceVals</code></td>
+                <td><code>String[]</code></td>
+                <td>メッセージ内置換文字列（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>itemId</code></td>
+                <td><code>String</code></td>
+                <td>対象項目ID（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId, String itemId, String rowListId, int rowIndex)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+              <tr>
+                <td><code>itemId</code></td>
+                <td><code>String</code></td>
+                <td>対象項目ID（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>rowListId</code></td>
+                <td><code>String</code></td>
+                <td>行リストID（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>rowIndex</code></td>
+                <td><code>int</code></td>
+                <td>行インデックス（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="putMsg">
+        <h3 class="method-name">putMsg</h3>
+        <div class="method-signature">
+          <code>public void putMsg(MsgType type, String msgId, String[] replaceVals, String itemId, String rowListId, int rowIndex)</code>
+        </div>
+        <div class="method-description">
+          メッセージ追加.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>type</code></td>
+                <td><code>MsgType</code></td>
+                <td>メッセージタイプ</td>
+              </tr>
+              <tr>
+                <td><code>msgId</code></td>
+                <td><code>String</code></td>
+                <td>メッセージID</td>
+              </tr>
+              <tr>
+                <td><code>replaceVals</code></td>
+                <td><code>String[]</code></td>
+                <td>メッセージ内置換文字列（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>itemId</code></td>
+                <td><code>String</code></td>
+                <td>対象項目ID（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>rowListId</code></td>
+                <td><code>String</code></td>
+                <td>行リストID（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>rowIndex</code></td>
+                <td><code>int</code></td>
+                <td>行インデックス（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="hasMsg">
+        <h3 class="method-name">hasMsg</h3>
+        <div class="method-signature">
+          <code>public boolean hasMsg()</code>
+        </div>
+        <div class="method-description">
+          メッセージ保持判定.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - メッセージが保持されている場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="hasErrorMsg">
+        <h3 class="method-name">hasErrorMsg</h3>
+        <div class="method-signature">
+          <code>public boolean hasErrorMsg()</code>
+        </div>
+        <div class="method-description">
+          エラーメッセージ存在判定.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - エラーメッセージが存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="clearMsg">
+        <h3 class="method-name">clearMsg</h3>
+        <div class="method-signature">
+          <code>public void clearMsg()</code>
+        </div>
+        <div class="method-description">
+          メッセージクリア.
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

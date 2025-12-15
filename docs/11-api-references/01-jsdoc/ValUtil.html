@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ValUtil - JSDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>ValUtil</h1>
+      <p>フレームワーク部品 [onepg-utils.js]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>クラス名:</strong> ValUtil</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>値操作ユーティリティクラス.</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method">
+        <h3 id="isNull" class="method-name">isNull</h3>
+        <div class="method-signature">
+          <code>isNull(obj)</code>
+        </div>
+        <div class="method-description">
+          <code>null</code> チェック.<br>
+<ul>
+<li>Object が <code>null</code> かチェックする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - <code>null</code> の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isBlank" class="method-name">isBlank</h3>
+        <div class="method-signature">
+          <code>isBlank(str)</code>
+        </div>
+        <div class="method-description">
+          ブランクチェック.<br>
+<ul>
+<li>文字列が 半角スペースのみ／長さゼロ／<code>null</code> のいずれかかチェックする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>str</code></td>
+                <td><code>string</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - ブランクの場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="nvl" class="method-name">nvl</h3>
+        <div class="method-signature">
+          <code>nvl(value, rep)</code>
+        </div>
+        <div class="method-description">
+          <code>null</code> ブランク置換.<br>
+<ul>
+<li>文字列が <code>null</code> の場合はブランクまたは置き換え文字を返す。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>チェック対象</td>
+              </tr>
+              <tr>
+                <td><code>[rep]</code></td>
+                <td><code>string</code></td>
+                <td>置き換え文字（省略可能）省略した場合はブランクを返す。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - <code>null</code> の場合は ブランクまたは置き換え文字</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="bvl" class="method-name">bvl</h3>
+        <div class="method-signature">
+          <code>bvl(value, rep)</code>
+        </div>
+        <div class="method-description">
+          ブランク置換.<br>
+<ul>
+<li>文字列がブランクの場合は置き換え文字を返す。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>チェック対象</td>
+              </tr>
+              <tr>
+                <td><code>rep</code></td>
+                <td><code>string</code></td>
+                <td>置換文字</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - ブランクの場合は置き換え文字</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="substring" class="method-name">substring</h3>
+        <div class="method-signature">
+          <code>substring(value, beginIndex, endIndex)</code>
+        </div>
+        <div class="method-description">
+          文字列安全切り取り.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>対象文字列</td>
+              </tr>
+              <tr>
+                <td><code>[beginIndex]</code></td>
+                <td><code>number</code></td>
+                <td>開始インデックス（省略可能）省略値 0</td>
+              </tr>
+              <tr>
+                <td><code>[endIndex]</code></td>
+                <td><code>number</code></td>
+                <td>終了インデックス（省略可能）省略値文字列長</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - 切り取り文字列</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="equals" class="method-name">equals</h3>
+        <div class="method-signature">
+          <code>equals(val1, val2)</code>
+        </div>
+        <div class="method-description">
+          文字列比較.<br>
+<ul>
+<li><code>null</code> は空文字として比較する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>val1</code></td>
+                <td><code>string</code></td>
+                <td>比較対象その1</td>
+              </tr>
+              <tr>
+                <td><code>val2</code></td>
+                <td><code>string</code></td>
+                <td>比較対象その2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 同値の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="equalsObj" class="method-name">equalsObj</h3>
+        <div class="method-signature">
+          <code>equalsObj(obj1, obj2, ignoreKeys)</code>
+        </div>
+        <div class="method-description">
+          連想配列比較.<br>
+<ul>
+  <li>比較対象の両方に存在するキーの値を比較し、どちらか一方だけに存在するキーは比較対象外とする。</li>
+  <li>比較対象のどちらかが連想配列でない場合は「同値でない」と判断する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj1</code></td>
+                <td><code>Object</code></td>
+                <td>比較対象その1</td>
+              </tr>
+              <tr>
+                <td><code>obj2</code></td>
+                <td><code>Object</code></td>
+                <td>比較対象その2</td>
+              </tr>
+              <tr>
+                <td><code>ignoreKeys</code></td>
+                <td><code>string</code></td>
+                <td>比較対象外キー（複数指定可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 内容が同値の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isEmpty" class="method-name">isEmpty</h3>
+        <div class="method-signature">
+          <code>isEmpty(obj)</code>
+        </div>
+        <div class="method-description">
+          空チェック.<br>
+<ul>
+  <li><code>null</code> が渡された場合は <code>true</code> を返す。</li>
+  <li>文字列が渡された場合は isBlank() と同じ結果を返す。</li>
+  <li>配列が渡された場合は長さゼロかチェックする。</li>
+  <li>HTML要素取得結果が渡された場合は長さゼロかチェックする。</li>
+  <li>連想配列が渡された場合はキー配列の長さゼロかチェックする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 空の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isNum" class="method-name">isNum</h3>
+        <div class="method-signature">
+          <code>isNum(value, minusNg, decNg)</code>
+        </div>
+        <div class="method-description">
+          数値チェック.<br>
+<ul>
+<li>文字列が数値として有効かチェックする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>チェック対象</td>
+              </tr>
+              <tr>
+                <td><code>[minusNg]</code></td>
+                <td><code>boolean</code></td>
+                <td>マイナス値をNGとする場合 <code>true</code>（省略可能）</td>
+              </tr>
+              <tr>
+                <td><code>[decNg]</code></td>
+                <td><code>boolean</code></td>
+                <td>小数をNGとする場合 <code>true</code>（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 有効な場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isDate" class="method-name">isDate</h3>
+        <div class="method-signature">
+          <code>isDate(yyyymmdd)</code>
+        </div>
+        <div class="method-description">
+          実在日チェック.<br>
+<ul>
+<li>文字列が日付として有効かチェックする。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>yyyymmdd</code></td>
+                <td><code>string</code></td>
+                <td>チェック対象（YYYYMMDD）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 有効な場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isTrue" class="method-name">isTrue</h3>
+        <div class="method-signature">
+          <code>isTrue(val)</code>
+        </div>
+        <div class="method-description">
+          真偽値チェック.<br>
+<ul>
+<li>文字列が真偽値「真」とみなす値かチェックする。</li>
+<li>下記の評価をおこなう。
+  <ol>
+    <li>"1", "true", "yes", "on"（すべて半角）は <code>true</code>。</li>
+    <li><code>null</code> またはブランクは <code>false</code> を含み、上記以外は <code>false</code>。</li>
+    <li>大文字小文字を区別しない。</li>
+    <li>左右の半角ブランクは無視する。</li>
+    <li>boolean値はそのまま返す。</li>
+  </ol>
+</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>val</code></td>
+                <td><code>string|boolean</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 真偽値「真」とみなす場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="toDate" class="method-name">toDate</h3>
+        <div class="method-signature">
+          <code>toDate(yyyymmdd)</code>
+        </div>
+        <div class="method-description">
+          文字列→Dateオブジェクト変換.<br>
+<ul>
+<li>日付文字列を Dateオブジェクトに変換する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>yyyymmdd</code></td>
+                <td><code>string</code></td>
+                <td>変換対象（YYYYMMDD）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Date</code> - Dateオブジェクト</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="dateTo" class="method-name">dateTo</h3>
+        <div class="method-signature">
+          <code>dateTo(dateObj)</code>
+        </div>
+        <div class="method-description">
+          Dateオブジェクト→文字列変換.<br>
+<ul>
+<li>Dateオブジェクトを日付文字列に変換する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>dateObj</code></td>
+                <td><code>Date</code></td>
+                <td>変換対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - 日付文字列（YYYYMMDD）</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isAry" class="method-name">isAry</h3>
+        <div class="method-signature">
+          <code>isAry(obj)</code>
+        </div>
+        <div class="method-description">
+          配列チェック.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 配列の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="isObj" class="method-name">isObj</h3>
+        <div class="method-signature">
+          <code>isObj(obj)</code>
+        </div>
+        <div class="method-description">
+          連想配列チェック.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>チェック対象</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 連想配列の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="lpad" class="method-name">lpad</h3>
+        <div class="method-signature">
+          <code>lpad(value, pad, len)</code>
+        </div>
+        <div class="method-description">
+          左文字詰め.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>処理対象</td>
+              </tr>
+              <tr>
+                <td><code>pad</code></td>
+                <td><code>string</code></td>
+                <td>詰める文字</td>
+              </tr>
+              <tr>
+                <td><code>len</code></td>
+                <td><code>number</code></td>
+                <td>詰めた後の文字長さ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - 左文字詰め後の文字列</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="rpad" class="method-name">rpad</h3>
+        <div class="method-signature">
+          <code>rpad(value, pad, len)</code>
+        </div>
+        <div class="method-description">
+          右文字詰め.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td>処理対象</td>
+              </tr>
+              <tr>
+                <td><code>pad</code></td>
+                <td><code>string</code></td>
+                <td>詰める文字</td>
+              </tr>
+              <tr>
+                <td><code>len</code></td>
+                <td><code>number</code></td>
+                <td>詰めた後の文字長さ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - 右文字詰め後の文字列</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="toType" class="method-name">toType</h3>
+        <div class="method-signature">
+          <code>toType(obj)</code>
+        </div>
+        <div class="method-description">
+          オブジェクト型取得.<br>
+<ul>
+<li>typeof では <code>null</code> や配列も 'object' となるので詳細な判断が必要な場合に使用する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>オブジェクト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>string</code> - 型文字列 'undefined', 'null', 'boolean', 'number', 'string', 'array', 'object' など</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JSDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,697 @@
+@charset "UTF-8";
+
+/**
+ * フレームワーク基本CSSスタイルシート 目次.<br>
+ * <ul>
+ * <li>CSSクラス一覧</li>
+ * <li>ページ全体レイアウト（ヘッダー・フッター固定）</li>
+ * <li>グリッドレイアウト（列12分割）</li>
+ * <li>フォーム入力要素スタイル</li>
+ * <li>テーブルスタイル</li>
+ * <li>ユーティリティスタイル</li>
+ * <li>メッセージ表示／項目ハイライトスタイル</li>
+ * </ul>
+ */
+
+/**
+ * CSSクラス一覧.<br>
+ * <ul>
+ * <li><code>div.grid-row</code>：グリッド行要素</li>
+ * <li><code>div.grid-col-1</code>：グリッド列要素 幅1/12</li>
+ * <li><code>div.grid-col-2</code>：グリッド列要素 幅2/12</li>
+ * <li><code>div.grid-col-3</code>：グリッド列要素 幅3/12</li>
+ * <li><code>div.grid-col-4</code>：グリッド列要素 幅4/12</li>
+ * <li><code>div.grid-col-5</code>：グリッド列要素 幅5/12</li>
+ * <li><code>div.grid-col-6</code>：グリッド列要素 幅6/12</li>
+ * <li><code>div.grid-col-7</code>：グリッド列要素 幅7/12</li>
+ * <li><code>div.grid-col-8</code>：グリッド列要素 幅8/12</li>
+ * <li><code>div.grid-col-9</code>：グリッド列要素 幅9/12</li>
+ * <li><code>div.grid-col-10</code>：グリッド列要素 幅10/12</li>
+ * <li><code>div.grid-col-11</code>：グリッド列要素 幅11/12</li>
+ * <li><code>div.grid-col-12</code>：グリッド列要素 幅12/12</li>
+ * <li><code>div.item-head</code>：グリッドセル内の項目ヘッダ要素</li>
+ * <li><code>div.item-body</code>：グリッドセル内の項目ボディ要素</li>
+ * <li><code>div.table</code>：テーブルを囲む要素</li>
+ * <li><code>.align-left</code>：テキスト左寄せ</li>
+ * <li><code>.align-center</code>：テキスト中央寄せ</li>
+ * <li><code>.align-right</code>：テキスト右寄せ</li>
+ * <li><code>.danger</code>：警告色で表示（削除ボタンなど）</li>
+ * <li><code>a.button</code>：リンク（&lt;a&gt;）をボタン風に表示</li>
+ * </ul>
+ */
+
+/* ***** 定数 ***** */
+:root {
+  /* 全体行高さ */
+  --onepg-base--line-height--all: 1.5;
+  /* セクション左右余白 */
+  --onepg-base--spacing--section-lr: 1.5rem;
+  /* セクション間上下余白 */
+  --onepg-base--spacing--section-tb: 1rem;
+  /* ヘッダーフッターセクション間上下余白 */
+  --onepg-base--spacing--section-tb-header-footer: 0.5rem;
+  /* 入力項目高さ */
+  --onepg-base--height--inputitem: 2rem;
+  /* 入力項目枠線幅 */
+  --onepg-base--border-width--inputitem: 1px;
+  /* 計算済入力項目行高さ */
+  --onepg-base--line-height--inputitem-calc: calc(var(--onepg-base--height--inputitem) - var(--onepg-base--border-width--inputitem) * 2);
+  /* 入力項目枠内左右余白 */
+  --onepg-base--spacing--inputitem-lr: 0.25rem;
+  /* 入力項目枠角丸め */
+  --onepg-base--radius--inputitem: 4px;
+  /* ボタン枠角丸め */
+  --onepg-base--radius--button: calc(var(--onepg-base--height--inputitem) / 2);
+  /* ボタン枠内左右余白 */
+  --onepg-base--spacing--button-lr: var(--onepg-base--radius--button);
+  /* 項目左右余白 */
+  --onepg-base--spacing--item-lr: 0.25rem;
+  /* グリッド行間余白 */
+  --onepg-base--spacing--grid-rows: 0.75rem;
+  /* グリッド列間余白 */
+  --onepg-base--spacing--grid-cols: 0.25rem;
+  --onepg-base--spacing--grid-cols-negative: calc(var(--onepg-base--spacing--grid-cols) * -1);
+  /* 背景色 */
+  --onepg-base--color--bg: #e5e4e6;
+  /* ヘッダー・フッター背景色 */
+  --onepg-base--color--bg-header-footer: #eae5e3;
+  /* テーブルストライプ背景色 */
+  --onepg-base--color--bg-stripe: #dddcd6;
+  /* テキスト色 */
+  --onepg-base--color--text: #2e2930;
+  /* 非活性テキスト色 */
+  --onepg-base--color--text-disabled: #9ea1a3;
+  /* 警告テキスト色 */
+  --onepg-base--color--text-danger: #e83929;
+  /* 入力項目背景色 */
+  --onepg-base--color--input-bg: #f8fbf8;
+  /* 枠線色 */
+  --onepg-base--color--border: #c8c2c6;
+  /* 非活性背景色 */
+  --onepg-base--color--input-bg-disabled: transparent;
+  /* ボタン背景色 */
+  --onepg-base--color--button-bg: #595857;
+  /* 危険ボタン色 */
+  --onepg-base--color--button-bg-danger: #d3381c;
+  /* ボタン枠線色 */
+  --onepg-base--color--button-border: var(--onepg-base--color--border);
+  /* ボタン非活性背景色 */
+  --onepg-base--color--button-bg-disabled: var(--onepg-base--color--button-border);
+  /* ボタン非活性枠線色 */
+  --onepg-base--color--button-border-disabled: #dcd6d9;
+  /* ボタンテキスト色 */
+  --onepg-base--color--button-text: #fffffc;
+  /* テーブル罫線色 */
+  --onepg-base--color--table-border: #a89dac;
+  /* フォーカス枠線色 */
+  --onepg-base--color--focus: #2ca9e1;
+  
+  /* メッセージ表示エリア左右余白 */
+  --onepg-base--spacing--msg-lr: 0.5rem;
+  /* 情報メッセージ背景色 */
+  --onepg-base--color--info-msg-bg: #bce2e8;
+  /* 警告メッセージ背景色 */
+  --onepg-base--color--warn-msg-bg: #f8e58c;
+  /* エラーメッセージ背景色 */
+  --onepg-base--color--err-msg-bg: #eebbcb;
+  /* 情報項目背景色 */
+  --onepg-base--color--info-item-bg: #bce2e8;
+  /* 警告項目背景色 */
+  --onepg-base--color--warn-item-bg: #f8e58c;
+  /* エラー項目背景色 */
+  --onepg-base--color--err-item-bg: #eebbcb;
+
+  /* フォーカス影 */
+  --onepg-base--shadow--focus: 0 0 0 2px var(--onepg-base--color--focus);
+  /* ヘッダー・フッター固定用影 */
+  --onepg-base--shadow--header-footer: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ***** CSSリセット ***** */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* フォント継承 */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: var(--onepg-base--color--text);
+}
+
+/**
+ * ページ全体レイアウト.<br>
+ * <ul>
+ * <li><code>&lt;header&gt;</code> と <code>&lt;footer&gt;</code> は上部と下部に固定表示する。</li>
+ * <li><code>&lt;main&gt;</code> は <code>&lt;header&gt;</code> と <code>&lt;footer&gt;</code> 以外の残りの高さを全て使用して表示する。</li>
+ * <li><code>&lt;section&gt;</code> はページ左右余白とセクション間上下余白を設ける。上下余白を無くしたい場合は <code>&lt;section&gt;</code> を使わないこと。</li>
+ * </ul>
+ * <pre>［例］<code>
+ * &lt;body&gt;
+ *   &lt;header&gt;
+ *     &lt;section&gt;固定ヘッダー&lt;/section&gt;
+ *   &lt;/header&gt;
+ *   &lt;main&gt;
+ *     &lt;section&gt;メインコンテンツ&lt;/section&gt;
+ *   &lt;/main&gt;
+ *   &lt;footer&gt;
+ *     &lt;section&gt;固定フッター&lt;/section&gt;
+ *   &lt;/footer&gt;
+ * &lt;/body&gt;
+ * </code></pre>
+ */
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-size: 16px;
+  line-height: var(--onepg-base--line-height--all);
+  background-color: var(--onepg-base--color--bg);
+  color: var(--onepg-base--color--text);
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* ヘッダー・フッター固定 */
+  height: 100%;
+}
+header,
+main,
+footer {
+  width: 100%;
+}
+
+/* ***** ヘッダー・フッター固定 ***** */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  flex: 0 0 auto; /* 内容に応じた高さ */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--onepg-base--color--bg-header-footer);
+  border-bottom: 1px solid var(--onepg-base--color--border);
+  box-shadow: var(--onepg-base--shadow--header-footer);
+}
+main {
+  flex: 1 1 auto; /* 残りの高さを全て使用 */
+  overflow-y: visible;
+}
+footer {
+  flex: 0 0 auto; /* 内容に応じた高さ */
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+  background-color: var(--onepg-base--color--bg-header-footer);
+  border-top: 1px solid var(--onepg-base--color--border);
+  box-shadow: var(--onepg-base--shadow--header-footer);
+}
+
+/* ***** セクションスタイル ***** */
+main > section {
+  margin-left: var(--onepg-base--spacing--section-lr);
+  margin-right: var(--onepg-base--spacing--section-lr);
+  margin-top: var(--onepg-base--spacing--section-tb);
+  margin-bottom: var(--onepg-base--spacing--section-tb);
+}
+main > section:first-child {
+  /* 最初のセクションはheader余白と合わせる */
+  margin-top: var(--onepg-base--spacing--section-tb-header-footer);
+}
+main > section:last-child {
+  /* 最後のセクションはfooter余白と合わせる */
+  margin-bottom: var(--onepg-base--spacing--section-tb-header-footer);
+}
+header > section,
+footer > section {
+  /* セクション間上下余白 */
+  margin: var(--onepg-base--spacing--section-tb-header-footer) var(--onepg-base--spacing--section-lr);
+}
+
+/**
+ * グリッドレイアウト（列12分割）.<br>
+ * <ul>
+ * <li>ページの横幅を12等分して要素を自由に配置できるレイアウト手法を用いる。</li>
+ * <li>行要素は <code>div.grid-row</code> で指定し、行ごとに列幅を指定する。</li>
+ * <li>列要素は <code>div.grid-col-1</code> ～ <code>div.grid-col-12</code> で指定し、末尾の数値が列幅を表す。</li>
+ * <li>列幅は <code>1</code> から <code>12</code> までの値を使用し、合計が 12 になるよう指定する。</li>
+ * <li>列幅は通常12等分した幅だが、スマートフォンサイズでは全幅に変更され、列が縦並び（行）に変更される。</li>
+ * <li>列内は通常横並び配置だが、タブレットサイズでは縦並びに変更される。</li>
+ * </ul>
+ * <pre>［例１］<code>
+ * &lt;div class="grid-row"&gt;
+ *   &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+ *   &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+ *   &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+ *   &lt;div class="grid-col-3"&gt;全幅の1/4幅&lt;/div&gt;
+ * &lt;/div&gt;
+ * </code>［例２］幅は統一されていなくてもよい<code>
+ * &lt;div class="grid-row"&gt;
+ *   &lt;div class="grid-col-6"&gt;全幅の1/2幅&lt;/div&gt;
+ *   &lt;div class="grid-col-4"&gt;全幅の1/3幅&lt;/div&gt;
+ *   &lt;div class="grid-col-2"&gt;全幅の1/6幅&lt;/div&gt;
+ * &lt;/div&gt;
+ * </code></pre>
+ */
+div.grid-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* ネガティブマージンでカラムの内側余白を相殺し、コンテナ端に揃える */
+  margin-left: var(--onepg-base--spacing--grid-cols-negative);
+  margin-right: var(--onepg-base--spacing--grid-cols-negative);
+}
+div.grid-row + div.grid-row {
+  /* 行間上下余白 */
+  margin-top: var(--onepg-base--spacing--grid-rows);
+}
+div.grid-row > div[class*="grid-col-"] {
+  flex: none;
+  /* カラムの内側余白 */
+  padding: 0 var(--onepg-base--spacing--grid-cols);
+  /* 横並び */
+  display: flex;
+  align-items: flex-start;
+}
+/* グリッドカラム幅 -Nの合計が 12 になれば約100%となる */
+div.grid-col-1 { width: 8.33333%; }
+div.grid-col-2 { width: 16.66667%; }
+div.grid-col-3 { width: 25%; }
+div.grid-col-4 { width: 33.33333%; }
+div.grid-col-5 { width: 41.66667%; }
+div.grid-col-6 { width: 50%; }
+div.grid-col-7 { width: 58.33333%; }
+div.grid-col-8 { width: 66.66667%; }
+div.grid-col-9 { width: 75%; }
+div.grid-col-10 { width: 83.33333%; }
+div.grid-col-11 { width: 91.66667%; }
+div.grid-col-12 { width: 100%; }
+
+/* ***** グリッドセル内レイアウト ***** */
+/* 項目ヘッダスタイル（幅はデフォルト値なしとしページごとに指定する） */
+div.grid-row > div[class*="grid-col-"] > div.item-head {
+  /* 内容に応じて自動調整 */
+  flex: 0 0 auto;
+  /* 右寄せ、右余白 */
+  text-align: right;
+  margin-right: var(--onepg-base--spacing--item-lr);
+}
+/* 項目ボディスタイル */
+div.grid-row > div[class*="grid-col-"] > div.item-body {
+  /* 項目ヘッダの残りの幅を使用 */
+  flex: 1;
+}
+
+/* ***** レスポンシブ ***** */
+/* タブレット以下 */
+@media screen and (max-width: 1024px) {
+  div.grid-row > div[class*="grid-col-"] {
+    /* グリッドセル内を縦並びに変更 */
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  div.grid-row > div[class*="grid-col-"] > div.item-head {
+    /* 左寄せ、右余白削除 */
+    text-align: left;
+    margin-right: 0;
+  }
+}
+
+/* スマートフォン */
+@media screen and (max-width: 768px) {
+  /* グリッドカラムを全幅に */
+  div.grid-col-1,
+  div.grid-col-2,
+  div.grid-col-3,
+  div.grid-col-4,
+  div.grid-col-5,
+  div.grid-col-6,
+  div.grid-col-7,
+  div.grid-col-8,
+  div.grid-col-9,
+  div.grid-col-10,
+  div.grid-col-11,
+  div.grid-col-12 {
+    width: 100%;
+  }
+  
+  /* 項目が縦並びになるので項目ごとに上下余白を開ける */
+  div.grid-row > div[class*="grid-col-"] + div[class*="grid-col-"] {
+    /* 行間上下余白 */
+    margin-top: var(--onepg-base--spacing--grid-rows);
+  }
+}
+
+
+/**
+ * フォーム入力要素スタイル.<br>
+ * <ul>
+ * <li>テキストボックス、セレクトボックス、テキストエリアなどのフォーム入力要素のスタイルを統一する。</li>
+ * <li>通常時、フォーカス時、非活性時のスタイルを統一する。</li>
+ * <li>フォーム入力要素と対になるラベルのスタイルを統一する。</li>
+ * <li>ラベル要素は <code>div.item-head</code> で囲み、フォーム入力要素は <code>div.item-body</code> で囲むことで、高さ調節およびページサイズに応じた並び方向の切り替えスタイルが適用される。
+ *   <pre>［例］
+ * <code>&lt;div class="item-head"&gt;&lt;label&gt;項目名&lt;/label&gt;&lt;/div&gt;
+ *  &lt;div class="item-body"&gt;&lt;input type="text"&gt;&lt;/div&gt;</code></pre></li>
+ * <li>チェックボックス、ラジオボタンは要素と値名称を <code>&lt;label&gt;</code> で囲む。
+ *   <pre>［例］<code>&lt;div class="item-body"&gt;&lt;label&gt;&lt;input type="checkbox"&gt;値名称&lt;/label&gt;&lt;/div&gt;</code></pre></li>
+ * </ul>
+ */
+div.item-head label {
+  font-weight: bold;
+  /* 改行付加 */
+  white-space: nowrap;
+  /* テキストボックス要素と文字位置を揃える */
+  display: inline-block;
+  margin-top: 0.25rem;
+  /* タブレット・スマートフォンで入力項目と縦並びになる場合に備え行高さは指定しない  */
+}
+/* タブレット以下 */
+@media screen and (max-width: 1024px) {
+  div.item-head label {
+    margin-top: 0;
+  }
+}
+/* チェックボックス、ラジオボタンを囲むラベルを想定 */
+div.item-body label,
+div.table table > tbody label {
+  /* 改行付加 */
+  white-space: nowrap;
+  /* テキストボックスと文字位置・高さを揃える */
+  display: inline-block;
+  line-height: var(--onepg-base--line-height--inputitem-calc);
+  vertical-align: middle;
+  height: var(--onepg-base--height--inputitem);
+  border-top: var(--onepg-base--border-width--inputitem) solid transparent;
+  border-bottom: var(--onepg-base--border-width--inputitem) solid transparent;
+
+  /* ラベル間の余白 */
+  margin-right: var(--onepg-base--spacing--item-lr);
+}
+input[type="text"],
+select {
+  background-color: var(--onepg-base--color--input-bg);
+  height: var(--onepg-base--height--inputitem);
+  /* 文字溢れがわかるよう右は余白無し */
+  padding-left: var(--onepg-base--spacing--inputitem-lr);
+  padding-right: 0;
+  border: var(--onepg-base--border-width--inputitem) solid var(--onepg-base--color--border);
+  border-radius: var(--onepg-base--radius--inputitem);
+}
+input[type="text"].align-right {
+  text-align: right;
+  /* 文字溢れがわかるよう左は余白無し */
+  padding-left: 0;
+  padding-right: var(--onepg-base--spacing--inputitem-lr);
+}
+/* 履歴選択背景色無効化 */
+input:-webkit-autofill {
+  /* 背景色はbox-shadowで上書き */
+  box-shadow: 0 0 0 1000px var(--onepg-base--color--input-bg) inset !important;
+   /* テキスト色 */
+  -webkit-text-fill-color: var(--onepg-base--color--text) !important;
+}
+select {
+  cursor: pointer;
+}
+textarea {
+  background-color: var(--onepg-base--color--input-bg);
+  line-height: var(--onepg-base--line-height--all);
+  padding: var(--onepg-base--spacing--inputitem-lr) var(--onepg-base--spacing--inputitem-lr);
+  border: var(--onepg-base--border-width--inputitem) solid var(--onepg-base--color--border);
+  border-radius: var(--onepg-base--radius--inputitem);
+}
+/* チェックボックス・ラジオボタン */
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: -0.08rem;
+  cursor: pointer;
+  /* テキストとの間は詰める */
+  margin-right: 0;
+  /* コントロール間はラベルのほうで余白設定 */
+  margin-left: 0;
+}
+/* チェックボックス・ラジオボタンを囲むラベル */
+label:has(>input[type="checkbox"]:not(:disabled)),
+label:has(>input[type="radio"]:not(:disabled)) {
+  cursor: pointer;
+}
+button {
+  /* テキストボックスと高さを揃える */
+  height: var(--onepg-base--height--inputitem);
+  border: var(--onepg-base--border-width--inputitem) solid var(--onepg-base--color--button-border);
+
+  padding: 0 var(--onepg-base--spacing--button-lr);
+  border-radius: var(--onepg-base--radius--button);
+  background-color: var(--onepg-base--color--button-bg);
+  color: var(--onepg-base--color--button-text);
+  cursor: pointer;
+}
+/* 入力エリア内のボタン要素の左右余白を除去 */
+div.item-body button,
+div.table table > tbody button {
+  /* １文字にしたときに枠が丸になる */
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+/* 非活性化 */
+input[type="text"]:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: var(--onepg-base--color--input-bg-disabled);
+  cursor: not-allowed;
+}
+/* チェックボックス・ラジオボタンの非活性化 */
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled {
+  cursor: not-allowed;
+}
+/* 非活性チェックボックス・ラジオボタンを囲むラベル */
+label:has(>input[type="checkbox"]:disabled),
+label:has(>input[type="radio"]:disabled) {
+  cursor: not-allowed;
+  color: var(--onepg-base--color--text-disabled);
+}
+button:disabled {
+  background-color: var(--onepg-base--color--button-bg-disabled);
+  border-color: var(--onepg-base--color--button-border-disabled);
+  cursor: not-allowed;
+}
+
+/* フォーカス状態 */
+input[type="text"]:focus,
+select:focus,
+textarea:focus,
+input[type="checkbox"]:focus,
+input[type="radio"]:focus,
+button:focus  {
+  outline: none;
+  box-shadow: var(--onepg-base--shadow--focus);
+}
+
+/**
+ * テーブルスタイル.<br>
+ * <ul>
+ * <li><code>&lt;table&gt;</code> のスタイルを統一する。</li>
+ * <li>テーブルは１行ごとにストライプ表示する。</li>
+ * <li><code>&lt;table&gt;</code> を <code>div.table</code> で囲むことでスタイルが適用される。
+ *   <pre>［例］
+ * <code>&lt;div class="table"&gt;&lt;table&gt;...省略...&lt;/table&gt;&lt;/div&gt;</code></pre></li>
+ * <li><code>&lt;th&gt;</code> は<code>&lt;thead&gt;</code>、<code>&lt;tr&gt;</code> は<code>&lt;tbody&gt;</code> で囲むことでスタイルが適用される。</li>
+ * <li><code>&lt;tbody&gt;</code> は１個、複数個のどちらでもよい。
+ *   <pre>［１個 例］<code>&lt;table&gt;...省略...&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</code>
+ * ［複数個 例］<code>&lt;table&gt;...省略...&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;tbody&gt;&lt;tr&gt;&lt;/tr&gt;&lt;tr&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</code></pre></li>
+ * </ul>
+ */
+div.table {
+  /* テーブルがページ幅を超えた場合はページ全体でスクロール */
+  overflow: visible;
+}
+div.table table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+div.table table > thead th,
+div.table table > thead td,
+div.table table > tbody td {
+  border: 0 solid var(--onepg-base--color--table-border);
+  padding: var(--onepg-base--spacing--inputitem-lr) var(--onepg-base--spacing--inputitem-lr);
+}
+div.table table > thead th {
+  font-weight: bold;
+  text-align: left;
+  border-bottom-width: 2px;
+}
+div.table table > thead td {
+  border-bottom-width: 2px;
+}
+div.table table > tbody td {
+  border-bottom-width: 1px;
+}
+
+/*
+ * テーブルストライプ 1<table>:1<tbody>（1レコード:1<tr>）
+ * <table><tbody><tr></tr><tr></tr><tr></tr></tbody></table> という構造を想定
+ */
+div.table table > tbody > tr + tr:nth-child(odd) {
+  background-color: var(--onepg-base--color--bg-stripe);
+}
+/*
+ * テーブルストライプ 1<table>:N<tbody>（1レコード:1<tbody>:N<tr>）
+ * <table><tbody><tr></tr><tr></tr></tbody><tbody><tr></tr><tr></tr></tbody></table> という構造を想定
+ */
+div.table table > tbody + tbody:nth-child(even) > tr {
+  background-color: var(--onepg-base--color--bg-stripe);
+}
+
+/**
+ * ユーティリティスタイル.<br>
+ * <ul>
+ * <li>このセクションでは頻繁に使用される汎用的なスタイルを提供する。</li>
+ * <li>テキスト文字寄せには下記クラスを設定する。
+ *   <ul>
+ *     <li>左寄せ：<code>.align-left</code></li>
+ *     <li>中央寄せ：<code>.align-center</code></li>
+ *     <li>右寄せ：<code>.align-right</code></li>
+ *   </ul></li>
+ * <li>操作を注意するべき要素に <code>.danger</code> を設定することで警告色で表示する（削除ボタンなどに使用）。</li>
+ * <li><code>&lt;a&gt;</code> に <code>.button</code> を設定することで見た目をボタン風に表示する。</li>
+ * </ul>
+ */
+/* テキスト配置 */
+.align-right {
+  text-align: right !important;
+}
+div.align-right {
+  justify-content: flex-end !important;
+}
+.align-center {
+  text-align: center !important;
+}
+div.align-center {
+  justify-content: center !important;
+}
+.align-left {
+  text-align: left !important;
+}
+div.align-left {
+  justify-content: flex-start !important;
+}
+/* 危険 */
+label.danger,
+td.danger,
+div.danger,
+span.danger,
+a.danger,
+li.danger,
+option.danger {
+  color: var(--onepg-base--color--text-danger) !important;
+}
+button.danger:not(:disabled) {
+  background-color: var(--onepg-base--color--button-bg-danger);
+}
+/* リンクボタン */
+a.button {
+  /* ボタンの形にするスタイル */
+  display: inline-block;
+  line-height: var(--onepg-base--line-height--inputitem-calc);
+  vertical-align: middle;
+  text-decoration: none;
+  text-align: center;
+  
+  /* 以下、通常ボタンと同じスタイル */
+  height: var(--onepg-base--height--inputitem);
+  border: var(--onepg-base--border-width--inputitem) solid var(--onepg-base--color--button-border);
+  padding: 0 var(--onepg-base--spacing--button-lr);
+  border-radius: var(--onepg-base--radius--button);
+  background-color: var(--onepg-base--color--button-bg);
+  color: var(--onepg-base--color--button-text) !important;
+  cursor: pointer;
+}
+a.button.danger {
+  background-color: var(--onepg-base--color--button-bg-danger) !important;
+}
+
+/**
+ * メッセージ表示／項目ハイライトスタイル.<br>
+ * <ul>
+ * <li>メッセージ表示エリアのHTMLは下記の形式で固定とする。<br>
+ *   <pre><code>&lt;section id="_msg"&gt;&lt;/section&gt;</code></pre></li>
+ * <li>JavaScript フレームワーク部品 <code>PageUtil#setMsg()</code> を呼び出すと、対象項目要素に下記クラスがセットされ、その項目がハイライト表示される。
+ *   <ul>
+ *     <li>情報（青系背景）： <code>.info-item</code></li>
+ *     <li>警告（黄系背景）： <code>.warn-item</code></li>
+ *     <li>エラー（赤系背景）： <code>.err-item</code></li>
+ * </ul></li>
+ * <li>ハイライト表示する項目は Java フレームワーク部品 <code>Io#putMsg()</code> の引数でメッセージ文言とともに指定する。</li>
+ * </ul>
+ */
+/*
+ * メッセージ表示エリア
+ * info-msg: 情報メッセージ（青系背景）
+ * warn-msg: 警告メッセージ（黄系背景）
+ * err-msg: エラーメッセージ（赤系背景）
+ */
+#_msg > ul {
+  display: block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#_msg > ul > li {
+  display: block;
+  width: 100%;
+  padding: 0 var(--onepg-base--spacing--msg-lr);
+}
+#_msg > ul > li:first-child {
+  padding-top: calc(var(--onepg-base--spacing--msg-lr) / 2);
+  border-top-left-radius: var(--onepg-base--spacing--msg-lr);
+  border-top-right-radius: var(--onepg-base--spacing--msg-lr);
+}
+#_msg > ul > li:last-child {
+  padding-bottom: calc(var(--onepg-base--spacing--msg-lr) / 2);
+  border-bottom-left-radius: var(--onepg-base--spacing--msg-lr);
+  border-bottom-right-radius: var(--onepg-base--spacing--msg-lr);
+}
+#_msg > ul > li.info-msg {
+  background-color: var(--onepg-base--color--info-msg-bg);
+}
+#_msg > ul > li.warn-msg {
+  background-color: var(--onepg-base--color--warn-msg-bg);
+}
+#_msg > ul > li.err-msg {
+  background-color: var(--onepg-base--color--err-msg-bg);
+}
+
+input[type="text"].info-item,
+select.info-item,
+textarea.info-item,
+/* チェックボックス・ラジオボタンを囲むラベル */
+label:has(>input[type="checkbox"].info-item),
+label:has(>input[type="radio"].info-item)  {
+  background-color: var(--onepg-base--color--info-item-bg) !important;
+}
+input[type="text"].warn-item,
+select.warn-item,
+textarea.warn-item,
+/* チェックボックス・ラジオボタンを囲むラベル */
+label:has(>input[type="checkbox"].warn-item),
+label:has(>input[type="radio"].warn-item)  {
+  background-color: var(--onepg-base--color--warn-item-bg) !important;
+}
+input[type="text"].err-item,
+select.err-item,
+textarea.err-item,
+/* チェックボックス・ラジオボタンを囲むラベル */
+label:has(>input[type="checkbox"].err-item),
+label:has(>input[type="radio"].err-item)  {
+  background-color: var(--onepg-base--color--err-item-bg) !important;
+}
+

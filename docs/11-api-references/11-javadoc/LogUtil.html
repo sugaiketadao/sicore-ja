@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogUtil - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>LogUtil</h1>
+      <p>フレームワーク部品 [com.onepg.util]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.util</p>
+        <p><strong>クラス名:</strong> LogUtil</p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>ログユーティリティクラス.
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="newLogWriter">
+        <h3 class="method-name">newLogWriter</h3>
+        <div class="method-signature">
+          <code>public LogWriter newLogWriter(Class&lt;?&gt; cls)</code>
+        </div>
+        <div class="method-description">
+          ログライターインスタンス生成.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>cls</code></td>
+                <td><code>Class&lt;?&gt;</code></td>
+                <td>ログ対象クラス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LogWriter</code> - ログライターインスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="newLogWriter">
+        <h3 class="method-name">newLogWriter</h3>
+        <div class="method-signature">
+          <code>public LogWriter newLogWriter(Class&lt;?&gt; cls, String traceCode)</code>
+        </div>
+        <div class="method-description">
+          ログライターインスタンス生成.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>cls</code></td>
+                <td><code>Class&lt;?&gt;</code></td>
+                <td>ログ対象クラス</td>
+              </tr>
+              <tr>
+                <td><code>traceCode</code></td>
+                <td><code>String</code></td>
+                <td>トレースコード</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>LogWriter</code> - ログライターインスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="stdout">
+        <h3 class="method-name">stdout</h3>
+        <div class="method-signature">
+          <code>public void stdout(String... msgs)</code>
+        </div>
+        <div class="method-description">
+          標準出力.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>msgs</code></td>
+                <td><code>String...</code></td>
+                <td>メッセージ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="stdout">
+        <h3 class="method-name">stdout</h3>
+        <div class="method-signature">
+          <code>public void stdout(Throwable e, String... msgs)</code>
+        </div>
+        <div class="method-description">
+          標準出力.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>e</code></td>
+                <td><code>Throwable</code></td>
+                <td>エラーオブジェクト</td>
+              </tr>
+              <tr>
+                <td><code>msgs</code></td>
+                <td><code>String...</code></td>
+                <td>メッセージ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="javaInfoStdout">
+        <h3 class="method-name">javaInfoStdout</h3>
+        <div class="method-signature">
+          <code>public void javaInfoStdout()</code>
+        </div>
+        <div class="method-description">
+          Java情報 標準出力.
+  
+        </div>
+      </div>
+      <div class="method" id="isDevelopMode">
+        <h3 class="method-name">isDevelopMode</h3>
+        <div class="method-signature">
+          <code>public boolean isDevelopMode()</code>
+        </div>
+        <div class="method-description">
+          開発モード
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 開発モードの場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="getStackTrace">
+        <h3 class="method-name">getStackTrace</h3>
+        <div class="method-signature">
+          <code>public String getStackTrace(String lineSep, Throwable e)</code>
+        </div>
+        <div class="method-description">
+          エラーオブジェクトのスタックトレース取得.<br>
+<ul>
+<li><code>BreakException</code>の場合はスタックトレースの取得を中断する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>lineSep</code></td>
+                <td><code>String</code></td>
+                <td>改行文字</td>
+              </tr>
+              <tr>
+                <td><code>e</code></td>
+                <td><code>Throwable</code></td>
+                <td>エラーオブジェクト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - スタックトレース</p>
+        </div>
+      </div>
+      <div class="method" id="joinKeyVal">
+        <h3 class="method-name">joinKeyVal</h3>
+        <div class="method-signature">
+          <code>public String joinKeyVal(Object... keyVal)</code>
+        </div>
+        <div class="method-description">
+          キー値文字列連結.<br>
+<ul>
+<li>「キー=値, キー=値, キー=値,...」形式で連結してログ用文字列を作成する。</li>
+<li>値が配列、リスト、マップの場合はそれぞれの連結メソッドを呼び出して連結する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>keyVal</code></td>
+                <td><code>Object...</code></td>
+                <td>キーバリュー（キー,値,キー,値,キー,値,...）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - キー=値, キー=値, キー=値 形式の連結文字列</p>
+        </div>
+      </div>
+      <div class="method" id="joinValues">
+        <h3 class="method-name">joinValues</h3>
+        <div class="method-signature">
+          <code>public String joinValues(String... values)</code>
+        </div>
+        <div class="method-description">
+          値連結.<br>
+<ul>
+<li>「値, 値,... 」形式で連結してログ用文字列を作成する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>values</code></td>
+                <td><code>String...</code></td>
+                <td>連結対象値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 値, 値, 値, 値 形式の文字列</p>
+        </div>
+      </div>
+      <div class="method" id="join">
+        <h3 class="method-name">join</h3>
+        <div class="method-signature">
+          <code>public String join(String[] values)</code>
+        </div>
+        <div class="method-description">
+          配列値連結.<br>
+<ul>
+<li>「 [値, 値,...] 」形式で連結してログ用文字列を作成する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>values</code></td>
+                <td><code>String[]</code></td>
+                <td>連結対象値</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - [値, 値, 値, 値] 形式の文字列</p>
+        </div>
+      </div>
+      <div class="method" id="join">
+        <h3 class="method-name">join</h3>
+        <div class="method-signature">
+          <code>public String join(List&lt;?&gt; values)</code>
+        </div>
+        <div class="method-description">
+          リスト値連結.<br>
+<ul>
+<li>リスト内の値を「 [値, 値,...] 」形式で連結してログ用文字列を作成する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>values</code></td>
+                <td><code>List&lt;?&gt;</code></td>
+                <td>連結対象リスト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - [値, 値, 値, 値] 形式の文字列</p>
+        </div>
+      </div>
+      <div class="method" id="join">
+        <h3 class="method-name">join</h3>
+        <div class="method-signature">
+          <code>public String join(Map&lt;String, T&gt; map)</code>
+        </div>
+        <div class="method-description">
+          マップキー値連結.<br>
+<ul>
+<li>マップ内のキーと値を「 {キー=値, キー=値, キー=値,...} 」形式で連結してログ用文字列を作成する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>map</code></td>
+                <td><code>Map&lt;String, T&gt;</code></td>
+                <td>連結対象マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - {キー=値, キー=値, キー=値} 形式の文字列</p>
+        </div>
+      </div>
+      <div class="method" id="replaceNullValue">
+        <h3 class="method-name">replaceNullValue</h3>
+        <div class="method-signature">
+          <code>public String replaceNullValue(String value)</code>
+        </div>
+        <div class="method-description">
+          <code>null</code>置換.<br>
+値が <code>null</code> の場合、ログ用の置換文字を返す。
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>String</code></td>
+                <td><code>null</code> の場合、置換文字</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - <code>null</code> でない場合はそのまま、<code>null</code> の場合は置換文字</p>
+        </div>
+      </div>
+      <div class="method" id="formatDaysTime">
+        <h3 class="method-name">formatDaysTime</h3>
+        <div class="method-signature">
+          <code>public String formatDaysTime(long msec)</code>
+        </div>
+        <div class="method-description">
+          日時フォーマット.<br>
+<ul>
+<li>ミリ秒を読みやすい形式（日時分秒ミリ秒）に変換します。</li>
+<li>例：「11T03:15:30.123」「0T01:00:00.000」</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>msec</code></td>
+                <td><code>long</code></td>
+                <td>ミリ秒</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - フォーマット済み稼働時間</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2025</p>
+  </div>
+</body>
+</html>

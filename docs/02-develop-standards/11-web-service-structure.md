@@ -8,7 +8,7 @@
     - Java: `src/com/example/app/service/exmodule/`
 
 ## 前提条件
-- Javaクラスを使用する。
+- Java 11 以上を使用する。
 - Webサービスへのリクエストは JSON形式または URLパラメーターとする。
 - Webページへのレスポンスは JSON形式のみとする。
 - HTML は静的ファイルのダウンロードでのみ取得し、Webサービスでの動的な HTML生成は行わない。

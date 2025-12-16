@@ -1,6 +1,6 @@
 # AI指示ガイド（デバッグ・修正用）
 
-本資料は、AIが生成したコードのデバッグおよび修正を依頼するための指示方法を標準化したガイドです。
+本資料は、AIが生成したコードのデバッグおよび修正を依頼する際の指示方法を説明します。
 
 ---
 
@@ -38,41 +38,30 @@
 
 **プロンプト例1（シンプル）**:
 ```
+[エラーファイルを開いた状態で依頼]
 コンパイルエラーを直して
 ```
 
 **プロンプト例2（パッケージ指定）**:
 ```
-todoパッケージ配下のコンパイルエラーを直して
+com.example.app.service.ordermng パッケージ配下のコンパイルエラーを直して
 ```
 
 **プロンプト例3（エラー箇所を選択して提示）**:
 ```
-このエラーを修正して
 [エラー箇所をエディタで選択した状態で依頼]
+このコンパイルエラーを修正して
 ```
 
-### 2.2 AIが検出できない場合
-
-IDE が検出したエラーを AI が認識できない場合は、エラー箇所を選択して直接提示します。
-
-**操作手順**:
-1. エラーが発生している行をエディタで選択
-2. 選択した状態でAIに依頼
-3. エラーメッセージがある場合は併せて提示
-
-**プロンプト例**:
+**プロンプト例4（エラー箇所を貼り付けて提示）**:
 ```
-PropertiesUtil.getString(
-[エラー箇所を選択した状態]
+[エラーファイルを開いた状態で依頼]
+以下のコンパイルエラーを修正して
+
+PropertiesUtil.getString
 ```
 
-```
-io.putError(
-[エラー箇所を選択した状態]
-```
-
-### 2.3 よくあるコンパイルエラーの原因
+### 2.2 よくあるコンパイルエラーの原因
 
 | エラー種類 | 原因 | 対処法 |
 |-----------|------|--------|
@@ -90,9 +79,13 @@ io.putError(
 コンパイルエラー解消後、サーバーを起動して動作確認を行います。
 
 **起動手順**:
-1. デバッグ構成から `StandaloneServerStarter` を実行
+1. `src/com/onepg/web/StandaloneServerStarter.java` を実行
 2. コンソールに起動完了メッセージが表示されるまで待機
 3. ブラウザで対象画面にアクセス
+
+**停止手順**:
+- `src/com/onepg/web/StandaloneServerStopper.java` を実行
+- Javaクラスを修正した場合はサーバー再起動が必要です。
 
 ### 3.2 画面アクセス
 
@@ -104,6 +97,7 @@ http://localhost:{ポート}/pages/app/{モジュール名}/editpage.html
 ```
 
 **確認項目**:
+- [ ] VS Code のコンソールにエラーが出力されないか
 - [ ] 画面が正常に表示されるか
 - [ ] 初期表示処理が正常に動作するか
 - [ ] 検索・登録・更新・削除が正常に動作するか
@@ -112,7 +106,7 @@ http://localhost:{ポート}/pages/app/{モジュール名}/editpage.html
 
 ### 3.3 エラー発生時の情報収集
 
-動作確認中にエラーが発生した場合、以下の情報を収集します。
+動作確認中にエラーが発生したとき、以下の情報を収集します。
 
 **収集する情報**:
 1. **コンソールのエラーログ**: スタックトレース全体をコピー
@@ -131,11 +125,13 @@ http://localhost:{ポート}/pages/app/{モジュール名}/editpage.html
 **プロンプト例**:
 ```
 エラーを修正して
-java.lang.RuntimeException: Key already exists. key="todo_id"
+java.lang.RuntimeException: Key already exists. key="user_id"
  at com.onepg.util.AbstractIoTypeMap.validateKeyForPut(AbstractIoTypeMap.java:173)
  at com.onepg.util.AbstractIoTypeMap.putVal(AbstractIoTypeMap.java:206)
- at com.onepg.util.AbstractIoTypeMap.put(AbstractIoTypeMap.java:689)
- at com.example.app.service.todo.TodoLoad.doExecute(TodoLoad.java:22)
+ at com.onepg.util.AbstractIoTypeMap.putAllByMap(AbstractIoTypeMap.java:989)
+ at com.onepg.util.AbstractIoTypeMap.putAll(AbstractIoTypeMap.java:961)
+ at com.example.app.service.exmodule.ExampleLoad.getHead(ExampleLoad.java:60)
+ at com.example.app.service.exmodule.ExampleLoad.doExecute(ExampleLoad.java:23)
 ```
 
 **ポイント**:
@@ -158,6 +154,8 @@ java.lang.RuntimeException: Key already exists. key="todo_id"
 ```
 
 ### 4.3 修正依頼のテンプレート
+
+再現手順や仕様が複雑な不具合を修正する場合は、以下のテンプレートを使用します。
 
 **テンプレート**:
 ```markdown
@@ -194,37 +192,53 @@ java.lang.RuntimeException: Key already exists. key="todo_id"
 
 **症状**:
 ```
-java.lang.RuntimeException: Key already exists. key="todo_id"
+java.lang.RuntimeException: Key already exists. key="user_id"
  at com.onepg.util.AbstractIoTypeMap.validateKeyForPut(AbstractIoTypeMap.java:173)
  at com.onepg.util.AbstractIoTypeMap.putVal(AbstractIoTypeMap.java:206)
- at com.onepg.util.AbstractIoTypeMap.put(AbstractIoTypeMap.java:689)
- at com.example.app.service.todo.TodoLoad.doExecute(TodoLoad.java:22)
+ at com.onepg.util.AbstractIoTypeMap.putAllByMap(AbstractIoTypeMap.java:989)
+ at com.onepg.util.AbstractIoTypeMap.putAll(AbstractIoTypeMap.java:961)
+ at com.example.app.service.exmodule.ExampleLoad.getHead(ExampleLoad.java:60)
+ at com.example.app.service.exmodule.ExampleLoad.doExecute(ExampleLoad.java:23)
 ```
 
 **原因**:
-`Io` クラスに同じキーで値を2回設定しようとしている。
-`Io.put()` は同一キーへの上書きを禁止しているため、既に存在するキーに再度 `put()` を呼ぶとエラーになる。
+- `Io` クラスに同じキーで値を2回設定しようとしている。
+- `Io.put()` は同一キーへの上書きを禁止しているため、既に存在するキーに再度 `put()` を呼ぶとエラーになる。
+- `Io.putAll()` でも同様のエラーになる。
 
-**よくある発生パターン**:
-- 画面から送信されたキー（例: `todo_id`）を、サーバー側で再度 `io.put("todo_id", ...)` している
-- ループ内で同じキーに複数回値を設定している
+**よくあるパターン**:
+- 画面から送信されたキー（例: `user_id`）を含む SELECT結果を、`io.putAll(row)` で設定している
 
 **対処法**:
 
-1. **不要な `put()` を削除する**:
-   画面から送信された値は既に `Io` に格納されているため、再度設定する必要はない。
+1. **SELECT文から重複キーを除外する**:
+   画面から送信された値は既に `Io` に格納されているため、SELECT で再取得する必要はない。
    ```java
-   // NG: 画面から送信済みのキーを再設定
-   io.put("todo_id", data.getString("todo_id"));
+   // NG: SELECT結果に画面から送信済みのキー（user_id）が含まれている
+   sb.addQuery("SELECT ");
+   sb.addQuery("  u.user_id "); // ← user_id を取得
+   sb.addQuery(", u.user_nm ");
+   sb.addQuery(", u.email ");
+   sb.addQuery(" FROM t_user u ");
+   sb.addQuery(" WHERE u.user_id = ? ", io.getString("user_id")); // ← io に user_id が存在している
+   final IoItems row = SqlUtil.selectOne(getDbConn(), sb);
+   io.putAll(row); // ← user_id が重複してエラー
    
-   // OK: 不要な put() を削除
-   // （画面から送信された todo_id はそのまま使用される）
+   // OK: SELECT文から user_id を除外する
+   sb.addQuery("SELECT ");
+   // ...（user_id は SELECT しない）
+   sb.addQuery("  u.user_nm ");
+   sb.addQuery(", u.email ");
+   sb.addQuery(" FROM t_user u ");
+   sb.addQuery(" WHERE u.user_id = ? ", io.getString("user_id")); 
+   final IoItems row = SqlUtil.selectOne(getDbConn(), sb);
+   io.putAll(row); // ← 重複なし
    ```
 
-2. **強制上書きが必要な場合は `putForce()` を使用する**:
+2. **強制上書きが必要な場合は `putAllForce()` を使用する**:
    ```java
    // 強制的に上書きする場合
-   io.putForce("todo_id", newValue);
+   io.putAllForce(row);
    ```
 
 **プロンプト例**:
@@ -232,15 +246,20 @@ java.lang.RuntimeException: Key already exists. key="todo_id"
 Key already exists エラーが発生しています。
 画面から送信済みのキーを再設定しているコードを削除してください。
 
-java.lang.RuntimeException: Key already exists. key="todo_id"
- at com.example.app.service.todo.TodoLoad.doExecute(TodoLoad.java:22)
+java.lang.RuntimeException: Key already exists. key="user_id"
+ at com.onepg.util.AbstractIoTypeMap.validateKeyForPut(AbstractIoTypeMap.java:173)
+ at com.onepg.util.AbstractIoTypeMap.putVal(AbstractIoTypeMap.java:206)
+ at com.onepg.util.AbstractIoTypeMap.putAllByMap(AbstractIoTypeMap.java:989)
+ at com.onepg.util.AbstractIoTypeMap.putAll(AbstractIoTypeMap.java:961)
+ at com.example.app.service.exmodule.ExampleLoad.getHead(ExampleLoad.java:60)
+ at com.example.app.service.exmodule.ExampleLoad.doExecute(ExampleLoad.java:23)
 ```
 
 
 ### 5.2 JavaScript実行エラー
 
 **症状**:
-ブラウザのコンソールにエラーが表示される。
+ブラウザのコンソールに JavaScript エラーが表示される。
 
 **対処法**:
 ブラウザの開発者ツールからエラーメッセージをコピーして提示。
@@ -272,5 +291,5 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'value')
 
 ### 6.3 修正後は必ず再確認
 
-AIが修正したコードは、必ず再度動作確認を行う。
+AIが修正したコードは、必ず再度動作確認を行ってください。
 修正により別の問題が発生する場合もあるため、関連機能も確認する。

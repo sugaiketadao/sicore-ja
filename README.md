@@ -113,7 +113,8 @@ GitHubからプロジェクトをダウンロードします。
 http://localhost:8000/pages/
 ```
 
-サンプル画面の一覧が表示されます。各画面のリンクをクリックして動作を確認できます。
+- サンプル画面の一覧が表示されます。各画面のリンクをクリックして動作を確認できます。
+- サーバーを停止する場合は `src/com/onepg/web/StandaloneServerStopper.java` を実行する。
 
 ## 5. サンプルコード
 - HTML/JavaScript: `pages/app/exmodule/`
@@ -138,6 +139,7 @@ Copilot チャットに以下のプロンプトを入力してください。
 > `ai-test-prompts/order-prompt.md` の要件で画面機能を生成してください。
 
 - AI が要件定義書を読み込み、必要なHTML、JavaScript、Javaコードを自動生成します。
+- 生成後は [AI指示ガイド（デバッグ・修正用）](docs/21-ai-guides/02-ai-debug-guide.md) を参照してください。
 - ⚠️ 指示を厳密に遵守する AIエージェントを使用してください。（2025/12現在は Claude Opus 4.5推奨です）
 - 🚫 創造性が高い AIエージェントは、この作業には適していない可能性があります。
 

@@ -157,5 +157,5 @@ SQLiteはパブリックドメインであり、使用・改変・再配布に�
 SQLite JDBC Driver は Apache License 2.0 の下で配布されています。ライセンス全文は `licenses/` フォルダを参照してください。
 
 ---
-© 2025 onepg.com
+© 2025 sugaiketadao (onepg.com)
 

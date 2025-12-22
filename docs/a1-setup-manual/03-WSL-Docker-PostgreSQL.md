@@ -3,7 +3,7 @@
 1. Windows 上で Docker設定ファイルを作成する。
     - 下記テキストをファイル名 `docker-compose.yml` で保存してください。（エンコード：UTF-8 BOM なし、改行コード：LF）
     - `image: postgres:` の後のバージョン `17.2` は任意のバージョンを指定できます。
-    - `POSTGRES_PASSWORD:` の後のパスワード `dcpgpass` はコンテナOS上の postgres ユーザーのパスワードで任意の値を指定できます。
+    - `POSTGRES_PASSWORD:` の後のパスワード `dcpgpass` は Docker上の postgres ユーザーのパスワードで任意の値を指定できます。
     - `/tmp/share_docker:/tmp/share_host` で WSL上の `/tmp/share_docker` と Docker上の `/tmp/share_host` がリンクされ、WSL上の Ubuntu と Docker上の Ubuntu の共有ディレクトリとなります。
 
 ```docker-compose

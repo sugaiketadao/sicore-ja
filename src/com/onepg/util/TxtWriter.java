@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
  * <ul>
  * <li>テキストファイル専用のプリントライターラッパークラス。</li>
  * <li>文字セット、改行コード指定可能。</li>
+ * <li><code>null</code>の書き込みは改行のみ出力される。</li>
  * </ul>
  */
 public class TxtWriter implements AutoCloseable {
@@ -78,10 +79,8 @@ public class TxtWriter implements AutoCloseable {
    * @param line 行データ
    */
   public void println(final String line) {
-    if (ValUtil.isNull(line)) {
-      throw new RuntimeException("Row data is required.");
-    }
-    this.pw.println(line);
+    // nullの場合はブランクに置き換え（結果改行のみ出力される）
+    this.pw.println(ValUtil.nvl(line));
     this.lineCount++;
   }
 

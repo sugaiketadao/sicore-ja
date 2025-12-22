@@ -1175,6 +1175,9 @@ const DomUtil = /** @lends DomUtil */ {
    * 要素の値取得.<br>
    * <ul>
    * <li><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>の <code>value</code>属性値を取得する。</li>
+   * <li>対象要素に値フォーマットタイプを定義する <code>data-value-format-type</code>属性が設定されている場合は <code>UnFrmUtil</code> の該当メソッドでアンフォーマットした値を取得する。</li>
+   * <li>対象要素がテキストボックス・テキストエリア	の場合はタブ文字や右ブランク改行コードを除去した値を取得する。</li>
+   * <li>対象要素がチェックボックスの場合、チェックされているときは <code>value</code>属性の値を返し、チェックされていないときは <code>data-check-off-value</code>属性の値を取得する。</li>
    * <li>引数が不正な場合は <code>null</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
@@ -1184,13 +1187,15 @@ const DomUtil = /** @lends DomUtil */ {
     if (!DomUtil.isExists(elm)) {
       return null;
     }
-    return ValUtil.nvl(elm.value);
+    const val = PageUtil._getElmUnFormatVal(elm);
+    return val;
   },
 
   /**
    * 要素の値設定.<br>
    * <ul>
    * <li><code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>の <code>value</code>属性値を設定する。</li>
+   * <li>対象要素に値フォーマットタイプを定義する <code>data-value-format-type</code>属性が設定されている場合は <code>FrmUtil</code> の該当メソッドでフォーマットした値をセットする。</li>
    * <li>引数が不正な場合は <code>false</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
@@ -1201,7 +1206,7 @@ const DomUtil = /** @lends DomUtil */ {
     if (!DomUtil.isExists(elm)) {
       return false;
     }
-    elm.value = ValUtil.nvl(value);
+    PageUtil._setElmFormatVal(elm, value);
     return true;
   },
 
@@ -1209,6 +1214,7 @@ const DomUtil = /** @lends DomUtil */ {
    * 要素のテキスト取得.<br>
    * <ul>
    * <li>要素の <code>textContent</code> を取得する。</li>
+   * <li>対象要素に値フォーマットタイプを定義する <code>data-value-format-type</code>属性が設定されている場合は <code>UnFrmUtil</code> の該当メソッドでアンフォーマットした値を取得する。</li>
    * <li>引数が不正な場合は <code>null</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
@@ -1218,13 +1224,15 @@ const DomUtil = /** @lends DomUtil */ {
     if (!DomUtil.isExists(elm)) {
       return null;
     }
-    return ValUtil.nvl(elm.textContent);
+    const val = PageUtil._getElmUnFormatVal(elm);
+    return val;
   },
 
   /**
    * 要素のテキスト設定.<br>
    * <ul>
    * <li>要素の <code>textContent</code> を設定する。</li>
+   * <li>対象要素に値フォーマットタイプを定義する <code>data-value-format-type</code>属性が設定されている場合は <code>FrmUtil</code> の該当メソッドでフォーマットした値をセットする。</li>
    * <li>引数が不正な場合は <code>false</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
@@ -1235,7 +1243,7 @@ const DomUtil = /** @lends DomUtil */ {
     if (!DomUtil.isExists(elm)) {
       return false;
     }
-    elm.textContent = ValUtil.nvl(text);
+    PageUtil._setElmFormatVal(elm, text);
     return true;
   },
 
@@ -2309,7 +2317,7 @@ const PageUtil = /** @lends PageUtil */ {
       if (PageUtil._isTextType(elm)) {
         val = PageUtil._convPostVal(orgval);
       } else if (PageUtil._isTextArea(elm)) {
-        val = PageUtil._convPostVal(orgval);
+        val = PageUtil._convPostVal(orgval, true);
       } else {
         val = orgval;
       }

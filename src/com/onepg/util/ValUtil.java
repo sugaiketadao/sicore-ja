@@ -560,27 +560,58 @@ public final class ValUtil {
   }
 
   /**
-   * 数値チェック用左ゼロ除去.
+   * 数値チェック用左ゼロ除去.<br>
+   * <ul>
+   * <li>小数点を含む数値にも対応。</li>
+   * <li>"-0" や "-000" は "0" に正規化される。</li>
+   * </ul>
    *
    * @param value 文字列
    * @return 処理後の文字
    */
   private static String trimLeftZeroByIsNumber(final String value) {
+    final boolean hasMinus = value.startsWith("-");
     final String tmp;
-    if (value.startsWith("-")) {
+    if (hasMinus) {
       tmp = value.substring(1);
     } else {
       tmp = value;
     }
-    final String ret = tmp.replaceAll("^0+", "");
-    if (isBlank(ret)) {
+      
+    // 小数点の位置を確認
+    final int dotIndex = tmp.indexOf('.');
+    final String ret;
+    
+    if (dotIndex == -1) {
+      // 小数点なし: 通常の左ゼロ除去
+      ret = tmp.replaceAll("^0+", "");
+    } else if (dotIndex == 0) {
+      // ".5" のような形式: そのまま返す（整数部がないため）
+      ret = tmp;
+    } else {
+      // 小数点あり: 整数部分のみ左ゼロ除去
+      final String intPart = tmp.substring(0, dotIndex).replaceAll("^0+", "");
+      final String decPart = tmp.substring(dotIndex); // "." を含む
+      ret = intPart + decPart;
+    }
+    
+    // すべてゼロだった場合
+    if (isBlank(ret) || ret.equals(".")) {
       return "0";
     }
-    if (value.startsWith("-")) {
-      return "-" + ret;
-    } else {
-      return ret;
+    
+    // 整数部分が空 → "0" を補完
+    if (ret.startsWith(".")) {
+      if (hasMinus) {
+        return "-0" + ret;
+      }
+      return "0" + ret;
     }
+
+    if (hasMinus) {
+      return "-" + ret;
+    }
+    return ret;
   }
 
   /**

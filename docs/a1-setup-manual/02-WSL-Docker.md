@@ -1,4 +1,4 @@
-## WSL 上で Docker インストール
+## WSL上で Docker インストール
 
 ***すべてWSL上の作業となります***
 
@@ -13,12 +13,18 @@ $ sudo sh get-docker.sh
 ```Command
 $ sudo vi /etc/wsl.conf
 
-下記の内容であれば設定完了です。
+下記の内容が記載されていれば設定完了です。
 --------------------
 [boot]
 systemd=true
 --------------------
-:q で vi を終了する
+
+ファイルが存在しない、または上記内容が記載されていない場合：
+  i キーで編集モードに入り、上記内容を入力する。
+  ESC キーで編集モードを終了し、:wq と入力して Enter で保存する。
+
+上記内容が既に記載されている場合：
+  :q と入力して Enter で vi を終了する。
 ```
 
 3. Docker を root ユーザー以外から使用できるよう権限設定する。
@@ -40,7 +46,18 @@ $ sudo service docker start
 ```Command
 $ docker run hello-world
 
-下記が表示される（他にも色々表示される）
+下記が含まれるメッセージが表示される：
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
+```
+
+---
+- Docker 停止コマンド
+```Command
+$ docker compose down
+```
+
+- Docker 起動コマンド
+```Command
+$ docker compose up -d
 ```

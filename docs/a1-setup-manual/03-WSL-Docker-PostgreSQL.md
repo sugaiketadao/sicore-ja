@@ -1,10 +1,10 @@
-## WSL 上の Docker に PostgreSQL コンテナ作成
+## WSL上の Docker に PostgreSQL コンテナ作成
 
 1. Windows 上で Docker設定ファイルを作成する。
     - 下記テキストをファイル名 `docker-compose.yml` で保存してください。（エンコード：UTF-8 BOM なし、改行コード：LF）
     - `image: postgres:` の後のバージョン `17.2` は任意のバージョンを指定できます。
     - `POSTGRES_PASSWORD:` の後のパスワード `dcpgpass` はコンテナOS上の postgres ユーザーのパスワードで任意の値を指定できます。
-    - `/tmp/share_docker:/tmp/share_host` で WSL上の `/tmp/share_host` と Docker上の `/tmp/share_docker` がリンクします。
+    - `/tmp/share_docker:/tmp/share_host` で WSL上の `/tmp/share_docker` と Docker上の `/tmp/share_host` がリンクされ、WSL上の Ubuntu と Docker上の Ubuntu の共有ディレクトリとなります。
 
 ```docker-compose
 services:
@@ -21,8 +21,8 @@ volumes:
   pgdata:
 ```
 
-2. Docker設定ファイルを WSL 上の Ubuntu ディレクトリへコピーする。
-    - エクスプローラーで `\\wsl.localhost\Ubuntu\home\user01` に docker-compose.yml をコピーする。（`user01` は WSL インストール時に作成したユーザー名）
+2. Docker設定ファイルを WSL上の Ubuntu ディレクトリへコピーする。
+    - インストール時に作成したユーザー `user01` の HOMEディレクトリ `\\wsl.localhost\Ubuntu\home\user01` へエクスプローラーで docker-compose.yml をコピーする。
 
 3. WSL を起動する。WSL 起動済の場合は再起動する。
     - WSL 停止方法：スタートメニューからコマンドプロンプトを実行し、`wsl --shutdown` コマンドを実行する。
@@ -47,6 +47,7 @@ $ docker exec -it コンテナ名 bash
 
 6. Docker-Ubuntu 上で PostgreSQL にログインする。
 ```Command
+postgres OSユーザーに切り替え
 # su - postgres
 $ psql -h localhost -p 5432 -U postgres
 ```
@@ -81,33 +82,73 @@ $ psql -h localhost -p 5432 -d db01 -U dbuser01
 ```
 
 ```SQL
-> SELECT current_schema();
+=> SELECT current_schema();
 `schema01` と表示されます。
-> quit
+=> \q
 ```
 
 11. Docker-Ubuntu からログアウトする。
 ```Command
 $ exit
-「su - postgres」から exit した状態になります。
+「su - postgres」から exit した状態です。
 # exit
-Docker-Ubuntu から exit した状態になります。
+Docker-Ubuntu からログアウトします。
 ```
 
-12. 母艦 Windows から下記情報で DB接続する。（A5 や psqledit で接続）
+12. ホスト Windows から下記情報で DB接続する。（A5 や psqledit で接続）
     - HOST: localhost
     - PORT: 5432
     - DB: db01
     - USER: dbuser01
     - PASS: dbpass01
 
-
-13. Docker を停止する。
+---
+- Docker 停止コマンド
 ```Command
 $ docker compose down
 ```
 
+- Docker 起動コマンド
+```Command
+$ docker compose up -d
+```
 
+
+- Docker上の Ubuntu で DB にログインする。
+```Command
+$ docker ps
+
+結果からコンテナ名（例：user01-postgres-1）をコピーして下記コマンドで Docker上の Ubuntu にログインする。
+$ docker exec -it コンテナ名 bash
+（例：docker exec -it user01-postgres-1 bash）
+
+postgres OSユーザーに切り替える。
+# su - postgres
+
+DB にログインする。
+$ psql -h localhost -p 5432 -d db01 -U dbuser01
+```
+
+---
+## Docker上の psql で SQLファイルを実行する手順
+
+1. WSL上で共有ディレクトリに書き込み権限を付与する。
+
+```Command
+$ sudo chmod 777 /tmp/share_docker/
+```
+
+2. 対象 SQLファイルを WSL上の Ubuntu ディレクトリへコピーする。
+    - エクスプローラーで `\\wsl.localhost\Ubuntu\tmp\share_docker` へSQLファイルをコピーする。
+
+3. Docker上の Ubuntu で DB にログインして SQLファイルを実行する。
+
+```SQL
+［例］
+=> \i /tmp/share_host/example_data_create.sql
+```
+
+---
 ## Docker イメージ再作成コマンド
 
 ***通常不要な手順です。***

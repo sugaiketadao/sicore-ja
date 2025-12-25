@@ -20,15 +20,21 @@
       <div class="class-details">
         <p><strong>パッケージ:</strong> com.onepg.db</p>
         <p><strong>クラス名:</strong> SqlBuilder</p>
+        <p><strong>継承:</strong> <a href="AbstractSqlWithParameters.html">AbstractSqlWithParameters</a></p>
       </div>
       <div class="class-description">
         <h3>説明</h3>
         <div>SQLビルダー.<br>
+
 <ul>
 <li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
+<li>SQL内の 2文字以上のブランクを1文字ブランクに置き換えして SQL追加します。</li>
+</ul>
+<br>
+
+<ul>
 <li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
 <li>add* のメソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
-<li>SQL内の 2文字以上のブランクを1文字ブランクに置き換えして SQL追加します。</li>
 </ul>
 <pre>
 ［例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
@@ -39,17 +45,23 @@
 </pre>
 </div>
       </div>
+        <div class="see-also">
+          <h4>関連項目</h4>
+          <ul>
+            <li><a href="AbstractSqlWithParameters.html">AbstractSqlWithParameters</a></li>
+          </ul>
+        </div>
     </div>
     <div class="section">
       <h2>定数・変数一覧</h2>
       <div class="field-list">
-        <div class="field-item" id="PROTOCOL_ERR_AVOID_SQL">
-          <h3 class="field-name">PROTOCOL_ERR_AVOID_SQL</h3>
+        <div class="field-item" id="ORACLE_PROTOCOL_ERR_AVOID_SQL">
+          <h3 class="field-name">ORACLE_PROTOCOL_ERR_AVOID_SQL <span class="inherited-badge">（継承フィールド）</span></h3>
           <div class="field-signature">
-            <code>public String PROTOCOL_ERR_AVOID_SQL</code>
+            <code>public String ORACLE_PROTOCOL_ERR_AVOID_SQL</code>
           </div>
           <div class="field-description">
-            プロトコル違反回避SQL.<br>
+            ORACLEプロトコル違反回避SQL.<br>
 <a href="https://support.oracle.com/knowledge/Middleware/2707017_1.html">support.oracle.com（参考情報）</a>
   
           </div>
@@ -59,7 +71,7 @@
     <div class="section">
       <h2>メソッド一覧</h2>
       <div class="method" id="length">
-        <h3 class="method-name">length</h3>
+        <h3 class="method-name">length <span class="inherited-badge">（継承メソッド）</span></h3>
         <div class="method-signature">
           <code>public int length()</code>
         </div>
@@ -70,6 +82,55 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>int</code> - SQL文字列長さ</p>
+        </div>
+      </div>
+      <div class="method" id="deleteLastChar">
+        <h3 class="method-name">deleteLastChar <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public void deleteLastChar(int deleteCharCount)</code>
+        </div>
+        <div class="method-description">
+          最終SQL削除.
+<ul>
+<li>SQLの最後から指定文字数を削除します。</li>
+</ul>
+<pre>［例］
+<code>for (final String key : params.keySet()) {
+  sb.addQuery(key).addQuery("=?", params.get(key)).addQuery(",");
+}
+// 最後のカンマ削除
+sb.deleteLastChar(1);
+</code></pre>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>deleteCharCount</code></td>
+                <td><code>int</code></td>
+                <td>削除文字数</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="clearParameters">
+        <h3 class="method-name">clearParameters <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public void clearParameters()</code>
+        </div>
+        <div class="method-description">
+          パラメータークリア.
+  
         </div>
       </div>
       <div class="method" id="addSqlBuilder">
@@ -231,10 +292,10 @@
           <p><code>SqlBuilder</code> - 自インスタンス</p>
         </div>
       </div>
-      <div class="method" id="addQueryWithParamNotBlank">
-        <h3 class="method-name">addQueryWithParamNotBlank</h3>
+      <div class="method" id="addQueryIfNotBlankParameter">
+        <h3 class="method-name">addQueryIfNotBlankParameter</h3>
         <div class="method-signature">
-          <code>public SqlBuilder addQueryWithParamNotBlank(String sql, Object param)</code>
+          <code>public SqlBuilder addQueryIfNotBlankParameter(String sql, Object param)</code>
         </div>
         <div class="method-description">
           パラメーターが <code>null</code>以外かつブランク以外 の場合のみ SQLとパラメーターを追加.<br>
@@ -244,7 +305,7 @@
 <li>基本的には本メソッドのショートカット <code>#addQnotB(String, Object)</code> を使用してください。</li>
 </ul>
 <pre>下記例では <code>userId</code> が <code>null</code>・ブランク以外の場合のみ SQLが追加されます。
-［例］ <code>sqlBuilder.addQueryWithParamNotBlank("AND user_id = ? ", userId);</code>
+［例］ <code>sqlBuilder.addQueryIfNotBlankParameter("AND user_id = ? ", userId);</code>
 </pre>
         </div>
         <div class="method-parameters">
@@ -291,7 +352,7 @@
         <div class="method-description">
           パラメーターが <code>null</code>以外かつブランク以外 の場合のみ SQLとパラメーターを追加.<br>
 <ul>
-<li><code>#addQueryWithParamNotBlank(String, Object)</code> のショートカット。</li>
+<li><code>#addQueryIfNotBlankParameter(String, Object)</code> のショートカット。</li>
 <li>パラメーターが <code>null</code>・ブランク以外の場合のみ SQLとパラメーターを追加します。</li>
 <li>それ以外の仕様は <code>#addQuery(String, Object...)</code>と同じです。</li>
 </ul>
@@ -331,57 +392,8 @@
         <div class="see-also">
           <h4>関連項目</h4>
           <ul>
-            <li><a href="#addQueryWithParamNotBlank">#addQueryWithParamNotBlank(String, Object)</a></li>
+            <li><a href="#addQueryIfNotBlankParameter">#addQueryIfNotBlankParameter(String, Object)</a></li>
           </ul>
-        </div>
-      </div>
-      <div class="method" id="deleteLastChar">
-        <h3 class="method-name">deleteLastChar</h3>
-        <div class="method-signature">
-          <code>public void deleteLastChar(int deleteCharCount)</code>
-        </div>
-        <div class="method-description">
-          最終SQL削除.
-<ul>
-<li>SQLの最後から指定文字数を削除します。</li>
-</ul>
-<pre>［例］
-<code>for (final String key : params.keySet()) {
-  sb.addQuery(key).addQuery("=?", params.get(key)).addQuery(",");
-}
-// 最後のカンマ削除
-sb.deleteLastChar(1);
-</code></pre>
-
-        </div>
-        <div class="method-parameters">
-          <h4>パラメータ</h4>
-          <table class="parameter-table">
-            <thead>
-              <tr>
-                <th>名前</th>
-                <th>型</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>deleteCharCount</code></td>
-                <td><code>int</code></td>
-                <td>削除文字数</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="method" id="clearParameters">
-        <h3 class="method-name">clearParameters</h3>
-        <div class="method-signature">
-          <code>public void clearParameters()</code>
-        </div>
-        <div class="method-description">
-          パラメータークリア.
-  
         </div>
       </div>
     </div>

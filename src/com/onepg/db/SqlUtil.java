@@ -72,13 +72,13 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 行データマップ
    */
-  public static IoItems selectOneExists(final Connection conn, final SqlBuilder sqlBuilder) {
-    final IoItems retMap = selectFirstRec(conn, sqlBuilder, false);
+  public static IoItems selectOneExists(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    final IoItems retMap = selectFirstRec(conn, sqlWithParams, false);
     if (ValUtil.isNull(retMap)) {
-      throw new RuntimeException("No matching data exists. " + sqlBuilder.toString());
+      throw new RuntimeException("No matching data exists. " + sqlWithParams.toString());
     }
     return retMap;
   }
@@ -93,11 +93,11 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 行データマップ
    */
-  public static IoItems selectOne(final Connection conn, final SqlBuilder sqlBuilder) {
-    return selectFirstRec(conn, sqlBuilder, false);
+  public static IoItems selectOne(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    return selectFirstRec(conn, sqlWithParams, false);
   }
 
   /**
@@ -109,11 +109,11 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 行データマップ
    */
-  public static IoItems selectOneMultiIgnore(final Connection conn, final SqlBuilder sqlBuilder) {
-    return selectFirstRec(conn, sqlBuilder, true);
+  public static IoItems selectOneMultiIgnore(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    return selectFirstRec(conn, sqlWithParams, true);
   }
 
   /**
@@ -127,15 +127,15 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn            DB接続
-   * @param sqlBuilder      SQLビルダー
+   * @param sqlWithParams   SQL＆パラメーター
    * @param multiDataIgnore 複数件取得できた場合でもエラーとしない場合は <code>true</code>
    * @return 行データマップ（<code>null</code> 有り）
    */
-  private static IoItems selectFirstRec(final Connection conn, final SqlBuilder sqlBuilder,
+  private static IoItems selectFirstRec(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
       final boolean multiDataIgnore) {
 
     // 一括取得
-    final IoRows rows = selectBulkByLimitCount(conn, sqlBuilder, 1);
+    final IoRows rows = selectBulkByLimitCount(conn, sqlWithParams, 1);
     if (rows.size() <= 0) {
       // データなし
       return null;
@@ -144,7 +144,7 @@ public final class SqlUtil {
     if (rows.isLimitOver()) {
       // １行以上取得
       if (!multiDataIgnore) {
-        throw new RuntimeException("Multiple records were retrieved. " + sqlBuilder.toString());
+        throw new RuntimeException("Multiple records were retrieved. " + sqlWithParams.toString());
       }
     }
     return rows.get(0);
@@ -157,15 +157,14 @@ public final class SqlUtil {
    * <li><code>SqlResultSet</code>
    * のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>try 句（try-with-resources文）で使用する。</li>
-   * <li>本クラスではデフォルトフェッチサイズを 500 とし、全件フェッチしたい場合は <code>SqlBuilder#fetchAll()</code>
-   * を実行しておく。</li>
+   * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, AbstractSqlWithParameters)</code> を使用する。</li>
    * <li>DBMSごとのフェッチサイズについて
    * <ul>
    * <li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
    * <li>PostgreSQL はデフォルト 全件フェッチとなっており OutOfMemory になる可能性があるためフェッチサイズを指定する。</li>
    * <li>PostgreSQL
    * はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE
-   * 34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。（<code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> 参照）<br>
+   * 34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。<br>
    * また処理が複雑になるが SQL の LIMIT句でデータを分割取得しても解決できる。</li>
    * <li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は
    * SQL の LIMIT句でデータを分割取得する必要がある。</li>
@@ -184,11 +183,11 @@ public final class SqlUtil {
    * </pre>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return SQL結果セット
    */
-  public static SqlResultSet select(final Connection conn, final SqlBuilder sqlBuilder) {
-    return selectByFetchSize(conn, sqlBuilder, DEFAULT_FETCH_SIZE);
+  public static SqlResultSet select(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    return selectByFetchSize(conn, sqlWithParams, DEFAULT_FETCH_SIZE);
   }
 
   /**
@@ -199,13 +198,13 @@ public final class SqlUtil {
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    * 
-   * @see #select(Connection, SqlBuilder)
+   * @see #select(Connection, AbstractSqlWithParameters)
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return SQL結果セット
    */
-  public static SqlResultSet selectFetchAll(final Connection conn, final SqlBuilder sqlBuilder) {
-    return selectByFetchSize(conn, sqlBuilder, 0);
+  public static SqlResultSet selectFetchAll(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    return selectByFetchSize(conn, sqlWithParams, 0);
   }
 
   /**
@@ -214,19 +213,19 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @param limitCount 取得件数上限
    * @return 複数行リスト
    */
-  public static IoRows selectBulk(final Connection conn, final SqlBuilder sqlBuilder,
+  public static IoRows selectBulk(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
       final int limitCount) {
-    return selectBulkByLimitCount(conn, sqlBuilder, limitCount);
+    return selectBulkByLimitCount(conn, sqlWithParams, limitCount);
   }
 
   /**
@@ -235,28 +234,28 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 複数行リスト
    */
-  public static IoRows selectBulkAll(final Connection conn, final SqlBuilder sqlBuilder) {
-    return selectBulkByLimitCount(conn, sqlBuilder, 0);
+  public static IoRows selectBulkAll(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    return selectBulkByLimitCount(conn, sqlWithParams, 0);
   }
 
   /**
    * 複数件一括取得.
    * 
    * @param conn DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @param limitCount 取得件数上限（ゼロ以下の場合は全件取得）
    * @return 複数行リスト
    */
-  private static IoRows selectBulkByLimitCount(final Connection conn, final SqlBuilder sqlBuilder,
+  private static IoRows selectBulkByLimitCount(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
       final int limitCount) {
     // フェッチサイズ
     final int fetchSize;
@@ -270,7 +269,7 @@ public final class SqlUtil {
     }
 
     final IoRows rows = new IoRows();
-    try (final SqlResultSet rSet = SqlUtil.selectByFetchSize(conn, sqlBuilder, fetchSize);) {
+    try (final SqlResultSet rSet = SqlUtil.selectByFetchSize(conn, sqlWithParams, fetchSize);) {
       final Iterator<IoItems> ite = rSet.iterator();
       while (ite.hasNext()) {
         final IoItems row = ite.next();
@@ -297,19 +296,19 @@ public final class SqlUtil {
    * フェッチサイズ指定複数件取得.
    *
    * @param conn DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @param fetchSize フェッチサイズ
    * @return SQL結果セット
    */
-  private static SqlResultSet selectByFetchSize(final Connection conn, final SqlBuilder sqlBuilder,
+  private static SqlResultSet selectByFetchSize(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
       final int fetchSize) {
         
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
-    final String sql = sqlBuilder.getSql();
-    final List<Object> params = sqlBuilder.getParameters();
+    final String sql = sqlWithParams.getSql();
+    final List<Object> params = sqlWithParams.getParameters();
     if (logger.isDevelopMode()) {
       // SQLログ出力
-      logger.develop("SQL#SELECT execution. " + LogUtil.joinKeyVal("sql", sqlBuilder, "fetchSize", fetchSize));
+      logger.develop("SQL#SELECT execution. " + LogUtil.joinKeyVal("sql", sqlWithParams, "fetchSize", fetchSize));
     }
 
     try {
@@ -334,7 +333,7 @@ public final class SqlUtil {
 
     } catch (SQLException e) {
       throw new RuntimeException("Exception error occurred during data retrieval. " + LogUtil.joinKeyVal("sql",
-          sqlBuilder, "fetchSize", fetchSize), e);
+          sqlWithParams, "fetchSize", fetchSize), e);
     }
   }
 
@@ -872,13 +871,13 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn       DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 反映件数が１件の場合は <code>true</code>、０件の場合は <code>false</code>
    */
-  public static boolean executeOne(final Connection conn, final SqlBuilder sqlBuilder) {
-    final int ret = execute(conn, sqlBuilder);
+  public static boolean executeOne(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+    final int ret = execute(conn, sqlWithParams);
     if (ret > 1) {
-      throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sqlBuilder));
+      throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sqlWithParams));
     }
     return (ret == 1);
   }
@@ -887,14 +886,14 @@ public final class SqlUtil {
    * SQL 登録・更新・削除.
    *
    * @param conn DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 反映件数
    */
-  public static int execute(final Connection conn, final SqlBuilder sqlBuilder) {
+  public static int execute(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
     try {
-      return executeSql(conn, sqlBuilder);
+      return executeSql(conn, sqlWithParams);
     } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during SQL execution. " + LogUtil.joinKeyVal("sql", sqlBuilder), e);
+      throw new RuntimeException("Exception error occurred during SQL execution. " + LogUtil.joinKeyVal("sql", sqlWithParams), e);
     }
   }
 
@@ -902,22 +901,22 @@ public final class SqlUtil {
    * SQLビルダー実行.
    *
    * @param conn DB接続
-   * @param sqlBuilder SQLビルダー
+   * @param sqlWithParams SQL＆パラメーター
    * @return 反映件数
    * @throws SQLException SQL例外エラー
    */
-  private static int executeSql(final Connection conn, final SqlBuilder sqlBuilder)
+  private static int executeSql(final Connection conn, final AbstractSqlWithParameters sqlWithParams)
       throws SQLException {
         
     if (logger.isDevelopMode()) {
       // SQLログ出力
-      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sqlBuilder));
+      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sqlWithParams));
     }
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     // ステートメント生成
-    try (final PreparedStatement stmt = conn.prepareStatement(sqlBuilder.getSql());) {
+    try (final PreparedStatement stmt = conn.prepareStatement(sqlWithParams.getSql());) {
       // ステートメントにパラメーターセット
-      setStmtParameters(stmt, sqlBuilder.getParameters(), dbmsName);
+      setStmtParameters(stmt, sqlWithParams.getParameters(), dbmsName);
       // SQL実行
       final int ret = stmt.executeUpdate();
       return ret;

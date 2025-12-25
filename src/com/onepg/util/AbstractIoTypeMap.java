@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * 入出力可変型マップ 基底クラス.<br>
@@ -45,8 +44,6 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractIoTypeMap implements Map<String, String> {
 
-  /** 英字小文字と数字、アンダースコア、ハイフン、ドットのみか確認用パターン. */
-  private static final Pattern PATTERN_KEY_CHECK = Pattern.compile("^[a-z0-9_.-]+$");
   /** 値保持マップ. */
   private final Map<String, String> valMap;
   /** 全キーセット（値保持マップ以外の キーを併せ持ちチェックに使用する）. */
@@ -134,13 +131,7 @@ public abstract class AbstractIoTypeMap implements Map<String, String> {
    * @param key キー
    */
   protected final void validateKey(final String key) {
-    if (ValUtil.isBlank(key)) {
-      throw new RuntimeException("Key is blank. ");
-    }
-    if (!PATTERN_KEY_CHECK.matcher(key).matches()) {
-      throw new RuntimeException("Only lowercase letters, digits, underscores, hyphens, and dots are allowed. "
-                                + LogUtil.joinKeyVal("key", key));
-    }
+    ValUtil.validateIoKey(key);
   }
 
   /**

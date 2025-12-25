@@ -25,6 +25,36 @@
       <div class="class-description">
         <h3>説明</h3>
         <div>入出力マップクラス.<br>
+
+<ul>
+<li>型ごとの値取得メソッドと値格納メソッドを持つマップクラス。</li>
+<li>内部的には文字列で値を保持する。</li>
+<li>値の格納順序を保持する。</li>
+<li>Map&lt;String, String&gt; を継承することで汎用性を持たせている。</li>
+<li>コンストラクタの引数指定で読み取り専用にできる。</li>
+<li>基本ルール・制限
+<ul>
+<li>キーとして使用できる文字は英字小文字と数字、アンダースコア、ハイフン、ドットのみに限定される。<br>
+（JSON で使用可能な文字のみ、かつ DBMS差異をなくすため英字は小文字統一とする）</li>
+<li>原則として値取得メソッドは <code>null</code> を返さない。</li>
+<li><code>null</code> を取得したい場合は意図的なメソッド［例］<code>#getStringNullable(String)</code>
+で取得する。</li>
+<li>原則として存在しないキーでの値取得は実行時エラーとなる。</li>
+<li>存在しない可能性があるキーで値取得する場合は <code>#containsKey(Object)</code> にて事前に存在確認するか、
+非存在時の戻値を指定する意図的なメソッド［例］<code>#getStringOrDefault(String, String)</code>
+で取得する。</li>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>既に存在する可能性があるキーで値を格納する場合は意図的なメソッド［例］<code>#putForce(String, String)</code>
+で格納する。</li>
+<li><code>null</code> を明示的に格納したい場合も意図的なメソッド［例］<code>#putNull(String)</code> で格納する。</li>
+<li>通常のマップとは異なり <code>#keySet()</code>、<code>#entrySet()</code>、<code>#values()</code>
+の結果は読取専用となっている。<br>
+（内部でキーを別管理しており、結果から削除されると整合性が崩れるため）</li>
+<li>タイムスタンプは小数６桁までで保持される。</li>
+</ul>
+</ul>
+<br>
+
 <ul>
 <li>文字列リストを保持することができる。</li>
 <li>ネストされた可変型マップを保持することができる。</li>

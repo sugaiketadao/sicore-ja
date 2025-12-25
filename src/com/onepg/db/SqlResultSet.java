@@ -19,7 +19,7 @@ import java.util.Map;
  * <li>本クラスのイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>IoItems</code> のキー）</li>
  * </ul>
  * 
- * @see SqlUtil#select(java.sql.Connection, SqlBuilder)
+ * @see SqlUtil#select(java.sql.Connection, AbstractSqlWithParameters)
  */
 public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
 

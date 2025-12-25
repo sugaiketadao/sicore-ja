@@ -47,6 +47,16 @@ public final class ValUtil {
   private static final DateTimeFormatter DTF_DATE =
       DateTimeFormatter.ofPattern("uuuuMMdd").withResolverStyle(ResolverStyle.STRICT);
 
+  /**
+   * 入出力マップキーチェックパターン.<br>
+   * <ul>
+   * <li>許可する文字は下記のとおり。
+   * <ul><li>英字小文字</li><li>数字</li><li>アンダースコア</li><li>ハイフン</li><li>ドット</li></ul>
+   * </li>
+   * </ul>
+   */
+  private static final Pattern PATTERN_IO_KEY_CHECK = Pattern.compile("^[a-z0-9_.-]+$");
+
   /** 文字セット指定. */
   public enum CharSet {
     /** 文字セット指定 - UTF-8. */
@@ -171,6 +181,44 @@ public final class ValUtil {
       return true;
     }
     return map.isEmpty();
+  }
+
+  /**
+   * 入出力マップキー形式チェック.<br>
+   * <ul>
+   * <li>入出力マップのキーとして使用できる文字かのチェックを行う。</li>
+   * <li>許可する文字は下記のとおり。
+   * <ul><li>英字小文字</li><li>数字</li><li>アンダースコア</li><li>ハイフン</li><li>ドット</li></ul>
+   * </li>
+   * </ul>
+   *
+   * @param key チェック対象キー
+   * @return 無効な文字を含む場合は <code>false</code>
+   */
+  public static boolean isValidIoKey(final String key) {
+    if (isBlank(key)) {
+      return false;
+    }
+    return PATTERN_IO_KEY_CHECK.matcher(key).matches();
+  }
+
+  /**
+   * 入出力マップキー形式チェック.<br>
+   * <ul>
+   * <li>入出力マップのキーとして使用できる文字かのチェックを行う。</li>
+   * <li>許可する文字は下記のとおり。
+   * <ul><li>英字小文字</li><li>数字</li><li>アンダースコア</li><li>ハイフン</li><li>ドット</li></ul>
+   * </li>
+   * <li>無効な文字を含む場合は <code>RuntimeException</code> をスローする。</li>
+   * </ul>
+   *
+   * @param key チェック対象キー
+   */
+  public static void validateIoKey(final String key) {
+    if (!ValUtil.isValidIoKey(key)) {
+      throw new RuntimeException("Only lowercase letters, digits, underscores, hyphens, and dots are allowed. "
+                                + LogUtil.joinKeyVal("key", key));
+    }
   }
 
   /**

@@ -62,13 +62,13 @@
     - ［例］ `for (int i = 0; i < list.length; i++)`
 - 文字列を複数回連結する場合は `java.lang.StringBuilder` クラスを使用する。
 - `java.lang.AutoCloseable` または `java.io.Closeable` を継承するクラスは `try` 句（try-with-resources文）で宣言する。`close` メソッドの呼び出しは不要とする。
-```try句宣言［例］
-try (final TxtReader tr = new TxtReader(filePath, ValUtil.UTF8);) {
-  for (final String line : tr) {
-    ：
-  }
-}
-```
+    ```java
+    try (final TxtReader tr = new TxtReader(filePath, ValUtil.UTF8);) {
+      for (final String line : tr) {
+        ：
+      }
+    }
+    ```
 - `System.out` の使用を禁止する。
 - 機能単位の処理での `java.lang.Exception` のサブクラス（以下、エラークラスと呼ぶ）のキャッチを禁止する。
 - 修正時の差分の可読性を最優先し、三項演算子およびラムダ式 `->`、メソッド参照 `::`、StreamAPI のメソッドチェーンの使用を禁止する。
@@ -84,23 +84,22 @@ try (final TxtReader tr = new TxtReader(filePath, ValUtil.UTF8);) {
 - 想定外の引数や DB値でエラーをスローするロジックは下記のとおりとする。
     - 想定内である `if`, `else if` の `else` 句（`case` 文の `default` 句も同様）。
     - 想定外であることをチェックする `if` 文
+    ```java
+    ［例１］
+    if (ValUtil.equals(kbn, "1")) {
+      // 想定内
+    } else if (ValUtil.equals(kbn, "2")) {
+      // 想定内
+    } else {
+      throw new RuntimeException("想定外の区分です. " + LogUtil.joinKeyVal("区分値", kbn));
+    }
 
-```想定外ロジック
-［例１］
-if (ValUtil.equals(kbn, "1")) {
-    // 想定内
-} else if (ValUtil.equals(kbn, "2")) {
-    // 想定内
-} else {
-    throw new RuntimeException("想定外の区分です. " + LogUtil.joinKeyVal("区分値", kbn));
-}
-
-［例２］
-if (!ValUtil.isDate(beforDate)) {
-  // 想定外
-  throw new RuntimeException("前回日付が不正です. " + LogUtil.joinKeyVal("日付", beforDate));
-}
-```
+    ［例２］
+    if (!ValUtil.isDate(beforDate)) {
+      // 想定外
+      throw new RuntimeException("前回日付が不正です. " + LogUtil.joinKeyVal("日付", beforDate));
+    }
+    ```
 
 - 本フレームワークの `com.onepg.util.SqlUtil` の下記 DBデータ取得メソッドを使い分けることで、想定外ケースでエラーをスローする。
     - `SqlUtil#selectOneExists`：ゼロ件および複数件取得した場合はエラーになる。
@@ -119,6 +118,22 @@ if (!ValUtil.isDate(beforDate)) {
     - 全ての演算子（`+`, `=`, `!==`, `&&` など）の前後。ただし、インクリメント演算子とデクリメント演算子は除く。
     - カンマ、コロン、セミコロンとその後ろにある文字列の間。
 - 1行はインデントを除いた桁数で 100 桁を目安とし、それ以上になる場合は折り返す。それ以下であれば不要な折り返しは行わない。
+- 複数行にわたる文字列はテキストブロック（Text Block """..."""）を積極的に使用する。 ***JDK15以上の場合のみ***
+    ```java
+    sb.addQuery("SELECT ");
+    sb.addQuery("  u.user_nm ");
+    sb.addQuery(", u.email ");
+    sb.addQuery(" FROM t_user u ");
+    sb.addQuery(" WHERE u.user_id = ? ", io.getString("user_id"));
+    ↓
+    sb.addQuery("""
+      SELECT
+        u.user_nm
+      , u.email
+      FROM t_user u
+    """);
+    sb.addQuery(" WHERE u.user_id = ? ", io.getString("user_id"));
+    ```
 
 ## コメント
 - ロジックはコメントアウトせず、削除する。注意点がある場合は、注意点のみコメントとして残す。
@@ -140,12 +155,12 @@ if (!ValUtil.isDate(beforDate)) {
         - `@return`タグは 「@return 説明」 の形式で記述する。
         - 戻値として `null` が返される可能性がある場合は「説明」の最後に "（null有り）" と記述する。
 - 抽象メソッドの実装部分には `{@inheritDoc}` を付加する。`{@inheritDoc}` のみの JavaDoc でもよい。
-``` 抽象メソッド実装部分JavaDoc例
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-```
+    ```java
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    ```
 - 他Javaクラスや他Javaメソッドの JavaDoc を参照する場合は `@see`タグで記述する。
 - 文中のサンプルコーディングは `<pre><code>` で囲んで記述する。1行の短いコードであれば `<code>` だけで囲む。
 - 以下の名前についても `<code>` で囲んで記述する。

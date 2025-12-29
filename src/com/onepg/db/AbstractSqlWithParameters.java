@@ -117,7 +117,7 @@ public abstract class AbstractSqlWithParameters {
    *
    * @param params パラメーターリスト
    */
-  protected void addParametersList(final List<Object> params) {
+  protected void addParameters(final List<Object> params) {
     if (ValUtil.isEmpty(params)) {
       return;
     }

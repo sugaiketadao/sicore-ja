@@ -41,7 +41,7 @@ public final class SqlBuilder extends AbstractSqlWithParameters {
     // SQL追加
     super.addSql(sb.getSql());
     // パラメーター追加
-    super.addParametersList(sb.getParameters());
+    super.addParameters(sb.getParameters());
   }
 
   /**
@@ -110,7 +110,7 @@ public final class SqlBuilder extends AbstractSqlWithParameters {
     ValUtil.deleteLastChar(sb);
 
     super.addSql(sb.toString());
-    super.addParametersList(params);
+    super.addParameters(params);
     return this;
   }
 

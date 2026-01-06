@@ -45,6 +45,13 @@ public final class SqlUtil {
       DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss.SSSSSS").withResolverStyle(ResolverStyle.STRICT);
 
   /**
+   * ORACLEプロトコル違反回避SQL.<br>
+   * <a href="https://support.oracle.com/knowledge/Middleware/2707017_1.html">support.oracle.com（参考情報）</a>
+   */
+  public static final String ORACLE_PROTOCOL_ERR_AVOID_SQL =
+      " /* protocol error avoidance */ FETCH FIRST 99999999 ROWS ONLY ";
+      
+  /**
    * DB項目クラスタイプ.<br>
    * <ul>
    * <li>DB項目の型に対応する Java の変数クラスを示す。</li>
@@ -72,13 +79,13 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param sb SQLビルダー
    * @return 行データマップ
    */
-  public static IoItems selectOneExists(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    final IoItems retMap = selectFirstRec(conn, sqlWithParams, false);
+  public static IoItems selectOneExists(final Connection conn, final SqlBuilder sb) {
+    final IoItems retMap = selectFirstRec(conn, sb, false);
     if (ValUtil.isNull(retMap)) {
-      throw new RuntimeException("No matching data exists. " + sqlWithParams.toString());
+      throw new RuntimeException("No matching data exists. " + sb.toString());
     }
     return retMap;
   }
@@ -92,12 +99,12 @@ public final class SqlUtil {
    * <li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return 行データマップ
    */
-  public static IoItems selectOne(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    return selectFirstRec(conn, sqlWithParams, false);
+  public static IoItems selectOne(final Connection conn, final SqlBuilder sb) {
+    return selectFirstRec(conn, sb, false);
   }
 
   /**
@@ -108,12 +115,12 @@ public final class SqlUtil {
    * <li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return 行データマップ
    */
-  public static IoItems selectOneMultiIgnore(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    return selectFirstRec(conn, sqlWithParams, true);
+  public static IoItems selectOneMultiIgnore(final Connection conn, final SqlBuilder sb) {
+    return selectFirstRec(conn, sb, true);
   }
 
   /**
@@ -126,16 +133,16 @@ public final class SqlUtil {
    * <li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
    *
-   * @param conn            DB接続
-   * @param sqlWithParams   SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @param multiDataIgnore 複数件取得できた場合でもエラーとしない場合は <code>true</code>
    * @return 行データマップ（<code>null</code> 有り）
    */
-  private static IoItems selectFirstRec(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
+  private static IoItems selectFirstRec(final Connection conn, final SqlBuilder sb,
       final boolean multiDataIgnore) {
 
     // 一括取得
-    final IoRows rows = selectBulkByLimitCount(conn, sqlWithParams, 1);
+    final IoRows rows = selectBulkByLimitCount(conn, sb, 1);
     if (rows.size() <= 0) {
       // データなし
       return null;
@@ -144,7 +151,7 @@ public final class SqlUtil {
     if (rows.isLimitOver()) {
       // １行以上取得
       if (!multiDataIgnore) {
-        throw new RuntimeException("Multiple records were retrieved. " + sqlWithParams.toString());
+        throw new RuntimeException("Multiple records were retrieved. " + sb.toString());
       }
     }
     return rows.get(0);
@@ -157,7 +164,7 @@ public final class SqlUtil {
    * <li><code>SqlResultSet</code>
    * のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>try 句（try-with-resources文）で使用する。</li>
-   * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, AbstractSqlWithParameters)</code> を使用する。</li>
+   * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> を使用する。</li>
    * <li>DBMSごとのフェッチサイズについて
    * <ul>
    * <li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
@@ -182,12 +189,12 @@ public final class SqlUtil {
    * }</code>
    * </pre>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return SQL結果セット
    */
-  public static SqlResultSet select(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    return selectByFetchSize(conn, sqlWithParams, DEFAULT_FETCH_SIZE);
+  public static SqlResultSet select(final Connection conn, final SqlBuilder sb) {
+    return selectByFetchSize(conn, sb, DEFAULT_FETCH_SIZE);
   }
 
   /**
@@ -198,13 +205,13 @@ public final class SqlUtil {
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    * 
-   * @see #select(Connection, AbstractSqlWithParameters)
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @see #select(Connection, SqlBuilder)
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return SQL結果セット
    */
-  public static SqlResultSet selectFetchAll(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    return selectByFetchSize(conn, sqlWithParams, 0);
+  public static SqlResultSet selectFetchAll(final Connection conn, final SqlBuilder sb) {
+    return selectByFetchSize(conn, sb, 0);
   }
 
   /**
@@ -213,19 +220,19 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @param limitCount 取得件数上限
    * @return 複数行リスト
    */
-  public static IoRows selectBulk(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
+  public static IoRows selectBulk(final Connection conn, final SqlBuilder sb,
       final int limitCount) {
-    return selectBulkByLimitCount(conn, sqlWithParams, limitCount);
+    return selectBulkByLimitCount(conn, sb, limitCount);
   }
 
   /**
@@ -234,28 +241,28 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return 複数行リスト
    */
-  public static IoRows selectBulkAll(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    return selectBulkByLimitCount(conn, sqlWithParams, 0);
+  public static IoRows selectBulkAll(final Connection conn, final SqlBuilder sb) {
+    return selectBulkByLimitCount(conn, sb, 0);
   }
 
   /**
    * 複数件一括取得.
    * 
    * @param conn DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param sb SQLビルダー
    * @param limitCount 取得件数上限（ゼロ以下の場合は全件取得）
    * @return 複数行リスト
    */
-  private static IoRows selectBulkByLimitCount(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
+  private static IoRows selectBulkByLimitCount(final Connection conn, final SqlBuilder sb,
       final int limitCount) {
     // フェッチサイズ
     final int fetchSize;
@@ -269,7 +276,7 @@ public final class SqlUtil {
     }
 
     final IoRows rows = new IoRows();
-    try (final SqlResultSet rSet = SqlUtil.selectByFetchSize(conn, sqlWithParams, fetchSize);) {
+    try (final SqlResultSet rSet = selectByFetchSize(conn, sb, fetchSize);) {
       final Iterator<IoItems> ite = rSet.iterator();
       while (ite.hasNext()) {
         final IoItems row = ite.next();
@@ -296,19 +303,19 @@ public final class SqlUtil {
    * フェッチサイズ指定複数件取得.
    *
    * @param conn DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param sb SQLビルダー
    * @param fetchSize フェッチサイズ
    * @return SQL結果セット
    */
-  private static SqlResultSet selectByFetchSize(final Connection conn, final AbstractSqlWithParameters sqlWithParams,
+  private static SqlResultSet selectByFetchSize(final Connection conn, final SqlBuilder sb,
       final int fetchSize) {
         
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
-    final String sql = sqlWithParams.getSql();
-    final List<Object> params = sqlWithParams.getParameters();
+    final String sql = sb.getQuery();
+    final List<Object> params = sb.getParameters();
     if (logger.isDevelopMode()) {
       // SQLログ出力
-      logger.develop("SQL#SELECT execution. " + LogUtil.joinKeyVal("sql", sqlWithParams, "fetchSize", fetchSize));
+      logger.develop("SQL#SELECT execution. " + LogUtil.joinKeyVal("sql", sb, "fetchSize", fetchSize));
     }
 
     try {
@@ -333,7 +340,7 @@ public final class SqlUtil {
 
     } catch (SQLException e) {
       throw new RuntimeException("Exception error occurred during data retrieval. " + LogUtil.joinKeyVal("sql",
-          sqlWithParams, "fetchSize", fetchSize), e);
+          sb, "fetchSize", fetchSize), e);
     }
   }
 
@@ -385,8 +392,8 @@ public final class SqlUtil {
       }
 
       // SQL組み立て
-      sbInto.deleteLastChar(1);
-      sbVals.deleteLastChar(1);
+      sbInto.delLastChar();
+      sbVals.delLastChar();
       sbInto.addQuery(" ) VALUES ");
       sbVals.addQuery(" ) ");
       sbInto.addSqlBuilder(sbVals);
@@ -822,7 +829,7 @@ public final class SqlUtil {
       // SQL追加
       sb.addQuery(itemName).addQuery("=?", param).addQuery(",");
     }
-    sb.deleteLastChar(1);
+    sb.delLastChar();
   }
 
   /**
@@ -861,7 +868,7 @@ public final class SqlUtil {
       // SQL追加
       sb.addQuery(itemName).addQuery("=?", param).addQuery(" AND ");
     }
-    sb.deleteLastChar(4);
+    sb.delLastChar(4);
   }
 
   /**
@@ -870,14 +877,14 @@ public final class SqlUtil {
    * <li>反映件数が複数件の場合は例外エラーとする。</li>
    * </ul>
    *
-   * @param conn       DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param conn DB接続
+   * @param sb SQLビルダー
    * @return 反映件数が１件の場合は <code>true</code>、０件の場合は <code>false</code>
    */
-  public static boolean executeOne(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
-    final int ret = execute(conn, sqlWithParams);
+  public static boolean executeOne(final Connection conn, final SqlBuilder sb) {
+    final int ret = execute(conn, sb);
     if (ret > 1) {
-      throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sqlWithParams));
+      throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sb));
     }
     return (ret == 1);
   }
@@ -886,14 +893,14 @@ public final class SqlUtil {
    * SQL 登録・更新・削除.
    *
    * @param conn DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param sb SQLビルダー
    * @return 反映件数
    */
-  public static int execute(final Connection conn, final AbstractSqlWithParameters sqlWithParams) {
+  public static int execute(final Connection conn, final SqlBuilder sb) {
     try {
-      return executeSql(conn, sqlWithParams);
+      return executeSql(conn, sb);
     } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during SQL execution. " + LogUtil.joinKeyVal("sql", sqlWithParams), e);
+      throw new RuntimeException("Exception error occurred during SQL execution. " + LogUtil.joinKeyVal("sql", sb), e);
     }
   }
 
@@ -901,22 +908,22 @@ public final class SqlUtil {
    * SQLビルダー実行.
    *
    * @param conn DB接続
-   * @param sqlWithParams SQL＆パラメーター
+   * @param sb SQLビルダー
    * @return 反映件数
    * @throws SQLException SQL例外エラー
    */
-  private static int executeSql(final Connection conn, final AbstractSqlWithParameters sqlWithParams)
+  private static int executeSql(final Connection conn, final SqlBuilder sb)
       throws SQLException {
         
     if (logger.isDevelopMode()) {
       // SQLログ出力
-      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sqlWithParams));
+      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sb));
     }
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     // ステートメント生成
-    try (final PreparedStatement stmt = conn.prepareStatement(sqlWithParams.getSql());) {
+    try (final PreparedStatement stmt = conn.prepareStatement(sb.getQuery());) {
       // ステートメントにパラメーターセット
-      setStmtParameters(stmt, sqlWithParams.getParameters(), dbmsName);
+      setStmtParameters(stmt, sb.getParameters(), dbmsName);
       // SQL実行
       final int ret = stmt.executeUpdate();
       return ret;
@@ -1028,7 +1035,7 @@ public final class SqlUtil {
    * <li>項目物理名は英字小文字に変換する。（<code>AbstractIoTypeMap</code> のキールールとあわせる）</li>
    * </ul>
    *
-   * @param conn      DB接続
+   * @param conn DB接続
    * @param tableName テーブル名
    * @throws SQLException SQL例外エラー
    */
@@ -1326,6 +1333,101 @@ public final class SqlUtil {
     sb.addQuery(sql);
     final IoItems ret = selectOne(conn, sb);
     return ret.getString("today");
+  }
+
+  /** １バイトブランク. */
+  private static final String ONEBLANK = " ";
+
+  /**
+   * SQL追加.<br>
+   * <ul>
+   * <li>SQL文字列を StringBuilder に追加します。</li>
+   * <li>引数SQLの先頭がブランクの場合、先頭に１文字ブランク追加します。（ただし既存SQLが空または最後がブランクの場合は追加しない）</li>
+   * <li>引数SQLの前後のブランクをトリムし、２文字以上のブランクを1文字ブランクに置き換えます。</li>
+   * <li>引数SQLの最後がブランクの場合、最後に１文字ブランク追加します。</li>
+   * </ul>
+   * 
+   * @param toSb  追加先 StringBuilder
+   * @param sql 追加するSQL
+   */
+  static void appendQuery(final StringBuilder toSb, final String sql) {
+    if (ValUtil.isBlank(sql)) {
+      return;
+    }
+
+    // 引数SQLの先頭がブランクの場合、先頭に１文字ブランク追加
+    // ただし既存SQLが空または最後がブランクの場合は追加しない
+    if (sql.startsWith(ONEBLANK) && toSb.length() > 0
+        && toSb.charAt(toSb.length() - 1) != ' ') {
+      toSb.append(ONEBLANK);
+    }
+
+    // 前後のブランクをトリム
+    // ２文字以上のブランクを1文字ブランクに置き換え
+    // ただしシングルクォーテーションに挟まれたブランクは置き換えない
+    toSb.append(trimQuerySpaces(sql));
+
+    // 引数SQLの最後がブランクの場合、最後に１文字ブランク追加
+    if (sql.endsWith(ONEBLANK)) {
+      toSb.append(ONEBLANK);
+    }
+  }
+
+  /**
+   * SQL文字列内の２文字以上のブランクを1文字ブランクに置き換え.<br>
+   * <ul>
+   * <li>前後のブランクをトリム。</li>
+   * <li>２文字以上のブランクを1文字ブランクに置き換え。</li>
+   * <li>シングルクォーテーションに挟まれたブランクは置き換えない。</li>
+   * </ul>
+   * 
+   * @param sql SQL
+   * @return 結果SQL
+   */
+  private static String trimQuerySpaces(final String sql) {
+    if (ValUtil.isBlank(sql)) {
+        return ValUtil.BLANK;
+    }
+    
+    final int length = sql.length();
+    final char[] chars = sql.toCharArray(); // 配列アクセスで高速化
+    final StringBuilder ret = new StringBuilder(length);
+    
+    boolean inSq = false;
+    boolean prevSpace = false;
+    int beginPos = 0;
+    int endPos = length;
+    
+    // 前後のトリムを事前計算
+    while (beginPos < endPos && Character.isWhitespace(chars[beginPos])) {
+        beginPos++;
+    }
+    while (endPos > beginPos && Character.isWhitespace(chars[endPos - 1])) {
+        endPos--;
+    }
+    
+    for (int i = beginPos; i < endPos; i++) {
+        final char c = chars[i];
+
+        if (c == '\'' && (i == 0 || chars[i-1] != '\\')) {
+            inSq = !inSq;
+            ret.append(c);
+            prevSpace = false;
+        } else if (inSq) {
+            ret.append(c);
+            prevSpace = false;
+        } else if (Character.isWhitespace(c)) {
+            if (!prevSpace) {
+                ret.append(' ');
+                prevSpace = true;
+            }
+        } else {
+            ret.append(c);
+            prevSpace = false;
+        }
+    }
+    
+    return ret.toString();
   }
 
 }

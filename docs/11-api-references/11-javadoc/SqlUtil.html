@@ -28,11 +28,27 @@
       </div>
     </div>
     <div class="section">
+      <h2>定数・変数一覧</h2>
+      <div class="field-list">
+        <div class="field-item" id="ORACLE_PROTOCOL_ERR_AVOID_SQL">
+          <h3 class="field-name">ORACLE_PROTOCOL_ERR_AVOID_SQL</h3>
+          <div class="field-signature">
+            <code>public String ORACLE_PROTOCOL_ERR_AVOID_SQL</code>
+          </div>
+          <div class="field-description">
+            ORACLEプロトコル違反回避SQL.<br>
+<a href="https://support.oracle.com/knowledge/Middleware/2707017_1.html">support.oracle.com（参考情報）</a>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
       <h2>メソッド一覧</h2>
       <div class="method" id="selectOneExists">
         <h3 class="method-name">selectOneExists</h3>
         <div class="method-signature">
-          <code>public IoItems selectOneExists(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public IoItems selectOneExists(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           １件取得（ゼロ件エラー）.<br>
@@ -61,7 +77,7 @@
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -75,7 +91,7 @@
       <div class="method" id="selectOne">
         <h3 class="method-name">selectOne</h3>
         <div class="method-signature">
-          <code>public IoItems selectOne(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public IoItems selectOne(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           １件取得.<br>
@@ -105,7 +121,7 @@
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -119,7 +135,7 @@
       <div class="method" id="selectOneMultiIgnore">
         <h3 class="method-name">selectOneMultiIgnore</h3>
         <div class="method-signature">
-          <code>public IoItems selectOneMultiIgnore(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public IoItems selectOneMultiIgnore(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           １件取得（複数存在OK）.<br>
@@ -148,7 +164,7 @@
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -162,7 +178,7 @@
       <div class="method" id="select">
         <h3 class="method-name">select</h3>
         <div class="method-signature">
-          <code>public SqlResultSet select(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public SqlResultSet select(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           複数件取得.<br>
@@ -171,7 +187,7 @@
 <li><code>SqlResultSet</code>
 のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
 <li>try 句（try-with-resources文）で使用する。</li>
-<li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, AbstractSqlWithParameters)</code> を使用する。</li>
+<li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> を使用する。</li>
 <li>DBMSごとのフェッチサイズについて
 <ul>
 <li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
@@ -215,7 +231,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -229,7 +245,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="selectFetchAll">
         <h3 class="method-name">selectFetchAll</h3>
         <div class="method-signature">
-          <code>public SqlResultSet selectFetchAll(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public SqlResultSet selectFetchAll(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           複数件取得（全件フェッチ）.<br>
@@ -258,7 +274,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -271,14 +287,14 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
         <div class="see-also">
           <h4>関連項目</h4>
           <ul>
-            <li><a href="#select">#select(Connection, AbstractSqlWithParameters)</a></li>
+            <li><a href="#select">#select(Connection, SqlBuilder)</a></li>
           </ul>
         </div>
       </div>
       <div class="method" id="selectBulk">
         <h3 class="method-name">selectBulk</h3>
         <div class="method-signature">
-          <code>public IoRows selectBulk(Connection conn, AbstractSqlWithParameters sqlWithParams, int limitCount)</code>
+          <code>public IoRows selectBulk(Connection conn, SqlBuilder sqlWithParams, int limitCount)</code>
         </div>
         <div class="method-description">
           複数件一括取得.<br>
@@ -286,7 +302,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
 <li>複数行リストを返す。</li>
 <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
 <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
 を使用する。</li>
 <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
 </ul>
@@ -310,7 +326,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
               <tr>
@@ -329,7 +345,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="selectBulkAll">
         <h3 class="method-name">selectBulkAll</h3>
         <div class="method-signature">
-          <code>public IoRows selectBulkAll(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public IoRows selectBulkAll(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           複数件一括取得（全件取得）.<br>
@@ -337,7 +353,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
 <li>複数行リストを返す。</li>
 <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
 <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, AbstractSqlWithParameters)</code>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
 を使用する。</li>
 <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
 </ul>
@@ -361,7 +377,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -837,7 +853,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="executeOne">
         <h3 class="method-name">executeOne</h3>
         <div class="method-signature">
-          <code>public boolean executeOne(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public boolean executeOne(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           SQL １件登録・更新・削除.<br>
@@ -864,7 +880,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -878,7 +894,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="execute">
         <h3 class="method-name">execute</h3>
         <div class="method-signature">
-          <code>public int execute(Connection conn, AbstractSqlWithParameters sqlWithParams)</code>
+          <code>public int execute(Connection conn, SqlBuilder sqlWithParams)</code>
         </div>
         <div class="method-description">
           SQL 登録・更新・削除.
@@ -902,7 +918,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
               </tr>
               <tr>
                 <td><code>sqlWithParams</code></td>
-                <td><code>AbstractSqlWithParameters</code></td>
+                <td><code>SqlBuilder</code></td>
                 <td>SQL＆パラメーター</td>
               </tr>
             </tbody>
@@ -949,7 +965,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
     </div>
   </div>
   <div class="footer">
-    <p>Generated by JavaDocGenerator - 2025</p>
+    <p>Generated by JavaDocGenerator - 2026</p>
   </div>
 </body>
 </html>

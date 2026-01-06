@@ -327,7 +327,7 @@ sb.addQuery(" AND user_id = ? ", userId);
 sb.addQnotB(" AND user_id = ? ", userId);
 
 // パラメーターのみ追加
-sb.addParam(userId);
+sb.addParams(userId);
 
 // 他のSqlBuilderを統合
 sb.addSqlBuilder(otherSb);

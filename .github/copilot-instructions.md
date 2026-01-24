@@ -15,7 +15,7 @@
 ### 共通ステップ（必ず最初に実行）
 
 `docs/02-develop-standards/21-event-coding-pattern.md` を read_file で開き、類似処理のコーディングパターンを読み込む。
-バッチ処理の場合は、`docs/02-develop-standards/12-batch-structure.md` を read_file で開く。
+バッチ処理の場合は、`docs/02-develop-standards/22-batch-coding-pattern.md` を read_file で開く。
 
 
 ### 言語別ステップ
@@ -37,7 +37,7 @@
 2. 不明な点があれば `21-event-coding-pattern.md` に記載されている `src/com/example/app/service/exmodule/` 配下の Javaファイルを read_file で読み込む。
 バッチ処理の場合は `22-batch-coding-pattern.md` に記載されている `src/com/example/app/bat/exmodule/` 配下の Javaファイルを read_file で読み込む。
 3. 新規作成時は `21-event-coding-pattern.md` に記載されている  `docs/02-develop-standards/11-web-service-structure.md` を read_file で読み込む。
-バッチ処理の場合は `22-batch-coding-pattern.md` に記載されている `docs/02-develop-standards/12-batch-structure.md` を read_file で読み込む。
+バッチ処理の場合は `22-batch-coding-pattern.md` に記載されている `docs/02-develop-standards/12-batch-processing-structure.md` を read_file で読み込む。
 
 ## 絶対禁止事項
 - 「コード生成前の手順」完了前にコードを生成すること

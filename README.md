@@ -66,7 +66,7 @@ GitHub Copilot などのAIコーディングアシスタントが、高品質な
 ### 開発標準
 - [Webページ構成標準 (HTML/JavaScript/CSS)](docs/02-develop-standards/01-web-page-structure.md)
 - [Webサービス構成標準 (Java)](docs/02-develop-standards/11-web-service-structure.md)
-- [バッチ処理構成標準 (Java)](docs/02-develop-standards/12-batch-structure.md)
+- [バッチ処理構成標準 (Java)](docs/02-develop-standards/12-batch-processing-structure.md)
 - [イベント別コーディングパターン](docs/02-develop-standards/21-event-coding-pattern.md)
 - [バッチ処理別コーディングパターン](docs/02-develop-standards/22-batch-coding-pattern.md)
 

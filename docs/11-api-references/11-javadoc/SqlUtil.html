@@ -48,7 +48,7 @@
       <div class="method" id="selectOneExists">
         <h3 class="method-name">selectOneExists</h3>
         <div class="method-signature">
-          <code>public IoItems selectOneExists(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public IoItems selectOneExists(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           １件取得（ゼロ件エラー）.<br>
@@ -76,9 +76,9 @@
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -91,7 +91,7 @@
       <div class="method" id="selectOne">
         <h3 class="method-name">selectOne</h3>
         <div class="method-signature">
-          <code>public IoItems selectOne(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public IoItems selectOne(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           １件取得.<br>
@@ -120,9 +120,9 @@
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -135,7 +135,7 @@
       <div class="method" id="selectOneMultiIgnore">
         <h3 class="method-name">selectOneMultiIgnore</h3>
         <div class="method-signature">
-          <code>public IoItems selectOneMultiIgnore(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public IoItems selectOneMultiIgnore(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           １件取得（複数存在OK）.<br>
@@ -163,9 +163,9 @@
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -178,7 +178,7 @@
       <div class="method" id="select">
         <h3 class="method-name">select</h3>
         <div class="method-signature">
-          <code>public SqlResultSet select(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public SqlResultSet select(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           複数件取得.<br>
@@ -187,17 +187,14 @@
 <li><code>SqlResultSet</code>
 のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
 <li>try 句（try-with-resources文）で使用する。</li>
-<li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> を使用する。</li>
+<li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBean)</code> を使用する。</li>
 <li>DBMSごとのフェッチサイズについて
 <ul>
 <li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
 <li>PostgreSQL はデフォルト 全件フェッチとなっており OutOfMemory になる可能性があるためフェッチサイズを指定する。</li>
-<li>PostgreSQL
-はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE
-34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。<br>
+<li>PostgreSQL はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE 34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。<br>
 また処理が複雑になるが SQL の LIMIT句でデータを分割取得しても解決できる。</li>
-<li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は
-SQL の LIMIT句でデータを分割取得する必要がある。</li>
+<li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は SQL の LIMIT句でデータを分割取得する必要がある。</li>
 </ul>
 </li>
 </ul>
@@ -230,9 +227,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -245,7 +242,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="selectFetchAll">
         <h3 class="method-name">selectFetchAll</h3>
         <div class="method-signature">
-          <code>public SqlResultSet selectFetchAll(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public SqlResultSet selectFetchAll(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           複数件取得（全件フェッチ）.<br>
@@ -273,9 +270,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -287,14 +284,14 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
         <div class="see-also">
           <h4>関連項目</h4>
           <ul>
-            <li><a href="#select">#select(Connection, SqlBuilder)</a></li>
+            <li><a href="#select">#select(Connection, SqlBean)</a></li>
           </ul>
         </div>
       </div>
       <div class="method" id="selectBulk">
         <h3 class="method-name">selectBulk</h3>
         <div class="method-signature">
-          <code>public IoRows selectBulk(Connection conn, SqlBuilder sqlWithParams, int limitCount)</code>
+          <code>public IoRows selectBulk(Connection conn, SqlBean sb, int limitCount)</code>
         </div>
         <div class="method-description">
           複数件一括取得.<br>
@@ -302,7 +299,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
 <li>複数行リストを返す。</li>
 <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
 <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
 を使用する。</li>
 <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
 </ul>
@@ -325,9 +322,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
               <tr>
                 <td><code>limitCount</code></td>
@@ -345,7 +342,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="selectBulkAll">
         <h3 class="method-name">selectBulkAll</h3>
         <div class="method-signature">
-          <code>public IoRows selectBulkAll(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public IoRows selectBulkAll(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           複数件一括取得（全件取得）.<br>
@@ -353,7 +350,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
 <li>複数行リストを返す。</li>
 <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
 <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+<li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
 を使用する。</li>
 <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
 </ul>
@@ -376,9 +373,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -853,7 +850,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="executeOne">
         <h3 class="method-name">executeOne</h3>
         <div class="method-signature">
-          <code>public boolean executeOne(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public boolean executeOne(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           SQL １件登録・更新・削除.<br>
@@ -879,9 +876,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>
@@ -894,7 +891,7 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
       <div class="method" id="execute">
         <h3 class="method-name">execute</h3>
         <div class="method-signature">
-          <code>public int execute(Connection conn, SqlBuilder sqlWithParams)</code>
+          <code>public int execute(Connection conn, SqlBean sb)</code>
         </div>
         <div class="method-description">
           SQL 登録・更新・削除.
@@ -917,9 +914,9 @@ SQL の LIMIT句でデータを分割取得する必要がある。</li>
                 <td>DB接続</td>
               </tr>
               <tr>
-                <td><code>sqlWithParams</code></td>
-                <td><code>SqlBuilder</code></td>
-                <td>SQL＆パラメーター</td>
+                <td><code>sb</code></td>
+                <td><code>SqlBean</code></td>
+                <td>SQL Bean</td>
               </tr>
             </tbody>
           </table>

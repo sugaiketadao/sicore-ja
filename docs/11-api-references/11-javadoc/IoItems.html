@@ -1783,7 +1783,11 @@
           <code>public void clear()</code>
         </div>
         <div class="method-description">
-          クリア.
+          クリア.<br>
+<ul>
+<li>容易なインスタンスの使いまわしを防ぐためクリアメソッドを禁止している。</li>
+<li>クリアの代わりに新しいインスタンスを作成してください。</li>
+</ul>
   
         </div>
       </div>
@@ -1838,6 +1842,56 @@
           <p><code>Set&lt;Entry&lt;String, String&gt;&gt;</code> - エントリーセット</p>
         </div>
       </div>
+      <div class="method" id="equals">
+        <h3 class="method-name">equals <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean equals(Object obj)</code>
+        </div>
+        <div class="method-description">
+          イコール比較.<br>
+<ul>
+<li>同一内容であればイコールと判断する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>比較オブジェクト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 同一内容の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="hashCode">
+        <h3 class="method-name">hashCode <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public int hashCode()</code>
+        </div>
+        <div class="method-description">
+          ハッシュコード取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - ハッシュコード</p>
+        </div>
+      </div>
       <div class="method" id="createCsv">
         <h3 class="method-name">createCsv</h3>
         <div class="method-signature">
@@ -1856,14 +1910,15 @@
           <p><code>String</code> - CSV文字列</p>
         </div>
       </div>
-      <div class="method" id="createCsAllDq">
-        <h3 class="method-name">createCsAllDq</h3>
+      <div class="method" id="createCsvAllDq">
+        <h3 class="method-name">createCsvAllDq</h3>
         <div class="method-signature">
-          <code>public String createCsAllDq()</code>
+          <code>public String createCsvAllDq()</code>
         </div>
         <div class="method-description">
           CSV作成 ダブルクォーテーション付.<br>
 <ul>
+<li>値の追加順で CSV文字列を作成する。</li>
 <li>すべての項目にダブルクォーテーションを付加して出力する。</li>
 <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
 <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
@@ -1883,6 +1938,7 @@
         <div class="method-description">
           CSV作成 CSV仕様準拠ダブルクォーテーション付.<br>
 <ul>
+<li>値の追加順で CSV文字列を作成する。</li>
 <li>CSV仕様準拠で必要な項目にダブルクォーテーションを付加して出力する。</li>
 <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
 <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
@@ -1931,7 +1987,7 @@
           CSV格納.<br>
 <ul>
 <li>既に存在するキーでの格納は実行時エラーとなる。</li>
-<li>キー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
+<li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
 <li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
 </ul>
 
@@ -1971,7 +2027,13 @@
           <code>public int putAllByCsvDq(String[] keys, String csv)</code>
         </div>
         <div class="method-description">
-          ダブルクォーテーション付 CSV格納.
+          ダブルクォーテーション付 CSV格納.<br>
+<ul>
+<li>既に存在するキーでの格納は実行時エラーとなる。</li>
+<li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
+<li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
+<li>値内の２つ連続したダブルクォーテーションは１つのダブルクォーテーションに変換されて格納される。</li>
+</ul>
 
         </div>
         <div class="method-parameters">

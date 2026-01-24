@@ -197,8 +197,8 @@ public class ExampleUpsert extends AbstractDbAccessWebService {
 
     if (!io.containsKeyRows("detail")) {
       // 明細が存在しない場合は明細登録をスキップ
-      if (logger.isDevelopMode()) {
-        logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", 0));
+      if (super.logger.isDevelopMode()) {
+        super.logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", 0));
       }
       return;
     }
@@ -215,8 +215,8 @@ public class ExampleUpsert extends AbstractDbAccessWebService {
       // DB１件登録
       SqlUtil.insertOne(conn, "t_user_pet", row);
     }
-    if (logger.isDevelopMode()) {
-      logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", dno));
+    if (super.logger.isDevelopMode()) {
+      super. logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", dno));
     }
   }
 }

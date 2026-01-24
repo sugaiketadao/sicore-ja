@@ -7,6 +7,7 @@ import com.onepg.util.IoItems;
 import com.onepg.util.ValUtil;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -243,7 +244,7 @@ public final class DbUtil {
       if (!connBusyList.contains(serialCode)) {
         // 使用中接続リストに無い
         final Connection conn = connEnt.getValue();
-        if (isClosedForce(conn)) {
+        if (isClosedQuietly(conn)) {
           // 何らかの理由でDB切断されている場合はマップから削除して次を探す
           connPoolMap.remove(serialCode);
           continue;
@@ -261,7 +262,7 @@ public final class DbUtil {
     // 最大接続数（プール数）
     final int maxSize = PROP_MAP.getInt(connName + PKEY_SUFFIX_MAX);
 
-    if (connPoolMap.size() > maxSize) {
+    if (connPoolMap.size() >= maxSize) {
       throw new RuntimeException("Database connection limit reached. " + LogUtil.joinKeyVal("maxSize", maxSize));
     }
 
@@ -282,6 +283,7 @@ public final class DbUtil {
    * プーリングDB切断.<br>
    * <ul>
    * <li>プーリングされているDB接続をすべて切断する。</li>
+   * <li>使用中の接続も切断する。</li>
    * </ul>
    * 
    * @return 切断した場合は <code>true</code>
@@ -304,6 +306,8 @@ public final class DbUtil {
         final String serialCode = connEnt.getKey();
         if (connBusyList.contains(serialCode)) {
           // 使用中接続の場合
+          LogUtil.stdout("Warninng! Database connection is currently busy during close pooled connections. "
+              + LogUtil.joinKeyVal("serialCode", serialCode));
         }
         // DB接続
         final Connection conn = connEnt.getValue();
@@ -356,7 +360,7 @@ public final class DbUtil {
   }
 
   /**
-   * 強制DB切断確認.<br>
+   * エラー無視DB切断確認.<br>
    * <ul>
    * <li>部品からは <code>#isClosed()</code> ではなくエラーをスローしない本メソッドを使用する。</li>
    * </ul>
@@ -364,7 +368,7 @@ public final class DbUtil {
    * @param conn DB接続
    * @return DB切断されている場合は <code>true</code>（エラーの場合も <code>true</code>）
    */
-  private static boolean isClosedForce(final Connection conn) {
+  private static boolean isClosedQuietly(final Connection conn) {
     try {
       if (conn.isClosed()) {
         return true;
@@ -465,5 +469,42 @@ public final class DbUtil {
     return ret;
   }
 
+  /**
+   * エラー無視プリペアードステートメントクローズ.
+   *
+   * @param stmt プリペアードステートメント
+   */
+  static void closeQuietly(final PreparedStatement stmt) {
+    if (ValUtil.isNull(stmt)) {
+      return;
+    }
+    try {
+      if (stmt.isClosed()) {
+        return;
+      }
+      stmt.close();
+    } catch (SQLException ignore) {
+      // 処理なし
+    }
+  }
+  
+  /**
+   * エラー無視プリペアードステートメントクローズ.
+   *
+   * @param rset 結果セット
+   */
+  static void closeQuietly(final ResultSet rset) {
+    if (ValUtil.isNull(rset)) {
+      return;
+    }
+    try {
+      if (rset.isClosed()) {
+        return;
+      }
+      rset.close();
+    } catch (SQLException ignore) {
+      // 処理なし
+    }
+  }
 }
 

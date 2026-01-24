@@ -157,6 +157,39 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
       throw new RuntimeException("An exception error occurred while skipping rows. " + LogUtil.joinKeyVal("path", this.filePath) + LogUtil.joinKeyVal("skipCount", String.valueOf(count)), e);
     }
   }
+  
+  /**
+   * 先頭行取得.<br>
+   * <ul>
+   * <li>ファイルの先頭行を取得します。</li>
+   * <li>取得後の読み込み行数はカウントアップされます。</li>
+   * <li>以下の場合は <code>null</code> を返します
+   *   <ul><li>ファイルが既にクローズされている。</li>
+   *       <li>ファイルが空（ゼロ行）、既に最終行に達している。</li></ul>
+   * </ul>
+   *
+   * @return 先頭行文字列
+   */
+  public String getFirstLine() {
+    if (this.isClosed) {
+      return null;
+    }
+    try {
+      final String line = this.br.readLine();
+      if (ValUtil.isNull(line)) {
+        // 最終行読込済ON
+        readedEndRowFlag = true;
+        // ファイルを閉じる
+        close();
+        return null;
+      }
+      // 読込済行数をカウントアップ
+      readedCount++;
+      return line;
+    } catch (IOException e) {
+      throw new RuntimeException("An exception error occurred while reading first line. " + LogUtil.joinKeyVal("path", this.filePath), e);
+    }
+  }
 
   /**
    * 読み込み行イテレータークラス.

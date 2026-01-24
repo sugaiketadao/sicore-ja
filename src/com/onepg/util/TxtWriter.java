@@ -28,14 +28,37 @@ public class TxtWriter implements AutoCloseable {
    * コンストラクタ.
    *
    * @param filePath ファイルパス
-   * @param canAppend 追記を許可する場合は <code>true</code>
-   * @param lineFlush 改行時フラッシュする場合は <code>true</code>
+   * @param lineSep 改行コード
+   * @param charSet 文字セット
+   */
+  public TxtWriter(final String filePath, final LineSep lineSep, final CharSet charSet) {
+    this(filePath, lineSep, charSet, false, false, false);
+  }
+  
+  /**
+   * コンストラクタ.
+   *
+   * @param filePath ファイルパス
    * @param lineSep 改行コード
    * @param charSet 文字セット
    * @param withBom BOM付きの場合は <code>true</code>
    */
-  public TxtWriter(final String filePath, final boolean canAppend, final boolean lineFlush,
-      final LineSep lineSep, final CharSet charSet, final boolean withBom) {
+  public TxtWriter(final String filePath, final LineSep lineSep, final CharSet charSet, final boolean withBom) {
+    this(filePath, lineSep, charSet, withBom, false, false);
+  }
+
+  /**
+   * コンストラクタ.
+   *
+   * @param filePath ファイルパス
+   * @param lineSep 改行コード
+   * @param charSet 文字セット
+   * @param withBom BOM付きの場合は <code>true</code>
+   * @param canAppend 追記を許可する場合は <code>true</code>
+   * @param lineFlush 改行時フラッシュする場合は <code>true</code>
+   */
+  public TxtWriter(final String filePath, final LineSep lineSep, final CharSet charSet, final boolean withBom, 
+    final boolean canAppend, final boolean lineFlush) {
     this.filePath = FileUtil.convAbsolutePath(filePath);
 
     // 追記無しで既存ファイルが有ればエラー
@@ -49,7 +72,7 @@ public class TxtWriter implements AutoCloseable {
 
     try {
       final FileOutputStream fos = new FileOutputStream(this.filePath, canAppend);
-      if (withBom && CharSet.UTF8.equals(charSet)) {
+      if (withBom && CharSet.UTF8 == charSet) {
         // BOM
         fos.write(0xef);
         fos.write(0xbb);

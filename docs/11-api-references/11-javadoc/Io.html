@@ -68,7 +68,7 @@
 <li>文字列リストについて
 <ul>
 <li><code>#getList(String)</code>、<code>#putList(String, List)</code>、<code>#containsKeyList(String)</code>、
-<code>#removeList(String)</code> などの **List メソッドから扱う。</li>
+<code>#removeList(String)</code> などの <code>**List</code>メソッドから扱う。</li>
 <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
 <code>#keySet()</code>
 などの結果に文字列リストは含まれない。<br>
@@ -85,7 +85,7 @@
 <li>ネストマップについて
 <ul>
 <li><code>#getNest(String)</code>、<code>#putNest(String, Map)</code>、<code>#containsKeyNest(String)</code>、
-<code>#removeNest(String)</code> などの **Nest メソッドから扱う。</li>
+<code>#removeNest(String)</code> などの <code>**Nest</code>メソッドから扱う。</li>
 <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
 <code>#keySet()</code>
 などの結果にネストマップは含まれない。<br>
@@ -101,8 +101,7 @@
 <li>複数行リストについて
 <ul>
 <li><code>#getRows(String)</code>、<code>#putRows(String, Collection)</code>、
-<code>#containsKeyRows(String)</code>、<code>#removeRows(List)</code> などの **Rows
-メソッドから扱う。</li>
+<code>#containsKeyRows(String)</code>、<code>#removeRows(List)</code> などの <code>**Rows</code>メソッドから扱う。</li>
 <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
 <code>#keySet()</code>
 などの結果に複数行リストは含まれない。<br>
@@ -118,8 +117,7 @@
 <li>配列リストについて
 <ul>
 <li><code>#getArys(String)</code>、<code>#putArys(String, Collection)</code>、
-<code>#containsKeyArys(String)</code>、<code>#removeArys(List)</code> などの **Arys
-メソッドから扱う。</li>
+<code>#containsKeyArys(String)</code>、<code>#removeArys(List)</code> などの <code>**Arys</code>メソッドから扱う。</li>
 <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
 <code>#keySet()</code>
 などの結果に配列リストは含まれない。<br>
@@ -1894,7 +1892,11 @@
           <code>public void clear()</code>
         </div>
         <div class="method-description">
-          クリア.
+          クリア.<br>
+<ul>
+<li>容易なインスタンスの使いまわしを防ぐためクリアメソッドを禁止している。</li>
+<li>クリアの代わりに新しいインスタンスを作成してください。</li>
+</ul>
   
         </div>
       </div>
@@ -1947,6 +1949,56 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>Set&lt;Entry&lt;String, String&gt;&gt;</code> - エントリーセット</p>
+        </div>
+      </div>
+      <div class="method" id="equals">
+        <h3 class="method-name">equals <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public boolean equals(Object obj)</code>
+        </div>
+        <div class="method-description">
+          イコール比較.<br>
+<ul>
+<li>同一内容であればイコールと判断する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>obj</code></td>
+                <td><code>Object</code></td>
+                <td>比較オブジェクト</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 同一内容の場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="hashCode">
+        <h3 class="method-name">hashCode <span class="inherited-badge">（継承メソッド）</span></h3>
+        <div class="method-signature">
+          <code>public int hashCode()</code>
+        </div>
+        <div class="method-description">
+          ハッシュコード取得.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - ハッシュコード</p>
         </div>
       </div>
       <div class="method" id="getList">
@@ -2513,7 +2565,7 @@
               <tr>
                 <td><code>msgTextMap</code></td>
                 <td><code>Map&lt;String, String&gt;</code></td>
-                <td>メッセージテキストマップ＜メッセージID, メッセージテキスト＞</td>
+                <td>メッセージテキストマップ＜メッセージID、メッセージテキスト＞</td>
               </tr>
             </tbody>
           </table>

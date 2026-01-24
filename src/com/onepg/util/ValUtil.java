@@ -35,11 +35,6 @@ public final class ValUtil {
   /** 区分：OFF値. */
   public static final String OFF = "0";
 
-  /** シングルクォーテーション文字. */
-  public static final String SQ = "'";
-  /** ダブルクォーテーション文字. */
-  public static final String DQ = "\"";
-
   /** JSON <code>null</code> 文字. */
   public static final String JSON_NULL = "null";
 
@@ -354,6 +349,87 @@ public final class ValUtil {
   }
 
   /**
+   * 配列CSV連結.<br>
+   * <ul>
+   * <li>配列が空の場合はブランクを返す。</li>
+   * <li><code>null</code> はブランクとして連結される。</li>
+   * </ul>
+   *
+   * @param values 連結対象
+   * @return 連結したCSV文字列
+   */
+  public static String joinCsv(final String[] values) {
+    if (isEmpty(values)) {
+      return BLANK;
+    }
+    final StringBuilder sb = new StringBuilder();
+    for (final String value : values) {
+      final String val = ValUtil.nvl(value);
+      sb.append(val);
+      sb.append(',');
+    }
+    ValUtil.deleteLastChar(sb);
+    return sb.toString();
+  }
+
+  /**
+   * 配列CSV連結 ダブルクォーテーション付.<br>
+   * <ul>
+   * <li>配列が空の場合はブランクを返す。</li>
+   * <li><code>null</code> はブランクとして連結される。</li>
+   * <li>すべての配列要素にダブルクォーテーションを付加して出力する。</li>
+   * <li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
+   * </ul>
+   *
+   * @param values 連結対象
+   * @return 連結したCSV文字列
+   */
+  public static String joinCsvAllDq(final String[] values) {
+    if (isEmpty(values)) {
+      return BLANK;
+    }
+    final StringBuilder sb = new StringBuilder();
+    for (final String value : values) {
+      final String val = ValUtil.nvl(value);
+      sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      sb.append(',');
+    }
+    ValUtil.deleteLastChar(sb);
+    return sb.toString();
+  }
+
+  /**
+   * 配列CSV連結 CSV仕様準拠ダブルクォーテーション付.<br>
+   * <ul>
+   * <li>配列が空の場合はブランクを返す。</li>
+   * <li><code>null</code> はブランクとして連結される。</li>
+   * <li>CSV仕様準拠で必要な要素にダブルクォーテーションを付加して出力する。</li>
+   * <li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
+   * </ul>
+   *
+   * @param values 連結対象
+   * @return 連結したCSV文字列
+   */
+  public static String joinCsvDq(final String[] values) {
+    if (isEmpty(values)) {
+      return BLANK;
+    }
+    final StringBuilder sb = new StringBuilder();
+    for (final String value : values) {
+      final String val = ValUtil.nvl(value);
+      // カンマ、改行、ダブルクォートが含まれる場合のみクォート
+      if (val.contains(",") || val.contains("\"") || val.contains("\n") || val.contains("\r")) {
+        sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      } else {
+        sb.append(val);
+      }
+      sb.append(',');
+    }
+    ValUtil.deleteLastChar(sb);
+    return sb.toString();
+  }
+
+  /**
    * 配列分割.<br>
    * <ul>
    * <li>文字が <code>null</code> の場合は長さゼロの配列を返す。</li>
@@ -404,6 +480,51 @@ public final class ValUtil {
       return new String[] {};
     }
     return value.split(sep, limitLength);
+  }
+
+  /**
+   * CSV分割.<br>
+   * <ul>
+   * <li>CSV文字列を文字列配列に分割する。</li>
+   * <li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
+   * </ul>
+   *
+   * @param csv CSV文字列
+   * @return 分割した文字列配列
+   */
+  public static String[] splitCsv(final String csv) {
+    if (isNull(csv)) {
+      return new String[] {};
+    }
+    final List<String> list = new ArrayList<>();
+
+    for (final String value : new SimpleSeparateParser(csv, ",")) {
+      list.add(value);
+    }
+    return list.toArray(new String[0]);
+  }
+
+  /**
+   * ダブルクォーテーション付 CSV分割.<br>
+   * <ul>
+   * <li>CSV文字列を文字列配列に分割する。</li>
+   * <li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
+   * <li>値内の2個連続したダブルクォーテーションは1個のダブルクォーテーションに変換されて格納される。</li>
+   * </ul>
+   * 
+   * @param csv CSV文字列
+   * @return 分割した文字列配列
+   */
+  public static String[] splitCsvDq(final String csv) {
+    if (isNull(csv)) {
+      return new String[] {};
+    }
+    final List<String> list = new ArrayList<>();
+
+    for (final String value : new CsvDqParser(csv)) {
+      list.add(value.replace("\"\"", "\""));
+    }
+    return list.toArray(new String[0]);
   }
 
   /**

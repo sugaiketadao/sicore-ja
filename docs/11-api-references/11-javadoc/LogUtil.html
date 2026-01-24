@@ -479,6 +479,41 @@
           <p><code>String</code> - フォーマット済み稼働時間</p>
         </div>
       </div>
+      <div class="method" id="getClassNameAndLineNo">
+        <h3 class="method-name">getClassNameAndLineNo</h3>
+        <div class="method-signature">
+          <code>public String getClassNameAndLineNo(Class&lt;?&gt; callerClass)</code>
+        </div>
+        <div class="method-description">
+          呼び出し元情報取得.
+<ul>
+<li>スタックトレースから呼び出し元の クラスパッケージ＋クラス名＋行番号 を取得する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>callerClass</code></td>
+                <td><code>Class&lt;?&gt;</code></td>
+                <td>呼び出し元クラス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - クラスパッケージ＋クラス名＋行番号</p>
+        </div>
+      </div>
     </div>
   </div>
   <div class="footer">

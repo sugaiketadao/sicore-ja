@@ -212,6 +212,19 @@ public final class LogWriter {
   }
 
   /**
+   * 終了情報出力.
+   * @param exitStatus 終了ステータス
+   */
+  public void end(final int exitStatus) {
+    final String log = createMsg(this.infPrefix, "< end > " + this.beginEndSuffix + " " + LogUtil.joinKeyVal("status", exitStatus));
+
+    this.infHdr.getWriter().println(log);
+    if (this.isDevelopMode) {
+      this.console.println(log);
+    }
+  }
+
+  /**
    * 開発用出力.
    *
    * @param msg ログ出力文言

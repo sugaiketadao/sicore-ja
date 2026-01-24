@@ -6,7 +6,7 @@
 
 ## 前提条件
 - [Webサービス構成標準](../02-develop-standards/11-web-service-structure.md) に従う。
-<!-- [バッチ処理構成標準](13-batch-processing-structures.md) に従う。 -->
+- [バッチ処理構成標準](../02-develop-standards/12-batch-structure.md) に従う。
 
 ## 変数名・クラス名
 - 変数名はローワーキャメルケースとする。

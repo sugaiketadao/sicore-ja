@@ -10,7 +10,7 @@ import com.onepg.util.ValUtil;
  * Webサービス 基底クラス.<br>
  * <ul>
  * <li>各Webサービスの共通処理（ログ出力、例外処理等）を提供します。</li>
- * <li>サブクラスで doExecuteメソッドを実装することで具体的な Webサービス処理を定義します。</li>
+ * <li>サブクラスで <code>doExecute</code>メソッドを実装することで具体的な Webサービス処理を定義します。</li>
  * </ul>
  */
 public abstract class AbstractWebService {
@@ -42,8 +42,8 @@ public abstract class AbstractWebService {
   /**
    * メイン処理の呼び出し.<br>
    * <ul>
+   * <li>ログ開始処理を実行後、<code>doExecute</code>メソッドを呼び出し、最後にログ終了処理を実行します。</li>
    * <li>外部からの直接呼び出しを防ぐためパッケージプライベートとしています。</li>
-   * <li>ログ出力と例外処理を含む共通処理を実行後、具体的な業務処理を呼び出します。</li>
    * </ul>
    *
    * @param io 引数かつ戻値（リクエストかつレスポンス）

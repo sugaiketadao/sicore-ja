@@ -20,6 +20,7 @@
       <div class="class-details">
         <p><strong>パッケージ:</strong> com.onepg.db</p>
         <p><strong>クラス名:</strong> SqlBuilder</p>
+        <p><strong>継承:</strong> <a href="SqlBean.html">SqlBean</a></p>
       </div>
       <div class="class-description">
         <h3>説明</h3>
@@ -27,14 +28,15 @@
 <ul>
 <li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
 <li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
-<li>add* のメソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
+<li><code>add*</code>メソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
 </ul>
 <pre>
-［例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
-［例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
-［例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
-［例４］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId);</code>
-［例５］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId).addQnotB("AND a.user_nm LIKE ? ", '%' + name + '%');</code>
+［SQL追加例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
+［SQL追加例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
+［SQL追加例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
+［SQL追加例４］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId);</code>
+［SQL追加例５］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId).addQnotB("AND a.user_nm LIKE ? ", '%' + name + '%');</code>
+［SQL実行例］ <code>SqlResultSet rSet = SqlUtil.select(getDbConn(), sqlBuilder);</code>
 </pre>
 
 </div>
@@ -370,20 +372,6 @@ sb.delLastChar(4);
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>SqlBuilder</code> - 自インスタンス</p>
-        </div>
-      </div>
-      <div class="method" id="length">
-        <h3 class="method-name">length</h3>
-        <div class="method-signature">
-          <code>public int length()</code>
-        </div>
-        <div class="method-description">
-          SQL文字列長さ取得.
-
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>int</code> - SQL文字列長さ</p>
         </div>
       </div>
     </div>

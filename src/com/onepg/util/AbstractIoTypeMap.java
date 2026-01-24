@@ -203,9 +203,10 @@ public abstract class AbstractIoTypeMap implements Map<String, String> {
   /**
    * 文字列取得.<br>
    * <ul>
-   * <li>型指定の値取得メソッド［例］<code>#getString(String)</code> を使用してください。</li>
+   * <li>型指定の値取得メソッド［例］<code>#getString(String)</code> を明示的に使用してください。</li>
    * </ul>
    *
+   * @deprecated 型指定の値取得メソッド［例］<code>#getString(String)</code> を明示的に使用してください。
    * @param key キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）
    * @return 文字列
    */
@@ -218,10 +219,11 @@ public abstract class AbstractIoTypeMap implements Map<String, String> {
   /**
    * 文字列取得.<br>
    * <ul>
-   * <li>型指定の値取得メソッド［例］<code>#getStringNullableOrDefault(String, String)</code> を使用してください。</li>
+   * <li>型指定の値取得メソッド［例］<code>#getStringNullableOrDefault(String, String)</code> を明示的に使用してください。</li>
    * <li>存在しないキーの場合は引数の非存在時戻値が返される。</li>
    * </ul>
    *
+   * @deprecated 型指定の値取得メソッド［例］<code>#getStringNullableOrDefault(String, String)</code> を明示的に使用してください。
    * @param key キー（英字小文字、数字、アンダースコア、ハイフン、ドットのみ）
    * @param notExistsValue 非存在時戻値
    * @return 文字列
@@ -1036,7 +1038,11 @@ public abstract class AbstractIoTypeMap implements Map<String, String> {
   }
 
   /**
-   * クリア.
+   * クリア.<br>
+   * <ul>
+   * <li>容易なインスタンスの使いまわしを防ぐためクリアメソッドを禁止している。</li>
+   * <li>クリアの代わりに新しいインスタンスを作成してください。</li>
+   * </ul>
    */
   @Override
   public final void clear() {
@@ -1080,5 +1086,36 @@ public abstract class AbstractIoTypeMap implements Map<String, String> {
   @Override
   public final Set<Entry<String, String>> entrySet() {
     return Collections.unmodifiableSet(this.valMap.entrySet());
+  }
+  
+  /**
+   * イコール比較.<br>
+   * <ul>
+   * <li>同一内容であればイコールと判断する。</li>
+   * </ul>
+   *
+   * @param obj 比較オブジェクト
+   * @return 同一内容の場合は <code>true</code>
+   */
+  @Override
+  public final boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (ValUtil.isNull(obj) || getClass() != obj.getClass()) {
+        return false;
+    }
+    final AbstractIoTypeMap other = (AbstractIoTypeMap) obj;
+    return this.valMap.equals(other.valMap);
+  }
+
+  /**
+   * ハッシュコード取得.
+   *
+   * @return ハッシュコード
+   */
+  @Override
+  public final int hashCode() {
+    return this.valMap.hashCode();
   }
 }

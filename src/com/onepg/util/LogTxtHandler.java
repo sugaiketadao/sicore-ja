@@ -154,8 +154,7 @@ public final class LogTxtHandler implements AutoCloseable {
    * ファイルオープン.
    */
   private final void open() {
-    this.tw = new TxtSerializeWriter(this.filePath, true, false, LineSep.LF,
-        CharSet.UTF8, false);
+    this.tw = new TxtSerializeWriter(this.filePath, LineSep.LF, CharSet.UTF8, false, true, false);
   }
 
   /**

@@ -25,15 +25,15 @@ final class TxtSerializeWriter extends TxtWriter {
    * コンストラクタ.
    *
    * @param filePath ファイルパス
-   * @param canAppend 追記を許可する場合は <code>true</code>
-   * @param lineFlush 改行時フラッシュする場合は <code>true</code>
    * @param lineSep 改行コード
    * @param charSet 文字セット
    * @param withBom BOM付きの場合は <code>true</code>
+   * @param canAppend 追記を許可する場合は <code>true</code>
+   * @param lineFlush 改行時フラッシュする場合は <code>true</code>
    */
-  TxtSerializeWriter(final String filePath, final boolean canAppend, final boolean lineFlush,
-      final LineSep lineSep, final CharSet charSet, final boolean withBom) {
-    super(filePath, canAppend, lineFlush, lineSep, charSet, withBom);
+  TxtSerializeWriter(final String filePath, final LineSep lineSep, final CharSet charSet, final boolean withBom,
+     final boolean canAppend, final boolean lineFlush) {
+    super(filePath, lineSep, charSet, withBom, canAppend, lineFlush);
   }
 
   /**

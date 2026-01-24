@@ -52,8 +52,8 @@ public class ExampleDelete extends AbstractDbAccessWebService {
     // DB複数件削除
     final int delCnt = SqlUtil.delete(conn, "t_user_pet", io, new String[] { "user_id" });
 
-    if (logger.isDevelopMode()) {
-      logger.develop(LogUtil.joinKeyVal("deleted count", delCnt));
+    if (super.logger.isDevelopMode()) {
+      super.logger.develop(LogUtil.joinKeyVal("deleted count", delCnt));
     }
   }
 }

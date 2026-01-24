@@ -155,6 +155,27 @@
           <p><code>boolean</code> - 行数が不足していた場合は <code>false</code></p>
         </div>
       </div>
+      <div class="method" id="getFirstLine">
+        <h3 class="method-name">getFirstLine</h3>
+        <div class="method-signature">
+          <code>public String getFirstLine()</code>
+        </div>
+        <div class="method-description">
+          先頭行取得.<br>
+<ul>
+<li>ファイルの先頭行を取得します。</li>
+<li>取得後の読み込み行数はカウントアップされます。</li>
+<li>以下の場合は <code>null</code> を返します
+  <ul><li>ファイルが既にクローズされている。</li>
+      <li>ファイルが空（ゼロ行）、既に最終行に達している。</li></ul>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 先頭行文字列</p>
+        </div>
+      </div>
       <div class="method" id="hasNext">
         <h3 class="method-name">hasNext</h3>
         <div class="method-signature">

@@ -10,7 +10,7 @@ import java.io.IOException;
  * HTTPハンドラー 基底クラス.<br>
  * <ul>
  * <li>共通のエラーハンドリングを提供します。</li>
- * <li>サブクラスで doExecuteメソッドを実装することで具体的な HTTPリクエスト処理を定義します。</li>
+ * <li>サブクラスで <code>doExecute</code>メソッドを実装することで具体的な HTTPリクエスト処理を定義します。</li>
  * <li>サブクラスでクラス変数を使用した場合、その変数は複数のリクエストで共有されます。</li>
  * </ul>
  * @hidden

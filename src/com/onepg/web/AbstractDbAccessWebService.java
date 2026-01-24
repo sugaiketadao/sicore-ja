@@ -60,7 +60,7 @@ public abstract class AbstractDbAccessWebService extends AbstractWebService {
    * DB接続取得.<br>
    * <ul>
    * <li>現在のDB接続を返します。</li>
-   * <li>executeメソッド内でのみ有効な接続です。</li>
+   * <li><code>execute</code>メソッド内でのみ有効な接続です。</li>
    * </ul>
    *
    * @return DB接続

@@ -22,7 +22,7 @@ import java.util.Map;
  * <li>文字列リストについて
  * <ul>
  * <li><code>#getList(String)</code>、<code>#putList(String, List)</code>、<code>#containsKeyList(String)</code>、
- * <code>#removeList(String)</code> などの **List メソッドから扱う。</li>
+ * <code>#removeList(String)</code> などの <code>**List</code>メソッドから扱う。</li>
  * <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
  * <code>#keySet()</code>
  * などの結果に文字列リストは含まれない。<br>
@@ -39,7 +39,7 @@ import java.util.Map;
  * <li>ネストマップについて
  * <ul>
  * <li><code>#getNest(String)</code>、<code>#putNest(String, Map)</code>、<code>#containsKeyNest(String)</code>、
- * <code>#removeNest(String)</code> などの **Nest メソッドから扱う。</li>
+ * <code>#removeNest(String)</code> などの <code>**Nest</code>メソッドから扱う。</li>
  * <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
  * <code>#keySet()</code>
  * などの結果にネストマップは含まれない。<br>
@@ -55,8 +55,7 @@ import java.util.Map;
  * <li>複数行リストについて
  * <ul>
  * <li><code>#getRows(String)</code>、<code>#putRows(String, Collection)</code>、
- * <code>#containsKeyRows(String)</code>、<code>#removeRows(List)</code> などの **Rows
- * メソッドから扱う。</li>
+ * <code>#containsKeyRows(String)</code>、<code>#removeRows(List)</code> などの <code>**Rows</code>メソッドから扱う。</li>
  * <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
  * <code>#keySet()</code>
  * などの結果に複数行リストは含まれない。<br>
@@ -72,8 +71,7 @@ import java.util.Map;
  * <li>配列リストについて
  * <ul>
  * <li><code>#getArys(String)</code>、<code>#putArys(String, Collection)</code>、
- * <code>#containsKeyArys(String)</code>、<code>#removeArys(List)</code> などの **Arys
- * メソッドから扱う。</li>
+ * <code>#containsKeyArys(String)</code>、<code>#removeArys(List)</code> などの <code>**Arys</code>メソッドから扱う。</li>
  * <li>マップクラスが持つ <code>#size()</code> や <code>#containsKey(Object)</code>、
  * <code>#keySet()</code>
  * などの結果に配列リストは含まれない。<br>
@@ -729,7 +727,7 @@ public final class Io extends AbstractIoTypeMap {
 
   /**
    * メッセージ付き JSON作成.
-   * @param msgTextMap メッセージテキストマップ＜メッセージID, メッセージテキスト＞
+   * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞
    * @return JSON文字列
    */
   public String createJsonWithMsg(final Map<String, String> msgTextMap) {
@@ -1453,7 +1451,7 @@ public final class Io extends AbstractIoTypeMap {
     /**
      * JSON作成.
      * 
-     * @param msgTextMap メッセージテキストマップ＜メッセージID, メッセージテキスト＞（省略可能）
+     * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞（省略可能）
      * @return JSON文字列
      */
     protected String createJson(final Map<String, String> msgTextMap) {
@@ -1674,7 +1672,7 @@ public final class Io extends AbstractIoTypeMap {
    * <li>メッセージテキストマップが指定されていない場合は、メッセージテキストは空文字列とする。</li>
    * </ul>
    * 
-   * @param msgTextMap メッセージテキストマップ＜メッセージID, メッセージテキスト＞
+   * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞
    * @return JSON配列 "[ {...}, {...}, ... ]"
    */
   private String createMsgJsoAry(final Map<String, String> msgTextMap) {

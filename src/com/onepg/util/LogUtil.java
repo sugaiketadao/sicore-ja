@@ -463,4 +463,25 @@ public final class LogUtil {
     }
   }
 
+  /**
+   * 呼び出し元情報取得.
+   * <ul>
+   * <li>スタックトレースから呼び出し元の クラスパッケージ＋クラス名＋行番号 を取得する。</li>
+   * </ul>
+   * @param callerClass 呼び出し元クラス
+   * @return クラスパッケージ＋クラス名＋行番号
+   */
+  public static String getClassNameAndLineNo(final Class<?> callerClass) {
+    final String callerClassName = callerClass.getName();
+    final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    for (final StackTraceElement element : stackTrace) {
+      final String className = element.getClassName();
+      if (!className.equals(callerClassName)
+          && !className.equals(Thread.class.getName())) {
+        return className + "[" + element.getLineNumber() + "]";
+      }
+    }
+    return "UnknownSource";
+  }
+  
 }

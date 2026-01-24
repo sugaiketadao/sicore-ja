@@ -24,6 +24,7 @@ public final class CsvDqParser extends AbstractStringSeparateParser {
    * <li>ダブルクォーテーション（エスケープ無し）で囲まれていないカンマ箇所で分割する。</li>
    * <li>ダブルクォーテーション内のカンマは区切り文字として扱わない。</li>
    * <li>エスケープされたダブルクォーテーション（\"）は文字として扱う。</li>
+   * <li>２つ連続したダブルクォーテーション（""）は文字として扱う。</li>
    * <li>先頭と末尾の空白文字は除去される。</li>
    * </ul>
    *
@@ -59,6 +60,15 @@ public final class CsvDqParser extends AbstractStringSeparateParser {
       if (c == '"') {
         if (isPreEsc(value, i)) {
           continue;
+        }
+        // ダブルクォーテーションの次の文字もダブルクォーテーションの場合はエスケープシーケンス（""→"）として扱う
+        if (i + 1 < value.length() && value.charAt(i + 1) == '"') {
+          if (inDq) {
+            // ダブルクォーテーション内のみ有効
+            // 次のダブルクォーテーションもスキップ
+            i++; 
+            continue;
+          }
         }
         // エスケープされていない場合のみ
         // ダブルクォーテーション内のトグル

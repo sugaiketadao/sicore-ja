@@ -1,9 +1,7 @@
 package com.onepg.db;
 
-import com.onepg.util.LogUtil;
 import com.onepg.util.ValUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,24 +9,20 @@ import java.util.List;
  * <ul>
  * <li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
  * <li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
- * <li>add* のメソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
+ * <li><code>add*</code>メソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
  * </ul>
  * <pre>
- * ［例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
- * ［例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
- * ［例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
- * ［例４］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId);</code>
- * ［例５］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId).addQnotB("AND a.user_nm LIKE ? ", '%' + name + '%');</code>
+ * ［SQL追加例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
+ * ［SQL追加例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
+ * ［SQL追加例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
+ * ［SQL追加例４］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId);</code>
+ * ［SQL追加例５］ <code>sqlBuilder.addQnotB("AND a.user_id = ? ", userId).addQnotB("AND a.user_nm LIKE ? ", '%' + name + '%');</code>
+ * ［SQL実行例］ <code>SqlResultSet rSet = SqlUtil.select(getDbConn(), sqlBuilder);</code>
  * </pre>
  * 
  */
-public final class SqlBuilder {
+public final class SqlBuilder extends SqlBean {
 
-  /** SQL文字列. */
-  private final StringBuilder query = new StringBuilder();
-  /** パラメーター. */
-  private final List<Object> parameters = new ArrayList<>();
-  
   /**
    * コンストラクタ.
    */
@@ -46,7 +40,7 @@ public final class SqlBuilder {
    * @param sql SQL文字列
    */
   private void appendQuery(final String sql) {
-    SqlUtil.appendQuery(this.query, sql);
+    SqlUtil.appendQuery(super.queryBuilder, sql);
   }
 
   /**
@@ -62,7 +56,7 @@ public final class SqlBuilder {
       return;
     }
     for (final Object param : params) {
-      this.parameters.add(param);
+      super.bindValues.add(param);
     }
   }
 
@@ -75,25 +69,7 @@ public final class SqlBuilder {
     if (ValUtil.isEmpty(params)) {
       return;
     }
-    this.parameters.addAll(params);
-  }
-
-  /**
-   * SQL文字列取得.
-   *
-   * @return SQL文字列
-   */
-  String getQuery() {
-    return this.query.toString();
-  }
-
-  /**
-   * パラメーター取得.
-   *
-   * @return パラメーター
-   */
-  List<Object> getParameters() {
-    return this.parameters;
+    super.bindValues.addAll(params);
   }
 
   /**
@@ -108,7 +84,7 @@ public final class SqlBuilder {
     // SQL追加
     appendQuery(sb.getQuery());
     // パラメーター追加
-    addAllParameters(sb.getParameters());
+    addAllParameters(sb.getBindValues());
   }
 
   /**
@@ -248,7 +224,7 @@ public final class SqlBuilder {
    * @return 自インスタンス
    */
   public SqlBuilder delLastChar() {
-    ValUtil.deleteLastChar(this.query);
+    ValUtil.deleteLastChar(super.queryBuilder);
     return this;
   }
   
@@ -269,30 +245,8 @@ public final class SqlBuilder {
    * @return 自インスタンス
    */
   public SqlBuilder delLastChar(final int deleteCharCount) {
-    ValUtil.deleteLastChar(this.query, deleteCharCount);
+    ValUtil.deleteLastChar(super.queryBuilder, deleteCharCount);
     return this;
   }
   
-  /**
-   * SQL文字列長さ取得.
-   *
-   * @return SQL文字列長さ
-   */
-  public int length() {
-    return this.query.length();
-  }
-
-  /**
-   * ログ用文字列返却.
-   */
-  public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    try {
-      sb.append("{\"").append(this.query.toString()).append("\"<-");
-      sb.append(LogUtil.join(this.parameters)).append("}");
-    } catch (Exception ignore) {
-      // 処理なし
-    }
-    return sb.toString();
-  }
 }

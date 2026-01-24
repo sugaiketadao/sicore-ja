@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SqlConst - JavaDoc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>SqlConst</h1>
+      <p>フレームワーク部品 [com.onepg.db]</p>
+      <a href="index.html" class="back-link">← クラス一覧に戻る</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="section">
+      <h2>クラス情報</h2>
+      <div class="class-details">
+        <p><strong>パッケージ:</strong> com.onepg.db</p>
+        <p><strong>クラス名:</strong> SqlConst</p>
+        <p><strong>継承:</strong> <a href="SqlBean.html">SqlBean</a></p>
+      </div>
+      <div class="class-description">
+        <h3>説明</h3>
+        <div>固定SQL.<br>
+<ul>
+<li>SQL文字列とバインド項目定義（項目名と型）を格納します。</li>
+<li>SQL実行時には、バインド値を持つパラメーターをこのSQLと共に渡します。</li>
+<li>同じ項目名を同じ型で複数回バインド可能です。</li>
+<li>バインド項目が無い場合は、そのまま使用します。</li>
+</ul>
+<pre>
+［SQL宣言例１］<code>SqlConst SQL_INS_PET = SqlConst.begin()
+    .addQuery("INSERT INTO t_pet ( ")
+    .addQuery("  pet_no ")
+    .addQuery(", pet_nm ")
+    .addQuery(", birth_dt ")
+    .addQuery(", ins_ts ")
+    .addQuery(", upd_ts ")
+    .addQuery(" ) VALUES ( ")
+    .addQuery("  ? ", "pet_no", BindType.BigDecimal)
+    .addQuery(", ? ", "pet_nm", BindType.String)
+    .addQuery(", ? ", "birth_dt", BindType.Date)
+    .addQuery(", ? ", "now_ts", BindType.Timestamp)
+    .addQuery(", ? ", "now_ts", BindType.Timestamp)
+    .addQuery(" ) ")
+    .end();</code>
+［SQL実行例１］ <code>SqlUtil.executeOne(conn, SQL_INS_PET.bind(io));</code>
+［SQL宣言例２］<code>SqlConst SQL_SEL_USER = SqlConst.begin()
+    .addQuery("SELECT ")
+    .addQuery("  u.user_id ")
+    .addQuery(", u.user_nm ")
+    .addQuery(", u.email ")
+    .addQuery(", u.birth_dt ")
+    .addQuery(" FROM t_user u ")
+    .addQuery(" ORDER BY u.user_id ")
+    .end();</code>
+［SQL実行例２］ <code>SqlResultSet rSet = SqlUtil.select(getDbConn(), SQL_SEL_USER);</code>
+</pre>
+</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>列挙型一覧</h2>
+      <div class="enum-list">
+        <div class="enum-item" id="BindType">
+          <h3 class="enum-name">BindType</h3>
+          <div class="enum-signature">
+            <code>public enum BindType</code>
+          </div>
+          <div class="enum-description">
+            バインド型.<br>
+<ul>
+<li>SQLにバインドする際の型を示します。</li>
+<li>数値の型は <code>BigDecimal</code> に統一されます。</li>
+</ul>
+  
+          </div>
+          <div class="enum-constants">
+            <h4>定数</h4>
+            <ul>
+              <li><code>STRING</code></li>
+              <li><code>BIGDECIMAL</code></li>
+              <li><code>DATE</code></li>
+              <li><code>TIMESTAMP</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>メソッド一覧</h2>
+      <div class="method" id="begin">
+        <h3 class="method-name">begin</h3>
+        <div class="method-signature">
+          <code>public SqlConstBuilder begin()</code>
+        </div>
+        <div class="method-description">
+          固定SQLビルダーインスタンス生成.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConstBuilder</code> - 固定SQLビルダーインスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="bind">
+        <h3 class="method-name">bind</h3>
+        <div class="method-signature">
+          <code>public SqlBean bind(AbstractIoTypeMap params)</code>
+        </div>
+        <div class="method-description">
+          バインド値セット.<br>
+<ul>
+<li>格納しているSQL文字列と、引数として受け取ったパラメーター値マップを SQL Bean にセットして返します。</li>
+<li>パラメーター値マップからバインド項目名リストとバインド項目定義マップをもとにバインド値リストを作成して SQL Bean にセットします。</li>
+<li>バインド値リストの要素は <code>Object</code> とし、各項目値はバインド項目定義に沿った型で格納されます。</li>
+<li>パラメーター値マップにバインド項目名が存在しなければ実行時エラーとなります。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>params</code></td>
+                <td><code>AbstractIoTypeMap</code></td>
+                <td>パラメーター値マップ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlBean</code> - SQL Bean</p>
+        </div>
+      </div>
+      <div class="method" id="end">
+        <h3 class="method-name">end</h3>
+        <div class="method-signature">
+          <code>public SqlConst end()</code>
+        </div>
+        <div class="method-description">
+          固定SQL返却.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConst</code> - 固定SQL</p>
+        </div>
+      </div>
+      <div class="method" id="addQuery">
+        <h3 class="method-name">addQuery</h3>
+        <div class="method-signature">
+          <code>public SqlConstBuilder addQuery(String sql)</code>
+        </div>
+        <div class="method-description">
+          SQL追加.<br>
+<ul>
+<li>２文字以上のブランクを1文字ブランクに置き換えて追加します。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sql</code></td>
+                <td><code>String</code></td>
+                <td>SQL</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConstBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="addQuery">
+        <h3 class="method-name">addQuery</h3>
+        <div class="method-signature">
+          <code>public SqlConstBuilder addQuery(String sql, String itemName, BindType bindType)</code>
+        </div>
+        <div class="method-description">
+          SQL＆バインド項目定義（項目名と型）追加.<br>
+<ul>
+<li>SQL文字列内にバインドプレースホルダー <code>?</code> を１つだけ含む必要があります。</li>
+<li>バインド項目名は <code>Io</code> オブジェクトキーとして有効な値である必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sql</code></td>
+                <td><code>String</code></td>
+                <td>SQL</td>
+              </tr>
+              <tr>
+                <td><code>itemName</code></td>
+                <td><code>String</code></td>
+                <td>バインド項目名</td>
+              </tr>
+              <tr>
+                <td><code>bindType</code></td>
+                <td><code>BindType</code></td>
+                <td>バインド型</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConstBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Generated by JavaDocGenerator - 2026</p>
+  </div>
+</body>
+</html>

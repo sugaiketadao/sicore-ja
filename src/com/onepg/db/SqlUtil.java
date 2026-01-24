@@ -60,7 +60,7 @@ public final class SqlUtil {
    * </ul>
    */
   enum ItemClsType {
-    StringCls, BigDecCls, DateCls, TsCls, StringToDateCls, StringToTsCls
+    STRING_CLS, BIGDECIMAL_CLS, DATE_CLS, TIMESTAMP_CLS, STRING_TO_DATE_CLS, STRING_TO_TS_CLS
   }
 
   /**
@@ -79,10 +79,10 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 行データマップ
    */
-  public static IoItems selectOneExists(final Connection conn, final SqlBuilder sb) {
+  public static IoItems selectOneExists(final Connection conn, final SqlBean sb) {
     final IoItems retMap = selectFirstRec(conn, sb, false);
     if (ValUtil.isNull(retMap)) {
       throw new RuntimeException("No matching data exists. " + sb.toString());
@@ -100,10 +100,10 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 行データマップ
    */
-  public static IoItems selectOne(final Connection conn, final SqlBuilder sb) {
+  public static IoItems selectOne(final Connection conn, final SqlBean sb) {
     return selectFirstRec(conn, sb, false);
   }
 
@@ -116,10 +116,10 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 行データマップ
    */
-  public static IoItems selectOneMultiIgnore(final Connection conn, final SqlBuilder sb) {
+  public static IoItems selectOneMultiIgnore(final Connection conn, final SqlBean sb) {
     return selectFirstRec(conn, sb, true);
   }
 
@@ -134,12 +134,11 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @param multiDataIgnore 複数件取得できた場合でもエラーとしない場合は <code>true</code>
    * @return 行データマップ（<code>null</code> 有り）
    */
-  private static IoItems selectFirstRec(final Connection conn, final SqlBuilder sb,
-      final boolean multiDataIgnore) {
+  private static IoItems selectFirstRec(final Connection conn, final SqlBean sb, final boolean multiDataIgnore) {
 
     // 一括取得
     final IoRows rows = selectBulkByLimitCount(conn, sb, 1);
@@ -164,17 +163,14 @@ public final class SqlUtil {
    * <li><code>SqlResultSet</code>
    * のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>try 句（try-with-resources文）で使用する。</li>
-   * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBuilder)</code> を使用する。</li>
+   * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBean)</code> を使用する。</li>
    * <li>DBMSごとのフェッチサイズについて
    * <ul>
    * <li>Oralce はデフォルト 10 件となっており小さいため、フェッチサイズを指定する。</li>
    * <li>PostgreSQL はデフォルト 全件フェッチとなっており OutOfMemory になる可能性があるためフェッチサイズを指定する。</li>
-   * <li>PostgreSQL
-   * はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE
-   * 34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。<br>
+   * <li>PostgreSQL はフェッチサイズ指定し（全件フェッチせず）、かつ取得データを更新し、かつ中間コミットするとカーソル無効エラー（SQLSTATE 34000）が発生するので、その場合は中間コミットをやめるか全件フェッチする必要がある。<br>
    * また処理が複雑になるが SQL の LIMIT句でデータを分割取得しても解決できる。</li>
-   * <li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は
-   * SQL の LIMIT句でデータを分割取得する必要がある。</li>
+   * <li>MS-SqlServer ではフェッチサイズを指定してもその通りにはならない場合があるため、OutOfMemory になる可能性がある場合は SQL の LIMIT句でデータを分割取得する必要がある。</li>
    * </ul>
    * </li>
    * </ul>
@@ -190,10 +186,10 @@ public final class SqlUtil {
    * </pre>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return SQL結果セット
    */
-  public static SqlResultSet select(final Connection conn, final SqlBuilder sb) {
+  public static SqlResultSet select(final Connection conn, final SqlBean sb) {
     return selectByFetchSize(conn, sb, DEFAULT_FETCH_SIZE);
   }
 
@@ -205,12 +201,12 @@ public final class SqlUtil {
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    * 
-   * @see #select(Connection, SqlBuilder)
+   * @see #select(Connection, SqlBean)
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return SQL結果セット
    */
-  public static SqlResultSet selectFetchAll(final Connection conn, final SqlBuilder sb) {
+  public static SqlResultSet selectFetchAll(final Connection conn, final SqlBean sb) {
     return selectByFetchSize(conn, sb, 0);
   }
 
@@ -220,18 +216,17 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @param limitCount 取得件数上限
    * @return 複数行リスト
    */
-  public static IoRows selectBulk(final Connection conn, final SqlBuilder sb,
-      final int limitCount) {
+  public static IoRows selectBulk(final Connection conn, final SqlBean sb, final int limitCount) {
     return selectBulkByLimitCount(conn, sb, limitCount);
   }
 
@@ -241,16 +236,16 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBuilder)</code>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
    * を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 複数行リスト
    */
-  public static IoRows selectBulkAll(final Connection conn, final SqlBuilder sb) {
+  public static IoRows selectBulkAll(final Connection conn, final SqlBean sb) {
     return selectBulkByLimitCount(conn, sb, 0);
   }
 
@@ -258,12 +253,11 @@ public final class SqlUtil {
    * 複数件一括取得.
    * 
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @param limitCount 取得件数上限（ゼロ以下の場合は全件取得）
    * @return 複数行リスト
    */
-  private static IoRows selectBulkByLimitCount(final Connection conn, final SqlBuilder sb,
-      final int limitCount) {
+  private static IoRows selectBulkByLimitCount(final Connection conn, final SqlBean sb, final int limitCount) {
     // フェッチサイズ
     final int fetchSize;
     if (limitCount <= 0 || DEFAULT_FETCH_SIZE < limitCount) {
@@ -303,31 +297,32 @@ public final class SqlUtil {
    * フェッチサイズ指定複数件取得.
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @param fetchSize フェッチサイズ
    * @return SQL結果セット
    */
-  private static SqlResultSet selectByFetchSize(final Connection conn, final SqlBuilder sb,
+  private static SqlResultSet selectByFetchSize(final Connection conn, final SqlBean sb,
       final int fetchSize) {
         
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     final String sql = sb.getQuery();
-    final List<Object> params = sb.getParameters();
+    final List<Object> bindValues = sb.getBindValues();
     if (logger.isDevelopMode()) {
       // SQLログ出力
       logger.develop("SQL#SELECT execution. " + LogUtil.joinKeyVal("sql", sb, "fetchSize", fetchSize));
     }
-
+    PreparedStatement stmt = null;
+    ResultSet rset = null;
     try {
       // ステートメント生成
-      final PreparedStatement stmt = conn.prepareStatement(sql);
+      stmt = conn.prepareStatement(sql);
       // ステートメントにパラメーターセット
-      setStmtParameters(stmt, params, dbmsName);
+      setStmtParameters(stmt, bindValues, dbmsName);
       // ステートメントにフェッチ関連プロパティをセット
       setStmtFetchProperty(stmt, fetchSize);
 
       // SQL実行
-      final ResultSet rset = stmt.executeQuery();
+      rset = stmt.executeQuery();
       // DB項目名・クラスタイプマップ
       final Map<String, ItemClsType> itemClsMap = createItemNameClsMap(rset);
 
@@ -339,6 +334,8 @@ public final class SqlUtil {
       return retSet;
 
     } catch (SQLException e) {
+      DbUtil.closeQuietly(rset);
+      DbUtil.closeQuietly(stmt);
       throw new RuntimeException("Exception error occurred during data retrieval. " + LogUtil.joinKeyVal("sql",
           sb, "fetchSize", fetchSize), e);
     }
@@ -878,10 +875,10 @@ public final class SqlUtil {
    * </ul>
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 反映件数が１件の場合は <code>true</code>、０件の場合は <code>false</code>
    */
-  public static boolean executeOne(final Connection conn, final SqlBuilder sb) {
+  public static boolean executeOne(final Connection conn, final SqlBean sb) {
     final int ret = execute(conn, sb);
     if (ret > 1) {
       throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sb));
@@ -893,10 +890,10 @@ public final class SqlUtil {
    * SQL 登録・更新・削除.
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 反映件数
    */
-  public static int execute(final Connection conn, final SqlBuilder sb) {
+  public static int execute(final Connection conn, final SqlBean sb) {
     try {
       return executeSql(conn, sb);
     } catch (SQLException e) {
@@ -905,14 +902,14 @@ public final class SqlUtil {
   }
 
   /**
-   * SQLビルダー実行.
+   * SQL実行.
    *
    * @param conn DB接続
-   * @param sb SQLビルダー
+   * @param sb SQL Bean
    * @return 反映件数
    * @throws SQLException SQL例外エラー
    */
-  private static int executeSql(final Connection conn, final SqlBuilder sb)
+  private static int executeSql(final Connection conn, final SqlBean sb)
       throws SQLException {
         
     if (logger.isDevelopMode()) {
@@ -923,7 +920,7 @@ public final class SqlUtil {
     // ステートメント生成
     try (final PreparedStatement stmt = conn.prepareStatement(sb.getQuery());) {
       // ステートメントにパラメーターセット
-      setStmtParameters(stmt, sb.getParameters(), dbmsName);
+      setStmtParameters(stmt, sb.getBindValues(), dbmsName);
       // SQL実行
       final int ret = stmt.executeUpdate();
       return ret;
@@ -934,38 +931,39 @@ public final class SqlUtil {
    * ステートメントにパラメーターセット.
    *
    * @param stmt     ステートメント
-   * @param params   パラメーター
+   * @param bindValues   バインド値リスト
    * @param dbmsName DBMS名
    * @throws SQLException SQL例外エラー
    */
-  private static void setStmtParameters(final PreparedStatement stmt, final List<Object> params,
+  private static void setStmtParameters(final PreparedStatement stmt, final List<Object> bindValues,
       final DbmsName dbmsName) throws SQLException {
     int bindNo = 0;
-    for (final Object param : params) {
+    for (final Object bindValue : bindValues) {
       ++bindNo;
       if (dbmsName == DbmsName.SQLITE) {
-        if (ValUtil.isNull(param)) {
-          stmt.setObject(bindNo, param);
-        } else if (param instanceof java.sql.Timestamp) {
+        if (ValUtil.isNull(bindValue)) {
+          stmt.setObject(bindNo, bindValue);
+        } else if (bindValue instanceof java.sql.Timestamp) {
           // java.sql.Timestamp の場合は String に変換してセット
-          final java.sql.Timestamp ts = (java.sql.Timestamp) param;
+          final java.sql.Timestamp ts = (java.sql.Timestamp) bindValue;
           final LocalDateTime ldt = ts.toLocalDateTime();
           final String s = DTF_SQL_TIMESTAMP.format(ldt);
           stmt.setString(bindNo, s);
-        } else if (param instanceof java.sql.Date) {
+        } else if (bindValue instanceof java.sql.Date) {
           // java.sql.Date の場合は String に変換してセット
-          final java.sql.Date dt = (java.sql.Date) param;
+          final java.sql.Date dt = (java.sql.Date) bindValue;
           final LocalDate ld = dt.toLocalDate();
           final String s = DTF_SQL_DATE.format(ld);
           stmt.setString(bindNo, s);
         } else {
-          stmt.setObject(bindNo, param);
+          stmt.setObject(bindNo, bindValue);
         }
       } else {
-        stmt.setObject(bindNo, param);
+        stmt.setObject(bindNo, bindValue);
       }
     }
   }
+
   /**
    * ステートメントにフェッチ関連プロパティをセット.
    *
@@ -1084,39 +1082,39 @@ public final class SqlUtil {
         || /* Float にマッピングされる JDBC型 */ Types.FLOAT == typeNo || Types.REAL == typeNo
         || /* Double にマッピングされる JDBC型 */ Types.DOUBLE == typeNo) {
       // 数値の型は BigDecimal に統一する
-      itemCls = ItemClsType.BigDecCls;
+      itemCls = ItemClsType.BIGDECIMAL_CLS;
     } else if (Types.DATE == typeNo) {
       if ("DATETIME".equals(typeName) && DbmsName.MSSQL == dbmsName) {
-        itemCls = ItemClsType.TsCls;
+        itemCls = ItemClsType.TIMESTAMP_CLS;
       } else if (DbmsName.SQLITE == dbmsName) {
         // SQLLite で Types.DATE が結果セットから返された場合は実際は文字列なので変換する必要がある（#createIoItemsFromResultSet 参照）
-        itemCls = ItemClsType.StringToDateCls;
+        itemCls = ItemClsType.STRING_TO_DATE_CLS;
       } else {
-        itemCls = ItemClsType.DateCls;
+        itemCls = ItemClsType.DATE_CLS;
       }
     } else if (Types.TIMESTAMP == typeNo || Types.TIMESTAMP_WITH_TIMEZONE == typeNo) {
       if ("DATE".equals(typeName) && DbmsName.ORACLE == dbmsName) {
-        itemCls = ItemClsType.DateCls;
+        itemCls = ItemClsType.DATE_CLS;
       } else if (DbmsName.SQLITE == dbmsName) {
         // SQLLite で Types.TIMESTAMP が結果セットから返された場合は実際は文字列なので変換する必要がある（#createIoItemsFromResultSet 参照）
-        itemCls = ItemClsType.StringToTsCls;
+        itemCls = ItemClsType.STRING_TO_TS_CLS;
       } else {
-        itemCls = ItemClsType.TsCls;
+        itemCls = ItemClsType.TIMESTAMP_CLS;
       }
     } else {
       if (DbmsName.SQLITE == dbmsName) {
         if ("DATE".equals(typeName)) {
           // SQLLite のテーブルメタ情報は Types.VARCHAR でタイプ名が "DATE" となる
-          itemCls = ItemClsType.StringToDateCls;
+          itemCls = ItemClsType.STRING_TO_DATE_CLS;
         } else if ("TIMESTAMP".equals(typeName)) {
           // SQLLite のテーブルメタ情報は Types.VARCHAR でタイプ名が "TIMESTAMP" となる
-          itemCls = ItemClsType.StringToTsCls;
+          itemCls = ItemClsType.STRING_TO_TS_CLS;
         } else {
-          itemCls = ItemClsType.StringCls;
+          itemCls = ItemClsType.STRING_CLS;
         }
       } else {
         // 文字列の型は String に統一する
-        itemCls = ItemClsType.StringCls;
+        itemCls = ItemClsType.STRING_CLS;
       }
     }
     return itemCls;
@@ -1146,19 +1144,19 @@ public final class SqlUtil {
         // 項目クラスタイプ
         final ItemClsType itemCls = ent.getValue();
         // 項目クラスタイプごとの値セット
-        if (ItemClsType.StringCls == itemCls) {
+        if (ItemClsType.STRING_CLS == itemCls) {
           final String value = rset.getString(itemName);
           rowMap.put(itemName, value);
-        } else if (ItemClsType.BigDecCls == itemCls) {
+        } else if (ItemClsType.BIGDECIMAL_CLS == itemCls) {
           final BigDecimal value = rset.getBigDecimal(itemName);
           rowMap.put(itemName, value);
-        } else if (ItemClsType.DateCls == itemCls) {
+        } else if (ItemClsType.DATE_CLS == itemCls) {
           final java.sql.Date value = rset.getDate(itemName);
           rowMap.put(itemName, value);
-        } else if (ItemClsType.TsCls == itemCls) {
+        } else if (ItemClsType.TIMESTAMP_CLS == itemCls) {
           final java.sql.Timestamp value = rset.getTimestamp(itemName);
           rowMap.put(itemName, value);
-        } else if (ItemClsType.StringToDateCls == itemCls) {
+        } else if (ItemClsType.STRING_TO_DATE_CLS == itemCls) {
           final String value = rset.getString(itemName);
           if (ValUtil.isBlank(value) || value.length() != 10) {
             rowMap.putNull(itemName);
@@ -1167,7 +1165,7 @@ public final class SqlUtil {
           final LocalDate ld = LocalDate.parse(value, DTF_SQL_DATE);
           // 本来は Date でセットする必要があるが、IoItems 内で LocalDate に変換されてセットされるためそのままセット
           rowMap.put(itemName, ld);
-        } else if (ItemClsType.StringToTsCls == itemCls) {
+        } else if (ItemClsType.STRING_TO_TS_CLS == itemCls) {
           final String value = rset.getString(itemName);
           if (ValUtil.isBlank(value)) {
             rowMap.putNull(itemName);
@@ -1219,22 +1217,22 @@ public final class SqlUtil {
   private static Object getValueFromIoItemsByItemCls(final AbstractIoTypeMap params, final String itemName,
       final ItemClsType itemCls) {
     final Object param;
-    if (ItemClsType.StringCls == itemCls) {
+    if (ItemClsType.STRING_CLS == itemCls) {
       param = params.getStringNullable(itemName);
-    } else if (ItemClsType.BigDecCls == itemCls) {
+    } else if (ItemClsType.BIGDECIMAL_CLS == itemCls) {
       param = params.getBigDecimalNullable(itemName);
-    } else if (ItemClsType.DateCls == itemCls) {
+    } else if (ItemClsType.DATE_CLS == itemCls) {
       param = params.getSqlDateNullable(itemName);
-    } else if (ItemClsType.TsCls == itemCls) {
+    } else if (ItemClsType.TIMESTAMP_CLS == itemCls) {
       param = params.getSqlTimestampNullable(itemName);
-    } else if (ItemClsType.StringToDateCls == itemCls) {
+    } else if (ItemClsType.STRING_TO_DATE_CLS == itemCls) {
       final LocalDate ld = params.getDateNullable(itemName);
       if (ValUtil.isNull(ld)) {
         param = null;
       } else {
         param = ld.format(DTF_SQL_DATE);
       }
-    } else if (ItemClsType.StringToTsCls == itemCls) {
+    } else if (ItemClsType.STRING_TO_TS_CLS == itemCls) {
       final LocalDateTime ldt = params.getDateTimeNullable(itemName);
       if (ValUtil.isNull(ldt)) {
         param = null;
@@ -1308,13 +1306,13 @@ public final class SqlUtil {
   }
 
   /** 日付取得SELECT文 マップ. */
-  private static final Map<DbmsName, String> SQL_SELECT_TODAY = new HashMap<>();
+  private static final Map<DbmsName, SqlConst> SQL_SELECT_TODAY = new HashMap<>();
   static {
-    SQL_SELECT_TODAY.put(DbmsName.POSTGRESQL, "SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today");
-    SQL_SELECT_TODAY.put(DbmsName.ORACLE,    "SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM DUAL");
-    SQL_SELECT_TODAY.put(DbmsName.MSSQL,     "SELECT CONVERT(VARCHAR, FORMAT(GETDATE(), 'yyyyMMdd')) today");
-    SQL_SELECT_TODAY.put(DbmsName.SQLITE,    "SELECT strftime('%Y%m%d', 'now', 'localtime') today");
-    SQL_SELECT_TODAY.put(DbmsName.DB2, "SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM SYSIBM.DUAL");
+    SQL_SELECT_TODAY.put(DbmsName.POSTGRESQL, SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today").end());
+    SQL_SELECT_TODAY.put(DbmsName.ORACLE,    SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM DUAL").end());
+    SQL_SELECT_TODAY.put(DbmsName.MSSQL,     SqlConst.begin().addQuery("SELECT CONVERT(VARCHAR, FORMAT(GETDATE(), 'yyyyMMdd')) today").end());
+    SQL_SELECT_TODAY.put(DbmsName.SQLITE,    SqlConst.begin().addQuery("SELECT strftime('%Y%m%d', 'now', 'localtime') today").end());
+    SQL_SELECT_TODAY.put(DbmsName.DB2, SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM SYSIBM.DUAL").end());
   }
   
   /**
@@ -1325,13 +1323,11 @@ public final class SqlUtil {
    */
   public static String getToday(final Connection conn) {
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
-    final String sql = SQL_SELECT_TODAY.get(dbmsName);
-    if (ValUtil.isBlank(sql)) {
+    final SqlConst sc = SQL_SELECT_TODAY.get(dbmsName);
+    if (ValUtil.isNull(sc)) {
       throw new RuntimeException("Current date retrieval SQL is undefined for this DBMS. " + LogUtil.joinKeyVal("dbmsName", dbmsName));
     }
-    final SqlBuilder sb = new SqlBuilder();
-    sb.addQuery(sql);
-    final IoItems ret = selectOne(conn, sb);
+    final IoItems ret = selectOne(conn, sc);
     return ret.getString("today");
   }
 

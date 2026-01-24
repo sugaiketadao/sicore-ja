@@ -410,3 +410,4 @@ SqlUtil.insertOne(conn, "t_user", io);
 - [マネージャー向け紹介](../01-introductions/02-manager-introduction.md)
 - [Webページ構成標準 (HTML/JavaScript/CSS)](../02-develop-standards/01-web-page-structure.md)
 - [Webサービス構成標準 (Java)](../02-develop-standards/11-web-service-structure.md)
+- [バッチ処理構成標準 (Java)](../02-develop-standards/12-batch-structure.md)

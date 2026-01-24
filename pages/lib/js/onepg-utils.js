@@ -685,7 +685,7 @@ const HttpUtil = /** @lends HttpUtil */ {
   /**
    * JSON Webサービス実行（async/await対応）.<br>
    * <ul>
-   * <li>指定URL に対して POSTメソッド で JSONリクエストを送信して JSONレスポンスを受信する。</li>
+   * <li>指定URL に対して <code>POST</code>メソッド で JSONリクエストを送信して JSONレスポンスを受信する。</li>
    * <li>リクエスト／レスポンスは連想配列でやり取りする。</li>
    * </ul>
    * 
@@ -1181,7 +1181,7 @@ const DomUtil = /** @lends DomUtil */ {
    * <li>引数が不正な場合は <code>null</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
-   * @returns {string|null} 値
+   * @returns {string|null} 値（アンフォーマット済み）
    */
   getVal: function(elm) {
     if (!DomUtil.isExists(elm)) {
@@ -1199,7 +1199,7 @@ const DomUtil = /** @lends DomUtil */ {
    * <li>引数が不正な場合は <code>false</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
-   * @param {string} value 設定値
+   * @param {string} value 設定値（フォーマット前の値）
    * @returns {boolean} 設定成功時は <code>true</code>
    */
   setVal: function(elm, value) {
@@ -1218,7 +1218,7 @@ const DomUtil = /** @lends DomUtil */ {
    * <li>引数が不正な場合は <code>null</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
-   * @returns {string|null} テキスト
+   * @returns {string|null} テキスト（アンフォーマット済み）
    */
   getTxt: function(elm) {
     if (!DomUtil.isExists(elm)) {
@@ -1236,7 +1236,7 @@ const DomUtil = /** @lends DomUtil */ {
    * <li>引数が不正な場合は <code>false</code> を返す。</li>
    * </ul>
    * @param {Element} elm 対象要素
-   * @param {string} text 設定テキスト
+   * @param {string} text 設定テキスト（フォーマット前の値）
    * @returns {boolean} 設定成功時は <code>true</code>
    */
   setTxt: function(elm, text) {
@@ -1766,7 +1766,7 @@ const PageUtil = /** @lends PageUtil */ {
    *   <li>行内のラジオボタンは <code>name</code>属性の最後の [行インデックス] を除去して戻り値のキーとする。（<code>PageUtil#setValue</code> 参照）</li>
    * </ul>
    * @param {Object} [outerElm] 取得範囲要素（省略可能）
-   * @returns {Object} ページデータ連想配列
+   * @returns {Object} ページデータ連想配列（アンフォーマット済み）
    */
   getValues: function(outerElm) {
     outerElm = outerElm || DomUtil._getByTag('main') || document.body;
@@ -1849,7 +1849,7 @@ const PageUtil = /** @lends PageUtil */ {
    *   <li>行内のラジオボタンは <code>name</code>属性の最後の [行インデックス] を除去して戻り値のキーとする。（<code>PageUtil#setValues</code> 参照）</li>
    * </ul>
    * @param {Element} rowElm 行要素（通常 <code>&lt;tr&gt;</code> となる）
-   * @returns {Object} 行データ連想配列
+   * @returns {Object} 行データ連想配列（アンフォーマット済み）
    */
   getRowValues: function(rowElm) {
     if (!DomUtil.isExists(rowElm)) {
@@ -1895,7 +1895,7 @@ const PageUtil = /** @lends PageUtil */ {
    * </ul> 
    * @param {Element} baseElm 基点要素
    * @param {string} [rowTag] 行要素のタグ名（省略可能）省略した場合は 'tr' とする
-   * @returns {Object} 行データ連想配列
+   * @returns {Object} 行データ連想配列（アンフォーマット済み）
    */
   getRowValuesByInnerElm: function(baseElm, rowTag) {
     rowTag = rowTag || 'tr';

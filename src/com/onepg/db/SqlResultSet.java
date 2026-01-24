@@ -42,7 +42,6 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
    *
    * @param stmt ステートメント
    * @param rset 結果セット
-   * @param isExists データ有の場合は <code>true</code>
    * @param nameClsMap DB項目名・クラスタイプマップ
    * @param serialCode 接続シリアルコード
    */
@@ -152,6 +151,20 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
    */
   public boolean isReadedEndRow() {
     return this.readedEndRowFlag;
+  }
+
+  /**
+   * DB項目名取得.
+   *
+   * @return DB項目名文字列配列
+   */
+  public String[] getItemNames() {
+    final String[] itemNames = new String[this.nameClsMap.size()];
+    int idx = 0;
+    for (final String name : this.nameClsMap.keySet()) {
+      itemNames[idx++] = name;
+    }
+    return itemNames;
   }
 
   /**

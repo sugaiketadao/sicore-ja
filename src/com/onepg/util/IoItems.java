@@ -70,6 +70,7 @@ public final class IoItems extends AbstractIoTypeMap {
   /**
    * CSV作成 ダブルクォーテーション付.<br>
    * <ul>
+   * <li>値の追加順で CSV文字列を作成する。</li>
    * <li>すべての項目にダブルクォーテーションを付加して出力する。</li>
    * <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
    * <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
@@ -77,7 +78,7 @@ public final class IoItems extends AbstractIoTypeMap {
    *
    * @return CSV文字列
    */
-  public String createCsAllDq() {
+  public String createCsvAllDq() {
     final StringBuilder sb = new StringBuilder();
     for (final Entry<String, String> ent : super.getValMap().entrySet()) {
       final String val = ValUtil.nvl(ent.getValue());
@@ -91,6 +92,7 @@ public final class IoItems extends AbstractIoTypeMap {
   /**
    * CSV作成 CSV仕様準拠ダブルクォーテーション付.<br>
    * <ul>
+   * <li>値の追加順で CSV文字列を作成する。</li>
    * <li>CSV仕様準拠で必要な項目にダブルクォーテーションを付加して出力する。</li>
    * <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
    * <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
@@ -183,7 +185,7 @@ public final class IoItems extends AbstractIoTypeMap {
    * CSV格納.<br>
    * <ul>
    * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
-   * <li>キー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
+   * <li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
    * <li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
    * </ul>
    *
@@ -220,7 +222,13 @@ public final class IoItems extends AbstractIoTypeMap {
   }
 
   /**
-   * ダブルクォーテーション付 CSV格納.
+   * ダブルクォーテーション付 CSV格納.<br>
+   * <ul>
+   * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
+   * <li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
+   * <li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
+   * <li>値内の２つ連続したダブルクォーテーションは１つのダブルクォーテーションに変換されて格納される。</li>
+   * </ul>
    *
    * @see #putAllByCsv(String[], String)
    * @param keys キー名配列
@@ -249,7 +257,7 @@ public final class IoItems extends AbstractIoTypeMap {
 
       // 値を格納
       count++;
-      put(key, value);
+      put(key, value.replace("\"\"", "\""));
     }
     return count;
   }

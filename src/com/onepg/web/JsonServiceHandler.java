@@ -24,7 +24,7 @@ final class JsonServiceHandler extends AbstractHttpHandler {
   /** サービスクラスパッケージ. */
   private final String svcClsPackage;
 
-  /** メッセージマップ＜メッセージID、メッセージテキスト＞. */
+  /** メッセージマップ&lt;メッセージID、メッセージテキスト&gt;. */
   private final IoItems msgMap;
 
   /**

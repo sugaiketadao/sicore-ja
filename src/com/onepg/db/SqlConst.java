@@ -68,7 +68,7 @@ public final class SqlConst extends SqlBean {
    * </ul>
    */
   private final List<String> bindItemNames;
-  /** バインド項目定義マップ＜項目名、型＞. */
+  /** バインド項目定義マップ&lt;項目名、型&gt;. */
   private final Map<String, BindType> bindItems;
   
   /**
@@ -76,7 +76,7 @@ public final class SqlConst extends SqlBean {
    * 
    * @param query SQL文字列
    * @param bindItemNames バインド項目名リスト
-   * @param bindItems バインド項目定義マップ＜項目名、型＞
+   * @param bindItems バインド項目定義マップ&lt;項目名、型&gt;
    */
   SqlConst(final String query, final List<String> bindItemNames, final Map<String, BindType> bindItems) {
     super(query);
@@ -158,7 +158,7 @@ public final class SqlConst extends SqlBean {
      * </ul>
      */
     private final List<String> bindItemNames = new ArrayList<>();
-    /** バインド項目定義マップ＜項目名、型＞. */
+    /** バインド項目定義マップ&lt;項目名、型&gt;. */
     private final Map<String, BindType> bindItems = new LinkedHashMap<>();
       
     /**

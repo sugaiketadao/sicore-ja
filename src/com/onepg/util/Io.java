@@ -727,7 +727,7 @@ public final class Io extends AbstractIoTypeMap {
 
   /**
    * メッセージ付き JSON作成.
-   * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞
+   * @param msgTextMap メッセージテキストマップ&lt;メッセージID、メッセージテキスト&gt;
    * @return JSON文字列
    */
   public String createJsonWithMsg(final Map<String, String> msgTextMap) {
@@ -1451,7 +1451,7 @@ public final class Io extends AbstractIoTypeMap {
     /**
      * JSON作成.
      * 
-     * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞（省略可能）
+     * @param msgTextMap メッセージテキストマップ&lt;メッセージID、メッセージテキスト&gt;（省略可能）
      * @return JSON文字列
      */
     protected String createJson(final Map<String, String> msgTextMap) {
@@ -1672,7 +1672,7 @@ public final class Io extends AbstractIoTypeMap {
    * <li>メッセージテキストマップが指定されていない場合は、メッセージテキストは空文字列とする。</li>
    * </ul>
    * 
-   * @param msgTextMap メッセージテキストマップ＜メッセージID、メッセージテキスト＞
+   * @param msgTextMap メッセージテキストマップ&lt;メッセージID、メッセージテキスト&gt;
    * @return JSON配列 "[ {...}, {...}, ... ]"
    */
   private String createMsgJsoAry(final Map<String, String> msgTextMap) {

@@ -14,7 +14,7 @@ import com.onepg.util.LogUtil;
 public final class DbConnPooled extends DbConn {
 
   /**
-   * 使用中接続リスト＜接続シリアルコード＞（スレッドセーフ） .<br>
+   * 使用中接続リスト&lt;接続シリアルコード&gt;（スレッドセーフ） .<br>
    * <ul>
    * <li><code>DbUtil</code> で管理されているリストのコピー</li>
    * </ul>

@@ -28,7 +28,7 @@ public final class LogTxtHandler implements AutoCloseable {
   /** エラーログファイル設定キー接尾語. */
   private static final String ERR_FILE_PROP_KEY_SUFFIX = ".err.file";
 
-  /** ログテキストハンドラープールマップ＜ファイルパス、ログテキストハンドラー＞（シングルトン）. */
+  /** ログテキストハンドラープールマップ&lt;ファイルパス、ログテキストハンドラー&gt;（シングルトン）. */
   private static final Map<String, LogTxtHandler> logTxtPoolMaps_ = new HashMap<>();
 
   /** 基本ファイルパス（拡張子抜き）. */

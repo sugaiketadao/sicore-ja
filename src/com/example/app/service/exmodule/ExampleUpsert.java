@@ -216,7 +216,7 @@ public class ExampleUpsert extends AbstractDbAccessWebService {
       SqlUtil.insertOne(conn, "t_user_pet", row);
     }
     if (super.logger.isDevelopMode()) {
-      super. logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", dno));
+      super.logger.develop(LogUtil.joinKeyVal("deleted count", delCnt, "inserted count", dno));
     }
   }
 }

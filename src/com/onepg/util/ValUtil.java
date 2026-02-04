@@ -35,6 +35,20 @@ public final class ValUtil {
   /** 区分：OFF値. */
   public static final String OFF = "0";
 
+  /** 改行コード - LF. */
+  public static final String LF = "\n";
+  /** 改行コード - CR. */
+  public static final String CR = "\r";
+  /** 改行コード - CRLF. */
+  public static final String CRLF = "\r\n";
+
+  /** 文字セット指定 - UTF-8. */
+  public static final String UTF8 = StandardCharsets.UTF_8.name();
+  /** 文字セット指定 - Shift_JIS. */
+  public static final String SJIS = "Shift_JIS";
+  /** 文字セット指定 - MS932. */
+  public static final String MS932 = "MS932";
+
   /** JSON <code>null</code> 文字. */
   public static final String JSON_NULL = "null";
 
@@ -55,12 +69,11 @@ public final class ValUtil {
   /** 文字セット指定. */
   public enum CharSet {
     /** 文字セット指定 - UTF-8. */
-    UTF8(StandardCharsets.UTF_8.name()),
+    UTF8(ValUtil.UTF8),
     /** 文字セット指定 - Shift_JIS. */
-    SJIS("Shift_JIS"),
+    SJIS(ValUtil.SJIS),
     /** 文字セット指定 - MS932. */
-    MS932("MS932");
-
+    MS932(ValUtil.MS932);
     /** 文字セット. */
     private final String setName;
 
@@ -81,11 +94,12 @@ public final class ValUtil {
 
   /** 改行コード. */
   public enum LineSep {
-    /** 改行コード LF. */
-    LF("\n"),
-    /** 改行コード CRLF. */
-    CRLF("\r\n");
-
+    /** 改行コード - LF. */
+    LF(ValUtil.LF),
+    /** 改行コード - CR. */
+    CR(ValUtil.CR),
+    /** 改行コード - CRLF. */
+    CRLF(ValUtil.CRLF);
     /** 改行コード. */
     private final String sep;
 
@@ -102,6 +116,28 @@ public final class ValUtil {
     public String toString() {
       return this.sep;
     }
+  }
+
+  /**
+   * CSVタイプ列挙型.<br>
+   * 
+   * <ul>
+   * <li>CSVの各項目へのダブルクォーテーション付加方法と改行コードの扱いを定義する。</li>
+   * <li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+   * <li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
+   * </ul>
+   */
+  public enum CsvType {
+    /** ダブルクォーテーション無し */
+    NO_DQ,
+    /** 全項目ダブルクォーテーション付き */
+    DQ_ALL,
+    /** CSV仕様準拠ダブルクォーテーション付き */
+    DQ_STD,
+    /** 全項目ダブルクォーテーション付き 改行有り */
+    DQ_ALL_LF,
+    /** CSV仕様準拠ダブルクォーテーション付き 改行有り */
+    DQ_STD_LF
   }
 
   /**
@@ -352,16 +388,40 @@ public final class ValUtil {
    * 配列CSV連結.<br>
    * <ul>
    * <li>配列が空の場合はブランクを返す。</li>
-   * <li><code>null</code> はブランクとして連結される。</li>
+   * <li><code>null</code> はブランクとして連結する。</li>
+   * <li>CSVタイプがダブルクォーテーション付の場合、値内のダブルクォーテーション(")をダブルクォーテーション2つ("")に変換する。</li>
+   * <li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+   * <li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
    * </ul>
+   *
+   * @param values 連結対象
+   * @param csvType CSVタイプ
+   * @return 連結したCSV文字列
+   */
+  public static String joinCsv(final String[] values, final CsvType csvType) {
+    if (isEmpty(values)) {
+      return BLANK;
+    }
+    if (csvType == CsvType.NO_DQ) {
+      return joinCsvNoDq(values);
+    } else if (csvType == CsvType.DQ_ALL) {
+      return joinCsvAllDq(values, false);
+    } else if (csvType == CsvType.DQ_ALL_LF) {
+      return joinCsvAllDq(values, true);
+    } else if (csvType == CsvType.DQ_STD) {
+      return joinCsvStdDq(values, false);
+    } else {
+      return joinCsvStdDq(values, true);
+    }
+  }
+
+  /**
+   * 配列CSV連結.
    *
    * @param values 連結対象
    * @return 連結したCSV文字列
    */
-  public static String joinCsv(final String[] values) {
-    if (isEmpty(values)) {
-      return BLANK;
-    }
+  private static String joinCsvNoDq(final String[] values) {
     final StringBuilder sb = new StringBuilder();
     for (final String value : values) {
       final String val = ValUtil.nvl(value);
@@ -373,25 +433,17 @@ public final class ValUtil {
   }
 
   /**
-   * 配列CSV連結 ダブルクォーテーション付.<br>
-   * <ul>
-   * <li>配列が空の場合はブランクを返す。</li>
-   * <li><code>null</code> はブランクとして連結される。</li>
-   * <li>すべての配列要素にダブルクォーテーションを付加して出力する。</li>
-   * <li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
-   * </ul>
+   * 配列CSV連結 ダブルクォーテーション付.
    *
    * @param values 連結対象
+   * @param hasLf 改行有りフラグ
    * @return 連結したCSV文字列
    */
-  public static String joinCsvAllDq(final String[] values) {
-    if (isEmpty(values)) {
-      return BLANK;
-    }
+  private static String joinCsvAllDq(final String[] values, final boolean hasLf) {
     final StringBuilder sb = new StringBuilder();
     for (final String value : values) {
       final String val = ValUtil.nvl(value);
-      sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      sb.append('"').append(ValUtil.convCsvDqWrap(val, hasLf)).append('"');
       sb.append(',');
     }
     ValUtil.deleteLastChar(sb);
@@ -399,27 +451,19 @@ public final class ValUtil {
   }
 
   /**
-   * 配列CSV連結 CSV仕様準拠ダブルクォーテーション付.<br>
-   * <ul>
-   * <li>配列が空の場合はブランクを返す。</li>
-   * <li><code>null</code> はブランクとして連結される。</li>
-   * <li>CSV仕様準拠で必要な要素にダブルクォーテーションを付加して出力する。</li>
-   * <li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
-   * </ul>
+   * 配列CSV連結 CSV仕様準拠ダブルクォーテーション付.
    *
    * @param values 連結対象
+   * @param hasLf 改行有りフラグ
    * @return 連結したCSV文字列
    */
-  public static String joinCsvDq(final String[] values) {
-    if (isEmpty(values)) {
-      return BLANK;
-    }
+  private static String joinCsvStdDq(final String[] values, final boolean hasLf) {
     final StringBuilder sb = new StringBuilder();
     for (final String value : values) {
       final String val = ValUtil.nvl(value);
       // カンマ、改行、ダブルクォートが含まれる場合のみクォート
-      if (val.contains(",") || val.contains("\"") || val.contains("\n") || val.contains("\r")) {
-        sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      if (val.contains(",") || val.contains("\"") || val.contains(ValUtil.LF) || val.contains(ValUtil.CR)) {
+        sb.append('"').append(ValUtil.convCsvDqWrap(val, hasLf)).append('"');
       } else {
         sb.append(val);
       }
@@ -427,6 +471,26 @@ public final class ValUtil {
     }
     ValUtil.deleteLastChar(sb);
     return sb.toString();
+  }
+
+  /**
+   * CSVダブルクォーテーション囲み変換.<br>
+   * <ul>
+   * <li>値内のダブルクォーテーション(")をダブルクォーテーション2つ("")に変換する。</li>
+   * <li>改行有りフラグが <code>true</code> の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+   * <li>改行有りフラグが <code>false</code> の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
+   * </ul>
+   * 
+   * @param value 対象文字列
+   * @param hasLf 改行有りフラグ
+   * @return 変換後文字列
+   */
+  static String convCsvDqWrap(final String value, final boolean hasLf) {
+    if (hasLf) {
+      return value.replace("\"", "\"\"").replace(ValUtil.CRLF, ValUtil.LF).replace(ValUtil.CR, ValUtil.LF);
+    } else {
+      return value.replace("\"", "\"\"").replace(ValUtil.CRLF, " ").replace(ValUtil.CR, " ").replace(ValUtil.LF, " ");
+    }
   }
 
   /**
@@ -487,42 +551,27 @@ public final class ValUtil {
    * <ul>
    * <li>CSV文字列を文字列配列に分割する。</li>
    * <li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
+   * <li>ダブルクォーテーション付 CSVの場合、値内のダブルクォーテーション2つ("")をダブルクォーテーション(")に変換して格納する。</li>
    * </ul>
    *
    * @param csv CSV文字列
+   * @param csvType CSVタイプ
    * @return 分割した文字列配列
    */
-  public static String[] splitCsv(final String csv) {
+  public static String[] splitCsv(final String csv, final CsvType csvType) {
     if (isNull(csv)) {
       return new String[] {};
     }
     final List<String> list = new ArrayList<>();
 
-    for (final String value : new SimpleSeparateParser(csv, ",")) {
-      list.add(value);
-    }
-    return list.toArray(new String[0]);
-  }
-
-  /**
-   * ダブルクォーテーション付 CSV分割.<br>
-   * <ul>
-   * <li>CSV文字列を文字列配列に分割する。</li>
-   * <li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
-   * <li>値内の2個連続したダブルクォーテーションは1個のダブルクォーテーションに変換されて格納される。</li>
-   * </ul>
-   * 
-   * @param csv CSV文字列
-   * @return 分割した文字列配列
-   */
-  public static String[] splitCsvDq(final String csv) {
-    if (isNull(csv)) {
-      return new String[] {};
-    }
-    final List<String> list = new ArrayList<>();
-
-    for (final String value : new CsvDqParser(csv)) {
-      list.add(value.replace("\"\"", "\""));
+    if (csvType == CsvType.NO_DQ) {
+      for (final String value : new SimpleSeparateParser(csv, ",")) {
+        list.add(value);
+      }
+    } else {
+      for (final String value : new CsvDqParser(csv)) {
+        list.add(value.replace("\"\"", "\""));
+      }
     }
     return list.toArray(new String[0]);
   }
@@ -823,7 +872,7 @@ public final class ValUtil {
    * <li>"1", "true", "yes", "on"（すべて半角）は <code>true</code>。</li>
    * <li><code>null</code> またはブランクは <code>false</code> を含み、上記以外は <code>false</code>。</li>
    * <li>大文字小文字を区別しない。</li>
-   * <li>左右の半角ブランクは無視する。</li>
+   * <li>左右の半角スペースは無視する。</li>
    * </ol>
    * </li>
    * </ul>
@@ -1028,7 +1077,7 @@ public final class ValUtil {
   public static String urlEncode(final String url) {
     final String value = ValUtil.nvl(url);
     try {
-      return URLEncoder.encode(value, CharSet.UTF8.toString()).replace("+", "%20").replace("*",
+      return URLEncoder.encode(value, ValUtil.UTF8).replace("+", "%20").replace("*",
           "%2A");
     } catch (UnsupportedEncodingException e) {
       return value;
@@ -1044,7 +1093,7 @@ public final class ValUtil {
   public static String urlDecode(final String url) {
     final String value = ValUtil.nvl(url);
     try {
-      return URLDecoder.decode(value, CharSet.UTF8.toString());
+      return URLDecoder.decode(value, ValUtil.UTF8);
     } catch (UnsupportedEncodingException e) {
       return value;
     }

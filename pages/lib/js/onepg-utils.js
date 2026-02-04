@@ -298,7 +298,7 @@ const ValUtil = /** @lends ValUtil */ {
    *     <li>"1", "true", "yes", "on"（すべて半角）は <code>true</code>。</li>
    *     <li><code>null</code> またはブランクは <code>false</code> を含み、上記以外は <code>false</code>。</li>
    *     <li>大文字小文字を区別しない。</li>
-   *     <li>左右の半角ブランクは無視する。</li>
+   *     <li>左右の半角スペースは無視する。</li>
    *     <li>boolean値はそのまま返す。</li>
    *   </ol>
    * </li>

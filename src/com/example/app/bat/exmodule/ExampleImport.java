@@ -4,11 +4,12 @@ import com.onepg.bat.AbstractDbAccessBatch;
 import com.onepg.db.SqlConst;
 import com.onepg.db.SqlUtil;
 import com.onepg.db.SqlConst.BindType;
+import com.onepg.util.CsvReader;
 import com.onepg.util.FileUtil;
 import com.onepg.util.ValUtil.CharSet;
+import com.onepg.util.ValUtil.CsvType;
 import com.onepg.util.IoItems;
 import com.onepg.util.LogUtil;
-import com.onepg.util.TxtReader;
 import com.onepg.util.ValUtil;
 
 /**
@@ -82,25 +83,16 @@ public class ExampleImport extends AbstractDbAccessBatch {
     }
 
     // DB抽出してファイル出力
-    try (final TxtReader tr = new TxtReader(inputPath, CharSet.UTF8)) {
-      final String headerLine = tr.getFirstLine();
-      if (ValUtil.isBlank(headerLine)) {
-        // 入力ファイル空チェック
-        throw new RuntimeException("Input file is empty. " + LogUtil.joinKeyVal("input", inputPath));
-      }
-      final String[] itemNames = ValUtil.splitCsvDq(headerLine);
-      for (final String line : tr) {
-        final IoItems row = new IoItems();
-        row.putAllByCsvDq(itemNames, line);
-
+    try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL)) {
+      for (final IoItems row : cr) {
         if (!SqlUtil.executeOne(getDbConn(), SQL_UPD_USER.bind(row))) {
           // 更新件数０件の場合は登録実行
           SqlUtil.executeOne(getDbConn(), SQL_INS_USER.bind(row));
         }
       }
-      if (tr.getReadedCount() == 1) {
-        // ヘッダ行しか無い場合
-        super.logger.info("No data found to export. " + LogUtil.joinKeyVal("input", inputPath));
+      if (cr.getReadedCount() <= 1) {
+        // ゼロ行またはヘッダ行しか無い場合
+        super.logger.info("No data found to import. " + LogUtil.joinKeyVal("input", inputPath));
       }
     }
     return 0;

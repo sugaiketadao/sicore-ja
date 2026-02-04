@@ -166,6 +166,7 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
    * <li>以下の場合は <code>null</code> を返します
    *   <ul><li>ファイルが既にクローズされている。</li>
    *       <li>ファイルが空（ゼロ行）、既に最終行に達している。</li></ul>
+   * <li>1行でも読み込み済みの場合は例外がスローされます。</li>
    * </ul>
    *
    * @return 先頭行文字列
@@ -173,6 +174,9 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
   public String getFirstLine() {
     if (this.isClosed) {
       return null;
+    }
+    if (readedCount > 0) {
+      throw new RuntimeException("First line can only be read when no lines have been read yet. " + LogUtil.joinKeyVal("path", this.filePath) + LogUtil.joinKeyVal("readedCount", String.valueOf(readedCount)));
     }
     try {
       final String line = this.br.readLine();

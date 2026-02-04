@@ -59,7 +59,34 @@
             <h4>定数</h4>
             <ul>
               <li><code>LF</code></li>
+              <li><code>CR</code></li>
               <li><code>CRLF</code></li>
+            </ul>
+          </div>
+        </div>
+        <div class="enum-item" id="CsvType">
+          <h3 class="enum-name">CsvType</h3>
+          <div class="enum-signature">
+            <code>public enum CsvType</code>
+          </div>
+          <div class="enum-description">
+            CSVタイプ列挙型.<br>
+
+<ul>
+<li>CSVの各項目へのダブルクォーテーション付加方法と改行コードの扱いを定義する。</li>
+<li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+<li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
+</ul>
+  
+          </div>
+          <div class="enum-constants">
+            <h4>定数</h4>
+            <ul>
+              <li><code>NO_DQ</code></li>
+              <li><code>DQ_ALL</code></li>
+              <li><code>DQ_STD</code></li>
+              <li><code>DQ_ALL_LF</code></li>
+              <li><code>DQ_STD_LF</code></li>
             </ul>
           </div>
         </div>
@@ -93,6 +120,60 @@
           </div>
           <div class="field-description">
             区分：OFF値. 
+          </div>
+        </div>
+        <div class="field-item" id="LF">
+          <h3 class="field-name">LF</h3>
+          <div class="field-signature">
+            <code>public String LF</code>
+          </div>
+          <div class="field-description">
+            改行コード - LF. 
+          </div>
+        </div>
+        <div class="field-item" id="CR">
+          <h3 class="field-name">CR</h3>
+          <div class="field-signature">
+            <code>public String CR</code>
+          </div>
+          <div class="field-description">
+            改行コード - CR. 
+          </div>
+        </div>
+        <div class="field-item" id="CRLF">
+          <h3 class="field-name">CRLF</h3>
+          <div class="field-signature">
+            <code>public String CRLF</code>
+          </div>
+          <div class="field-description">
+            改行コード - CRLF. 
+          </div>
+        </div>
+        <div class="field-item" id="UTF8">
+          <h3 class="field-name">UTF8</h3>
+          <div class="field-signature">
+            <code>public String UTF8</code>
+          </div>
+          <div class="field-description">
+            文字セット指定 - UTF-8. 
+          </div>
+        </div>
+        <div class="field-item" id="SJIS">
+          <h3 class="field-name">SJIS</h3>
+          <div class="field-signature">
+            <code>public String SJIS</code>
+          </div>
+          <div class="field-description">
+            文字セット指定 - Shift_JIS. 
+          </div>
+        </div>
+        <div class="field-item" id="MS932">
+          <h3 class="field-name">MS932</h3>
+          <div class="field-signature">
+            <code>public String MS932</code>
+          </div>
+          <div class="field-description">
+            文字セット指定 - MS932. 
           </div>
         </div>
         <div class="field-item" id="JSON_NULL">
@@ -647,13 +728,16 @@
       <div class="method" id="joinCsv">
         <h3 class="method-name">joinCsv</h3>
         <div class="method-signature">
-          <code>public String joinCsv(String[] values)</code>
+          <code>public String joinCsv(String[] values, CsvType csvType)</code>
         </div>
         <div class="method-description">
           配列CSV連結.<br>
 <ul>
 <li>配列が空の場合はブランクを返す。</li>
-<li><code>null</code> はブランクとして連結される。</li>
+<li><code>null</code> はブランクとして連結する。</li>
+<li>CSVタイプがダブルクォーテーション付の場合、値内のダブルクォーテーション(")をダブルクォーテーション2つ("")に変換する。</li>
+<li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+<li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
 </ul>
 
         </div>
@@ -673,83 +757,10 @@
                 <td><code>String[]</code></td>
                 <td>連結対象</td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String</code> - 連結したCSV文字列</p>
-        </div>
-      </div>
-      <div class="method" id="joinCsvAllDq">
-        <h3 class="method-name">joinCsvAllDq</h3>
-        <div class="method-signature">
-          <code>public String joinCsvAllDq(String[] values)</code>
-        </div>
-        <div class="method-description">
-          配列CSV連結 ダブルクォーテーション付.<br>
-<ul>
-<li>配列が空の場合はブランクを返す。</li>
-<li><code>null</code> はブランクとして連結される。</li>
-<li>すべての配列要素にダブルクォーテーションを付加して出力する。</li>
-<li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
-</ul>
-
-        </div>
-        <div class="method-parameters">
-          <h4>パラメータ</h4>
-          <table class="parameter-table">
-            <thead>
               <tr>
-                <th>名前</th>
-                <th>型</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>values</code></td>
-                <td><code>String[]</code></td>
-                <td>連結対象</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String</code> - 連結したCSV文字列</p>
-        </div>
-      </div>
-      <div class="method" id="joinCsvDq">
-        <h3 class="method-name">joinCsvDq</h3>
-        <div class="method-signature">
-          <code>public String joinCsvDq(String[] values)</code>
-        </div>
-        <div class="method-description">
-          配列CSV連結 CSV仕様準拠ダブルクォーテーション付.<br>
-<ul>
-<li>配列が空の場合はブランクを返す。</li>
-<li><code>null</code> はブランクとして連結される。</li>
-<li>CSV仕様準拠で必要な要素にダブルクォーテーションを付加して出力する。</li>
-<li>値にダブルクォーテーションが含まれる場合は２つ連続したダブルクォーテーションに変換される。</li>
-</ul>
-
-        </div>
-        <div class="method-parameters">
-          <h4>パラメータ</h4>
-          <table class="parameter-table">
-            <thead>
-              <tr>
-                <th>名前</th>
-                <th>型</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>values</code></td>
-                <td><code>String[]</code></td>
-                <td>連結対象</td>
+                <td><code>csvType</code></td>
+                <td><code>CsvType</code></td>
+                <td>CSVタイプ</td>
               </tr>
             </tbody>
           </table>
@@ -890,13 +901,14 @@
       <div class="method" id="splitCsv">
         <h3 class="method-name">splitCsv</h3>
         <div class="method-signature">
-          <code>public String[] splitCsv(String csv)</code>
+          <code>public String[] splitCsv(String csv, CsvType csvType)</code>
         </div>
         <div class="method-description">
           CSV分割.<br>
 <ul>
 <li>CSV文字列を文字列配列に分割する。</li>
 <li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
+<li>ダブルクォーテーション付 CSVの場合、値内のダブルクォーテーション2つ("")をダブルクォーテーション(")に変換して格納する。</li>
 </ul>
 
         </div>
@@ -916,43 +928,10 @@
                 <td><code>String</code></td>
                 <td>CSV文字列</td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String[]</code> - 分割した文字列配列</p>
-        </div>
-      </div>
-      <div class="method" id="splitCsvDq">
-        <h3 class="method-name">splitCsvDq</h3>
-        <div class="method-signature">
-          <code>public String[] splitCsvDq(String csv)</code>
-        </div>
-        <div class="method-description">
-          ダブルクォーテーション付 CSV分割.<br>
-<ul>
-<li>CSV文字列を文字列配列に分割する。</li>
-<li>CSV文字列が <code>null</code> の場合は長さゼロの配列を返す。</li>
-<li>値内の2個連続したダブルクォーテーションは1個のダブルクォーテーションに変換されて格納される。</li>
-</ul>
-
-        </div>
-        <div class="method-parameters">
-          <h4>パラメータ</h4>
-          <table class="parameter-table">
-            <thead>
               <tr>
-                <th>名前</th>
-                <th>型</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>csv</code></td>
-                <td><code>String</code></td>
-                <td>CSV文字列</td>
+                <td><code>csvType</code></td>
+                <td><code>CsvType</code></td>
+                <td>CSVタイプ</td>
               </tr>
             </tbody>
           </table>
@@ -1390,7 +1369,7 @@
 <li>"1", "true", "yes", "on"（すべて半角）は <code>true</code>。</li>
 <li><code>null</code> またはブランクは <code>false</code> を含み、上記以外は <code>false</code>。</li>
 <li>大文字小文字を区別しない。</li>
-<li>左右の半角ブランクは無視する。</li>
+<li>左右の半角スペースは無視する。</li>
 </ol>
 </li>
 </ul>

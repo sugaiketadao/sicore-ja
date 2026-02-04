@@ -2,6 +2,8 @@ package com.onepg.util;
 
 import java.util.Map;
 
+import com.onepg.util.ValUtil.CsvType;
+
 /**
  * 入出力項目群マップクラス.<br>
  * <ul>
@@ -50,13 +52,36 @@ public final class IoItems extends AbstractIoTypeMap {
   /**
    * CSV作成.<br>
    * <ul>
-   * <li>値の追加順で CSV文字列を作成する。</li>
-   * <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
+   * <li>マップへの値の追加順で CSV文字列を作成する。</li>
+   * <li>CSVタイプがダブルクォーテーション付の場合、値内のダブルクォーテーション(")をダブルクォーテーション2つ("")に変換する。</li>
+   * <li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+   * <li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
+   * <li>文字列リスト、ネストマップ、複数行リスト、配列リストは出力されない。</li>
    * </ul>
+   *
+   * @param csvType CSVタイプ
+   * @return CSV文字列
+   */
+  public String createCsv(final CsvType csvType) {
+    if (csvType == CsvType.NO_DQ) {
+      return createCsvNoDq();
+    } else if (csvType == CsvType.DQ_ALL) {
+      return createCsvAllDq(false);
+    } else if (csvType == CsvType.DQ_ALL_LF) {
+      return createCsvAllDq(true);
+    } else if (csvType == CsvType.DQ_STD) {
+      return createCsvStdDq(false);
+    } else {
+      return createCsvStdDq(true);
+    }
+  }
+
+  /**
+   * CSV作成.
    *
    * @return CSV文字列
    */
-  public String createCsv() {
+  private String createCsvNoDq() {
     final StringBuilder sb = new StringBuilder();
     for (final Entry<String, String> ent : super.getValMap().entrySet()) {
       final String val = ValUtil.nvl(ent.getValue());
@@ -68,21 +93,16 @@ public final class IoItems extends AbstractIoTypeMap {
   }
 
   /**
-   * CSV作成 ダブルクォーテーション付.<br>
-   * <ul>
-   * <li>値の追加順で CSV文字列を作成する。</li>
-   * <li>すべての項目にダブルクォーテーションを付加して出力する。</li>
-   * <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
-   * <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
-   * </ul>
+   * CSV作成 ダブルクォーテーション付.
    *
+   * @param hasLf 改行有りフラグ
    * @return CSV文字列
    */
-  public String createCsvAllDq() {
+  private String createCsvAllDq(final boolean hasLf) {
     final StringBuilder sb = new StringBuilder();
     for (final Entry<String, String> ent : super.getValMap().entrySet()) {
       final String val = ValUtil.nvl(ent.getValue());
-      sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      sb.append('"').append(ValUtil.convCsvDqWrap(val, hasLf)).append('"');
       sb.append(',');
     }
     ValUtil.deleteLastChar(sb);
@@ -90,23 +110,18 @@ public final class IoItems extends AbstractIoTypeMap {
   }
 
   /**
-   * CSV作成 CSV仕様準拠ダブルクォーテーション付.<br>
-   * <ul>
-   * <li>値の追加順で CSV文字列を作成する。</li>
-   * <li>CSV仕様準拠で必要な項目にダブルクォーテーションを付加して出力する。</li>
-   * <li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
-   * <li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
-   * </ul>
+   * CSV作成 CSV仕様準拠ダブルクォーテーション付.
    *
+   * @param hasLf 改行有りフラグ
    * @return CSV文字列
    */
-  public String createCsvDq() {
+  private String createCsvStdDq(final boolean hasLf) {
     final StringBuilder sb = new StringBuilder();
     for (final Entry<String, String> ent : super.getValMap().entrySet()) {
       final String val = ValUtil.nvl(ent.getValue());
       // カンマ、改行、ダブルクォートが含まれる場合のみクォート
-      if (val.contains(",") || val.contains("\"") || val.contains("\n") || val.contains("\r")) {
-        sb.append('"').append(val.replace("\"", "\"\"")).append('"');
+      if (val.contains(",") || val.contains("\"") || val.contains(ValUtil.LF) || val.contains(ValUtil.CR)) {
+        sb.append('"').append(ValUtil.convCsvDqWrap(val, hasLf)).append('"');
       } else {
         sb.append(val);
       }
@@ -185,15 +200,33 @@ public final class IoItems extends AbstractIoTypeMap {
    * CSV格納.<br>
    * <ul>
    * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
-   * <li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
-   * <li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
+   * <li>引数のキー配列でキーがブランクの項目は格納されない。（読み飛ばしたい列にはブランクキーを指定する）</li>
+   * <li>CSV項目数がキー数より多い場合、余剰分の項目は格納されない。</li>
+   * <li>キー数がCSV項目数より多い場合、そのキーの値は常にブランクとなります。</li>
+   * <li>ダブルクォーテーション付 CSVの場合、値内の２つ連続したダブルクォーテーション("")は１つのダブルクォーテーション(")に変換されて格納される。</li>
    * </ul>
    *
-   * @param keys キー名配列
+   * @param keys キー配列
+   * @param csv CSV文字列
+   * @param csvType CSVタイプ
+   * @return 格納項目数
+   */
+  public int putAllByCsv(final String[] keys, final String csv, final CsvType csvType) {
+    if (csvType == CsvType.NO_DQ) {
+      return putAllByCsvNoDq(keys, csv);
+    } else {
+      return putAllByCsvDq(keys, csv);
+    }
+  }
+
+  /**
+   * CSV格納.
+   *
+   * @param keys キー配列
    * @param csv CSV文字列
    * @return 格納項目数
    */
-  public int putAllByCsv(final String[] keys, final String csv) {
+  int putAllByCsvNoDq(final String[] keys, final String csv) {
     // 最大インデックス
     final int keyMaxIdx = keys.length - 1;
 
@@ -222,27 +255,34 @@ public final class IoItems extends AbstractIoTypeMap {
   }
 
   /**
-   * ダブルクォーテーション付 CSV格納.<br>
-   * <ul>
-   * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
-   * <li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
-   * <li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
-   * <li>値内の２つ連続したダブルクォーテーションは１つのダブルクォーテーションに変換されて格納される。</li>
-   * </ul>
+   * ダブルクォーテーション付 CSV格納.
    *
    * @see #putAllByCsv(String[], String)
-   * @param keys キー名配列
+   * @param keys キー配列
    * @param csv CSV文字列
    * @return 格納項目数
    */
-  public int putAllByCsvDq(final String[] keys, final String csv) {
+  int putAllByCsvDq(final String[] keys, final String csv) {
+    return putAllByCsvDq(keys, csv, new CsvDqParser(csv));
+  }
+
+  /**
+   * ダブルクォーテーション付 CSV格納 性能対応.
+   *
+   * @see #putAllByCsv(String[], String)
+   * @param keys キー配列
+   * @param csv CSV文字列
+   * @param dqParser CSVパーサー
+   * @return 格納項目数
+   */
+  int putAllByCsvDq(final String[] keys, final String csv, final CsvDqParser dqParser) {
     // キー最大インデックス
     final int keyMaxIdx = keys.length - 1;
 
     int keyIdx = -1;
     int count = 0;
 
-    for (final String value : new CsvDqParser(csv)) {
+    for (final String value : dqParser) {
       keyIdx++;
       if (keyMaxIdx < keyIdx) {
         // CSV列がキー列より多い場合は終了する

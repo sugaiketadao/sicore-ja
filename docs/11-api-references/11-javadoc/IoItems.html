@@ -1895,55 +1895,37 @@
       <div class="method" id="createCsv">
         <h3 class="method-name">createCsv</h3>
         <div class="method-signature">
-          <code>public String createCsv()</code>
+          <code>public String createCsv(CsvType csvType)</code>
         </div>
         <div class="method-description">
           CSV作成.<br>
 <ul>
-<li>値の追加順で CSV文字列を作成する。</li>
-<li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
+<li>マップへの値の追加順で CSV文字列を作成する。</li>
+<li>CSVタイプがダブルクォーテーション付の場合、値内のダブルクォーテーション(")をダブルクォーテーション2つ("")に変換する。</li>
+<li>CSVタイプが改行有りの場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR）は LF に統一する。</li>
+<li>CSVタイプが改行無し（改行有り以外）の場合、かつ値内に改行コードを含む場合、その改行コード（CRLF・CR・LF）は半角スペースに変換する。</li>
+<li>文字列リスト、ネストマップ、複数行リスト、配列リストは出力されない。</li>
 </ul>
 
         </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String</code> - CSV文字列</p>
-        </div>
-      </div>
-      <div class="method" id="createCsvAllDq">
-        <h3 class="method-name">createCsvAllDq</h3>
-        <div class="method-signature">
-          <code>public String createCsvAllDq()</code>
-        </div>
-        <div class="method-description">
-          CSV作成 ダブルクォーテーション付.<br>
-<ul>
-<li>値の追加順で CSV文字列を作成する。</li>
-<li>すべての項目にダブルクォーテーションを付加して出力する。</li>
-<li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
-<li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
-</ul>
-
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String</code> - CSV文字列</p>
-        </div>
-      </div>
-      <div class="method" id="createCsvDq">
-        <h3 class="method-name">createCsvDq</h3>
-        <div class="method-signature">
-          <code>public String createCsvDq()</code>
-        </div>
-        <div class="method-description">
-          CSV作成 CSV仕様準拠ダブルクォーテーション付.<br>
-<ul>
-<li>値の追加順で CSV文字列を作成する。</li>
-<li>CSV仕様準拠で必要な項目にダブルクォーテーションを付加して出力する。</li>
-<li>値にダブルクォーテーションがあればダブルクォーテーション２文字に変換される。</li>
-<li>文字列リストとネストマップ、複数行リスト、配列リストは出力されない。</li>
-</ul>
-
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>csvType</code></td>
+                <td><code>CsvType</code></td>
+                <td>CSVタイプ</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
@@ -1981,14 +1963,16 @@
       <div class="method" id="putAllByCsv">
         <h3 class="method-name">putAllByCsv</h3>
         <div class="method-signature">
-          <code>public int putAllByCsv(String[] keys, String csv)</code>
+          <code>public int putAllByCsv(String[] keys, String csv, CsvType csvType)</code>
         </div>
         <div class="method-description">
           CSV格納.<br>
 <ul>
 <li>既に存在するキーでの格納は実行時エラーとなる。</li>
-<li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
-<li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
+<li>引数のキー配列でキーがブランクの項目は格納されない。（読み飛ばしたい列にはブランクキーを指定する）</li>
+<li>CSV項目数がキー数より多い場合、余剰分の項目は格納されない。</li>
+<li>キー数がCSV項目数より多い場合、そのキーの値は常にブランクとなります。</li>
+<li>ダブルクォーテーション付 CSVの場合、値内の２つ連続したダブルクォーテーション("")は１つのダブルクォーテーション(")に変換されて格納される。</li>
 </ul>
 
         </div>
@@ -2006,12 +1990,17 @@
               <tr>
                 <td><code>keys</code></td>
                 <td><code>String[]</code></td>
-                <td>キー名配列</td>
+                <td>キー配列</td>
               </tr>
               <tr>
                 <td><code>csv</code></td>
                 <td><code>String</code></td>
                 <td>CSV文字列</td>
+              </tr>
+              <tr>
+                <td><code>csvType</code></td>
+                <td><code>CsvType</code></td>
+                <td>CSVタイプ</td>
               </tr>
             </tbody>
           </table>
@@ -2019,56 +2008,6 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>int</code> - 格納項目数</p>
-        </div>
-      </div>
-      <div class="method" id="putAllByCsvDq">
-        <h3 class="method-name">putAllByCsvDq</h3>
-        <div class="method-signature">
-          <code>public int putAllByCsvDq(String[] keys, String csv)</code>
-        </div>
-        <div class="method-description">
-          ダブルクォーテーション付 CSV格納.<br>
-<ul>
-<li>既に存在するキーでの格納は実行時エラーとなる。</li>
-<li>引数のキー名配列でキーがブランクの項目は格納されない。（格納不要な項目に適用する）</li>
-<li>CSV項目数がキー名配列数より多い場合、余剰分の項目は格納されない。</li>
-<li>値内の２つ連続したダブルクォーテーションは１つのダブルクォーテーションに変換されて格納される。</li>
-</ul>
-
-        </div>
-        <div class="method-parameters">
-          <h4>パラメータ</h4>
-          <table class="parameter-table">
-            <thead>
-              <tr>
-                <th>名前</th>
-                <th>型</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>keys</code></td>
-                <td><code>String[]</code></td>
-                <td>キー名配列</td>
-              </tr>
-              <tr>
-                <td><code>csv</code></td>
-                <td><code>String</code></td>
-                <td>CSV文字列</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>int</code> - 格納項目数</p>
-        </div>
-        <div class="see-also">
-          <h4>関連項目</h4>
-          <ul>
-            <li><a href="#putAllByCsv">#putAllByCsv(String[], String)</a></li>
-          </ul>
         </div>
       </div>
       <div class="method" id="putAllByUrlParam">

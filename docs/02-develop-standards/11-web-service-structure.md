@@ -367,7 +367,7 @@ try (TxtReader reader = new TxtReader("/path/to/data.csv", ValUtil.UTF8)) {
   // ヘッダ行をスキップ
   reader.skip();
   
-  // キー名配列を定義
+  // キー配列を定義
   String[] keys = {"user_id", "user_nm", "email"};
   
   // 1行ずつ処理（Iteratorパターン）

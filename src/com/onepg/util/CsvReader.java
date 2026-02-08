@@ -7,7 +7,7 @@ import com.onepg.util.ValUtil.CharSet;
 
 
 /**
- * CSV リーダークラス.<br>
+ * CSVリーダークラス.<br>
  * <ul>
  * <li>テキストリーダー <code>TxtReader</code> のラッパークラス。</li>
  * <li>try 句（try-with-resources文）で宣言する。</li>

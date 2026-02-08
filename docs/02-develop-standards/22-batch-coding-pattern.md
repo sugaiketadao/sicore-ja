@@ -95,15 +95,12 @@ public class ExampleExport extends AbstractDbAccessBatch {
 
     // DB抽出してファイル出力
     try (final SqlResultSet rSet = SqlUtil.select(getDbConn(), SQL_SEL_USER);
-        final TxtWriter tw = new TxtWriter(outputPath, LineSep.LF, CharSet.UTF8)) {
-      // ヘッダ行出力
-      final String[] itemNames = rSet.getItemNames();
-      tw.println(ValUtil.joinCsvAllDq(itemNames));
-      // データ行出力
+        final CsvWriter cw = new CsvWriter(outputPath, LineSep.CRLF, CharSet.UTF8, CsvType.DQ_ALL_LF)) {
+      // 列名を出力
+      cw.println(rSet.getItemNames());
       for (final IoItems row : rSet) {
-        tw.println(row.createCsvAllDq());
+        cw.println(row);
       }
-      // 0件ログ
       if (rSet.getReadedCount() == 0) {
         super.logger.info("No data found to export. " + LogUtil.joinKeyVal("output", outputPath));
       }
@@ -205,25 +202,16 @@ public class ExampleImport extends AbstractDbAccessBatch {
       throw new RuntimeException("Input path not exists. " + LogUtil.joinKeyVal("input", inputPath));
     }
 
-    // ファイル読み込んでDB登録
-    try (final TxtReader tr = new TxtReader(inputPath, CharSet.UTF8)) {
-      // ヘッダ行取得
-      final String headerLine = tr.getFirstLine();
-      if (ValUtil.isBlank(headerLine)) {
-        throw new RuntimeException("Input file is empty. " + LogUtil.joinKeyVal("input", inputPath));
-      }
-      final String[] itemNames = ValUtil.splitCsvDq(headerLine);
-      // データ行処理
-      for (final String line : tr) {
-        final IoItems row = new IoItems();
-        row.putAllByCsvDq(itemNames, line);
-        // UPSERT処理（UPDATE → INSERT）
+    // DB抽出してファイル出力
+    try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL_LF)) {
+      for (final IoItems row : cr) {
         if (!SqlUtil.executeOne(getDbConn(), SQL_UPD_USER.bind(row))) {
+          // 更新件数０件の場合は登録実行
           SqlUtil.executeOne(getDbConn(), SQL_INS_USER.bind(row));
         }
       }
-      // 0件ログ
-      if (tr.getReadedCount() == 1) {
+      if (cr.getReadedCount() <= 1) {
+        // ゼロ行またはヘッダ行しか無い場合
         super.logger.info("No data found to import. " + LogUtil.joinKeyVal("input", inputPath));
       }
     }

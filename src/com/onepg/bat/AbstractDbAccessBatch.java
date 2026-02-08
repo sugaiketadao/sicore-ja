@@ -35,6 +35,7 @@ public abstract class AbstractDbAccessBatch extends AbstractBatch {
    * メイン処理の呼び出し.<br>
    * <ul>
    * <li>引数をURLパラメータ形式からマップ形式に変換し、ログ開始処理を実行後、DB接続を取得して <code>doExecute</code>メソッドを呼び出します。</li>
+   * <li>コマンドライン引数1つあたりの長さ制限に対応するため、複数の引数を配列として受け取る。</li>
    * <li>変換された引数は <code>IoItems</code>クラスとして <code>doExecute</code>メソッドに渡されます。</li>
    * <li><code>doExecute</code>メソッドの戻値が 0 の場合、処理が正常終了したとみなしコミットします。</li>
    * <li><code>doExecute</code>メソッドの戻値が 0 以外の場合または例外エラーが発生した場合、処理が異常終了したとみなしロールバックします。（ロールバックは <code>Connection#close()</code> で行われる）</li>
@@ -46,9 +47,7 @@ public abstract class AbstractDbAccessBatch extends AbstractBatch {
   @Override
   protected void callMain(final String[] args) {    
     final IoItems argsMap = new IoItems();
-    if (!ValUtil.isEmpty(args)) {
-      argsMap.putAllByUrlParam(args[0]);
-    }
+    argsMap.putAllByBatParam(args);
     if (this.logger.isDevelopMode()) {
       this.logger.develop(LogUtil.joinKeyVal("arguments", argsMap));
     }

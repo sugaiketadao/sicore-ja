@@ -62,7 +62,7 @@ public final class IoItems extends AbstractIoTypeMap {
    * @param csvType CSVタイプ
    * @return CSV文字列
    */
-  public String createCsv(final CsvType csvType) {
+  String createCsv(final CsvType csvType) {
     if (csvType == CsvType.NO_DQ) {
       return createCsvNoDq();
     } else if (csvType == CsvType.DQ_ALL) {
@@ -136,7 +136,7 @@ public final class IoItems extends AbstractIoTypeMap {
    *
    * @return URLエンコードされたGETパラメーター
    */
-  public String createUrlParam() {
+  String createUrlParam() {
     final Map<String, String> valMap = super.getValMap();
     final StringBuilder sb = new StringBuilder();
     for (final String key : super.allKeySet()) {
@@ -153,7 +153,7 @@ public final class IoItems extends AbstractIoTypeMap {
    *
    * @return JSON文字列
    */
-  public String createJson() {
+  String createJson() {
     final Map<String, String> valMap = super.getValMap();
     final StringBuilder sb = new StringBuilder();
     for (final String key : super.allKeySet()) {
@@ -211,7 +211,7 @@ public final class IoItems extends AbstractIoTypeMap {
    * @param csvType CSVタイプ
    * @return 格納項目数
    */
-  public int putAllByCsv(final String[] keys, final String csv, final CsvType csvType) {
+  int putAllByCsv(final String[] keys, final String csv, final CsvType csvType) {
     if (csvType == CsvType.NO_DQ) {
       return putAllByCsvNoDq(keys, csv);
     } else {
@@ -311,7 +311,7 @@ public final class IoItems extends AbstractIoTypeMap {
    * @param url URL全体 または URLパラメーター
    * @return 格納パラメーター数
    */
-  public int putAllByUrlParam(final String url) {
+  int putAllByUrlParam(final String url) {
     if (ValUtil.isBlank(url)) {
       return 0;
     }
@@ -344,7 +344,33 @@ public final class IoItems extends AbstractIoTypeMap {
       put(key, val);
     }
     return count;
+  }
 
+  /**
+   * バッチパラメーター値を格納（内容はURLパラメーターと同じ形式）.<br>
+   * <ul>
+   * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
+   * <li>コマンドライン引数1つあたりの長さ制限に対応するため、複数の引数を配列として受け取る。</li>
+   * </ul>
+   *
+   * @param args バッチパラメーター配列（各要素はURLパラメーター形式の文字列）
+   * @return 格納パラメーター数
+   */
+  public int putAllByBatParam(final String[] args) {
+    if (ValUtil.isEmpty(args)) {
+      return 0;
+    }
+    final StringBuilder sb = new StringBuilder();
+    for (final String arg : args) {
+      if (sb.length() > 0 && !arg.startsWith("&")) {
+        sb.append('&');
+      }
+      sb.append(arg);
+      if (arg.endsWith("&")) {
+        sb.setLength(sb.length() - 1);
+      }
+    }
+    return putAllByUrlParam(sb.toString());
   }
 
   /**
@@ -353,7 +379,7 @@ public final class IoItems extends AbstractIoTypeMap {
    * @param json JSON文字列
    * @return 格納項目数
    */
-  public int putAllByJson(final String json) {
+  int putAllByJson(final String json) {
     if (ValUtil.isBlank(json)) {
       return 0;
     }

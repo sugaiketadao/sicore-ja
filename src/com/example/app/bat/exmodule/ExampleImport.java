@@ -83,7 +83,7 @@ public class ExampleImport extends AbstractDbAccessBatch {
     }
 
     // DB抽出してファイル出力
-    try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL)) {
+    try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL_LF)) {
       for (final IoItems row : cr) {
         if (!SqlUtil.executeOne(getDbConn(), SQL_UPD_USER.bind(row))) {
           // 更新件数０件の場合は登録実行

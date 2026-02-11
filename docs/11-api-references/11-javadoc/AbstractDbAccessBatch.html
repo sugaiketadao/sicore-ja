@@ -20,7 +20,6 @@
       <div class="class-details">
         <p><strong>パッケージ:</strong> com.onepg.bat</p>
         <p><strong>クラス名:</strong> AbstractDbAccessBatch <span class="abstract-badge">（抽象クラス）</span></p>
-        <p><strong>継承:</strong> <a href="AbstractBatch.html">AbstractBatch</a></p>
       </div>
       <div class="class-description">
         <h3>説明</h3>
@@ -28,25 +27,94 @@
 <ul>
 <li>データベース接続を含む バッチ処理の基底クラスです。</li>
 <li>DB接続の取得とクローズを自動的に処理します。</li>
+<li>各バッチ処理の共通処理（ログ出力、例外処理等）を提供します。</li>
+<li>サブクラスで <code>doExecute</code>メソッドを実装することで具体的なバッチ処理を定義します。</li>
+<li>サブクラスは <code>main</code>メソッドから本クラスの <code>callMain</code>メソッドを呼び出すと <code>doExecute</code>メソッドが実行されます。</li>
+<li>サブクラス <code>main</code>メソッドへの引数は URLパラメータ形式で <code>callMain</code>メソッドにそのまま渡される前提としています。</li>
+<li>URLパラメータ形式の引数はマップ形式に変換され、 <code>IoItems</code>クラスとして <code>doExecute</code>メソッドに渡されます。</li>
+<li>サブクラス <code>doExecute</code>メソッド内でのエラー時は Exception をスローする前提としています。</li>
+<li>正常終了時の <code>callMain</code>メソッドの戻値は 0 となります。</li>
+<li><code>doExecute</code>メソッド内で Exception がスローされた場合の <code>callMain</code>メソッドの戻値は 1 となります。</li>
 </ul>
+<pre>
+［実装例］<code>public class ExampleBatch extends AbstractDbAccessBatch {
+   public static void main(String[] args) {
+     System.exit((new ExampleBatch()).callMain(args));
+   }
 </div>
       </div>
     </div>
     <div class="section">
+      <h2>定数・変数一覧</h2>
+      <div class="field-list">
+        <div class="field-item" id="traceCode">
+          <h3 class="field-name">traceCode</h3>
+          <div class="field-signature">
+            <code>protected String traceCode</code>
+          </div>
+          <div class="field-description">
+            トレースコード. 
+          </div>
+        </div>
+        <div class="field-item" id="logger">
+          <h3 class="field-name">logger</h3>
+          <div class="field-signature">
+            <code>protected LogWriter logger</code>
+          </div>
+          <div class="field-description">
+            ログライター. 
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
       <h2>メソッド一覧</h2>
+      <div class="method" id="doExecute">
+        <h3 class="method-name">doExecute <span class="abstract-badge">（抽象メソッド）</span></h3>
+        <div class="method-signature">
+          <code>protected void doExecute(IoItems args)</code>
+        </div>
+        <div class="method-description">
+          メイン処理.<br>
+<ul>
+<li>サブクラスで具体的な バッチ処理を実装します。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>args</code></td>
+                <td><code>IoItems</code></td>
+                <td>引数</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="method" id="callMain">
         <h3 class="method-name">callMain</h3>
         <div class="method-signature">
-          <code>protected void callMain(String[] args)</code>
+          <code>protected int callMain(String[] args)</code>
         </div>
         <div class="method-description">
           メイン処理の呼び出し.<br>
 <ul>
-<li>引数をURLパラメータ形式からマップ形式に変換し、ログ開始処理を実行後、DB接続を取得して <code>doExecute</code>メソッドを呼び出します。</li>
+<li>引数をURLパラメータ形式からマップ形式に変換し、ログ開始処理を実行後、<code>doExecute</code>メソッドを呼び出します。</li>
 <li>コマンドライン引数1つあたりの長さ制限に対応するため、複数の引数を配列として受け取る。</li>
 <li>変換された引数は <code>IoItems</code>クラスとして <code>doExecute</code>メソッドに渡されます。</li>
-<li><code>doExecute</code>メソッドの戻値が 0 の場合、処理が正常終了したとみなしコミットします。</li>
-<li><code>doExecute</code>メソッドの戻値が 0 以外の場合または例外エラーが発生した場合、処理が異常終了したとみなしロールバックします。（ロールバックは <code>Connection#close()</code> で行われる）</li>
+<li><code>doExecute</code>メソッド内で Exception がスローされた場合は、処理が異常終了したとみなします。</li>
+<li>処理が正常終了した場合は、コミットします。</li>
+<li>処理が異常終了した場合は、ロールバックします。（ロールバック自体は <code>Connection#close()</code> で行われる）</li>
 <li>処理終了後、DB接続を必ずクローズします。</li>
 </ul>
 
@@ -69,6 +137,10 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>int</code> - 正常終了時は 0、異常終了時は 1</p>
         </div>
       </div>
       <div class="method" id="getDbConn">

@@ -454,18 +454,6 @@ const ValUtil = /** @lends ValUtil */ {
 const FrmUtil = /** @lends FrmUtil */ {
 
   /**
-   * 大文字変換.
-   * @param {string} value 処理対象
-   * @returns {string} 大文字変換後の文字列
-   */
-  upper: function(value) {
-    if (ValUtil.isBlank(value)) {
-      return value;
-    }
-    return value.toUpperCase();
-  },
-
-  /**
    * 数値（カンマ編集）.<br>
    * 数値以外は編集せず返す。
    * @param {string} value 処理対象
@@ -533,16 +521,6 @@ const FrmUtil = /** @lends FrmUtil */ {
  * @class
  */
 const UnFrmUtil = /** @lends UnFrmUtil */ {
-
-  /**
-   * 大文字変換アンフォーマット.
-   * @param {string} value 処理対象
-   * @returns {string} 加工無しの文字列
-   */
-  upper: function(value) {
-    // 加工無し
-    return value;
-  },
 
   /**
    * 数字アンフォーマット（カンマ除去）.

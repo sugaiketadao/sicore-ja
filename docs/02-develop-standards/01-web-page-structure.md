@@ -382,7 +382,6 @@ PageUtil.setValues(values);          // nameとdata-name両方にセット
 | `num` | 数値 - カンマ区切り | `1000000` | `1,000,000` |
 | `ymd` | 日付 - YYYY/MM/DD形式 | `20251231` | `2025/12/31` |
 | `hms` | 時刻 - HH:MI:SS形式 | `123456` | `12:34:56` |
-| `upper` | 大文字変換（コード・ID） | `abc123` | `ABC123` ※アンフォーマット後も大文字のまま |
 
 <!-- AI_SKIP_START -->
 #### data-value-format-type属性の使用例とメリット
@@ -398,8 +397,6 @@ PageUtil.setValues(values);          // nameとdata-name両方にセット
 <!-- 時刻（HH:MI:SS形式） -->
 <input type="text" name="stroll_tm" data-value-format-type="hms">
 
-<!-- 大文字変換 -->
-<input type="text" name="user_id" data-value-format-type="upper">
 ```
 
 **JavaScript動作**:

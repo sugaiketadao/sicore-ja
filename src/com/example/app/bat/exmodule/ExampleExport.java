@@ -39,15 +39,14 @@ public class ExampleExport extends AbstractDbAccessBatch {
    * @param args 引数
    */
   public static void main(String[] args) {
-    final ExampleExport batch = new ExampleExport();
-    batch.callMain(args);
+    System.exit((new ExampleExport()).callMain(args));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public int doExecute(final IoItems io) throws Exception {
+  protected void doExecute(final IoItems io) throws Exception {
     // 出力ファイルパス取得
     final String outputPath = io.getString("output");
 
@@ -76,6 +75,5 @@ public class ExampleExport extends AbstractDbAccessBatch {
         super.logger.info("No data found to export. " + LogUtil.joinKeyVal("output", outputPath));
       }
     }
-    return 0;
   }
 }

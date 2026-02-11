@@ -187,17 +187,13 @@ public final class StandaloneServer {
     }
     try {
       // プーリングDB切断
-      if (DbUtil.closePooledConn()) {
-        LogUtil.stdout("Disconnected pooled DB connections.");
-      }
+      DbUtil.closePooledConn();
     } catch (final Exception | Error e) {
       LogUtil.stdout(e, "An exception error occurred in disconnecting pooled DB connections. ");
     }
     try {
       // ログテキストファイルを閉じる
-      if (LogTxtHandler.closeAll()) {
-        LogUtil.stdout("Closed log text file.");
-      }
+      LogTxtHandler.closeAll();
     } catch (final Exception | Error e) {
       LogUtil.stdout(e, "An exception error occurred in log text file close.");
     }

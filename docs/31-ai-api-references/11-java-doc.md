@@ -9,22 +9,22 @@
 #### doExecute （抽象メソッド）
 
 ```
-protected int doExecute(IoItems args)
+protected void doExecute(IoItems args)
 ```
 
 **Parameters**:
 - `args`: `IoItems`
 
-**Returns**: `int`
-
 #### callMain
 
 ```
-protected void callMain(String[] args)
+protected int callMain(String[] args)
 ```
 
 **Parameters**:
 - `args`: `String[]`
+
+**Returns**: `int`
 
 ## AbstractDbAccessBatch （抽象クラス）
 
@@ -32,14 +32,25 @@ protected void callMain(String[] args)
 
 ### Methods
 
+#### doExecute （抽象メソッド）
+
+```
+protected void doExecute(IoItems args)
+```
+
+**Parameters**:
+- `args`: `IoItems`
+
 #### callMain
 
 ```
-protected void callMain(String[] args)
+protected int callMain(String[] args)
 ```
 
 **Parameters**:
 - `args`: `String[]`
+
+**Returns**: `int`
 
 #### getDbConn
 
@@ -334,10 +345,8 @@ public Connection getConnPooledByConfigName(String connName, String traceCode)
 #### closePooledConn
 
 ```
-public boolean closePooledConn()
+public void closePooledConn()
 ```
-
-**Returns**: `boolean`
 
 #### getConnNames
 

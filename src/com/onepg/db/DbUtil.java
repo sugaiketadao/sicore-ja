@@ -286,10 +286,8 @@ public final class DbUtil {
    * <li>使用中の接続も切断する。</li>
    * </ul>
    * 
-   * @return 切断した場合は <code>true</code>
    */
-  public static synchronized boolean closePooledConn() {
-    boolean ret = false;
+  public static synchronized void closePooledConn() {
     // 削除するのでイテレーターを使う
     final Iterator<String> connNameIte = connPoolMaps_.keySet().iterator();
     // 接続プール管理マップのループ
@@ -315,13 +313,11 @@ public final class DbUtil {
         @SuppressWarnings("resource")
         final DbConn dbConn = new DbConn(conn, serialCode);
         dbConn.rollbackCloseForce();
-        ret = true;
       }
       // すべてDB切断できたら接続プール管理マップと使用中接続管理マップから削除
       connPoolMaps_.remove(connName);
       connBusyLists_.remove(connName);
     }
-    return ret;
   }
 
   /**

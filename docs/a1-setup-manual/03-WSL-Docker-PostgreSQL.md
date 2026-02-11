@@ -73,6 +73,8 @@ $ psql -h localhost -p 5432 -d db01 -U postgres
 作成した DB のスキーマ優先順位を変更する。（`public` より前に作成したスキーマを指定）
 # ALTER DATABASE db01 SET search_path TO schema01, public;
 # quit
+
+CREATE SCHEMA でエラーとなる場合は作成したユーザーでログインしてスキーマを作成する（上記SQLを実行する）
 ```
 
 10. カレントスキーマを確認する。　***publicスキーマのみ使用する場合はこの手順をスキップする***

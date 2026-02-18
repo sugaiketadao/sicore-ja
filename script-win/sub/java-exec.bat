@@ -10,7 +10,18 @@ rem # @return Javaコマンドの終了ステータス
 rem #
 
 rem # 環境変数の影響を及ぼさないようにする
-setlocal
+rem # 遅延展開を有効化
+setlocal enabledelayedexpansion
+
+rem # 実行ユーザーチェック
+rem # TODO: チェック不要な場合は下記を削除してください
+rem # TODO: プロジェクトに応じて適切な値に変更してください
+set ALLOW_USER=batchuser
+for /f "tokens=*" %%i in ('whoami') do set "CURRENT_USER=%%i"
+if not "%ALLOW_USER%" == "%CURRENT_USER%" (
+  call :printStdErr "ERROR: %CURRENT_USER% is not allowed. Please execute as %ALLOW_USER% user."
+  exit /b 1
+)
 
 rem # 必須引数チェック
 if "%1" == "" (
@@ -34,8 +45,11 @@ rem # プロセスID（親プロセスIDを取得）
 powershell -Command "try { $process = Get-CimInstance Win32_Process -Filter \"ProcessId=$pid\" -ErrorAction Stop; if ($process) { exit $process.ParentProcessId } else { exit 0 } } catch { exit 0 }"
 set PS_ID=%ERRORLEVEL%
 
+rem # スクリプトディレクトリ（絶対パス変換）.
+for %%I in ("%~dp0") do set SCRIPT_DIR=%%~fI
+
 rem # アプリケーション環境変数読込
-call %~dp0env-app.bat
+call %SCRIPT_DIR%\env-app.bat
 rem # アプリケーション環境変数チェック
 if "%APP_NAME%"=="" (
   call :printStdErr "ERROR: APP_NAME is blank in env-app.bat"
@@ -45,12 +59,12 @@ if "%APP_HOME%"=="" (
   call :printStdErr "ERROR: APP_HOME is blank in env-app.bat"
   exit /b 1
 )
-if not exist "%APP_HOME%" (
-  call :printStdErr "ERROR: APP_HOME not exist: %APP_HOME%"
-  exit /b 1
-)
 if "%LOG_DIR%"=="" (
   call :printStdErr "ERROR: LOG_DIR is blank in env-app.bat"
+  exit /b 1
+)
+if not exist "%APP_HOME%" (
+  call :printStdErr "ERROR: APP_HOME not exist: %APP_HOME%"
   exit /b 1
 )
 if not exist "%LOG_DIR%" (
@@ -59,7 +73,7 @@ if not exist "%LOG_DIR%" (
 )
 
 rem # Java環境変数読込
-call %~dp0env-java.bat
+call %SCRIPT_DIR%env-java.bat
 
 rem # Java環境変数チェック
 if "%JAVA_BIN%"=="" (
@@ -77,21 +91,21 @@ call :getNowDate LOG_YMD
 set LOG_FILE=%LOG_DIR%\%LOG_YMD%_%JOB_ID%.log
 
 rem # 開始ログ
-call :printLog "START: %EXEC_CLS%(%EXEC_ARGS%)"
+call :printLog "[START] %EXEC_CLS%"
 
 rem # Javaクラスパス
 set JAVA_CP=%APP_HOME%\lib\*;%APP_HOME%\classes
 
 rem # Java実行
-%JAVA_BIN%\java %JVM_XMS% %JVM_XMX% -cp %JAVA_CP% %EXEC_CLS% %EXEC_ARGS%>>%LOG_FILE% 2>&1
+%JAVA_BIN%\java %JVM_XMS% %JVM_XMX% -cp "%JAVA_CP%" %EXEC_CLS% %EXEC_ARGS%>>%LOG_FILE% 2>&1
 set EXIT_STATUS=%ERRORLEVEL%
 
 rem # 終了ログ
-call :printLog "END: EXIT(%EXIT_STATUS%)"
+call :printLog "[END] %EXIT_STATUS%"
 
 rem # エラー時アラート出力
 if not "%EXIT_STATUS%" == "0" (
-  call :printAlert "ERROR: %EXEC_CLS%(%EXEC_ARGS%) -> EXIT(%EXIT_STATUS%)"
+  call :printAlert "[ERROR] %EXEC_CLS%(%EXIT_STATUS%)"
 )
 
 rem # 終了
@@ -148,7 +162,7 @@ rem #
 :printLog
 set MSG=%1
 call :getNowTimestamp YMDHMS
-echo %YMDHMS% %APP_NAME%/%JOB_ID% [%PS_ID%] %MSG:"=%>>%LOG_FILE% 2>&1
+echo %YMDHMS% %APP_NAME%/%JOB_ID% #%PS_ID% %MSG:"=%>>%LOG_FILE% 2>&1
 exit /b
 
 rem #
@@ -162,9 +176,9 @@ rem #
 :printAlert
 set MSG=%1
 call :getNowTimestamp YMDHMS
-echo %YMDHMS% %APP_NAME%/%JOB_ID% [%PS_ID%] %MSG:"=%>>%LOG_FILE% 2>&1
+echo %YMDHMS% %APP_NAME%/%JOB_ID% #%PS_ID% %MSG:"=%>>%LOG_FILE% 2>&1
 if "%ALERT_FILE%"=="" (
   exit /b
 )
-echo %YMDHMS% %APP_NAME%/%JOB_ID% [%PS_ID%] %MSG:"=%>>%ALERT_FILE% 2>&1
+echo %YMDHMS% %APP_NAME%/%JOB_ID% #%PS_ID% %MSG:"=%>>%ALERT_FILE% 2>&1
 exit /b

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ログユーティリティクラス.
@@ -28,11 +29,14 @@ public final class LogUtil {
   private static final boolean DEVELOP_MODE;
   /** コンソールライター. */
   private static final PrintWriter CONSOLE_WRITER;
+  /** 親プロセスID（全インスタンス共通）. */
+  static final long PARENT_PID;
 
   static {
     PROP_MAP = PropertiesUtil.getFrameworkProps(FwPropertiesName.LOG);
     DEVELOP_MODE = Boolean.parseBoolean(PROP_MAP.getString("develop.mode"));
     CONSOLE_WRITER = new CustomPrintWriter(System.out, true, LineSep.LF);
+    PARENT_PID = LogUtil.getParentPid();
 
     // System.out を無効化する
     final PrintStream disablePs = new PrintStream(System.err) {
@@ -77,7 +81,7 @@ public final class LogUtil {
     final LogTxtHandler infHdr = LogTxtHandler.getInstance(DEFAULT_LOG_KEYPREFIX, false);
     final LogTxtHandler errHdr = LogTxtHandler.getInstance(DEFAULT_LOG_KEYPREFIX, true);
     try {
-      return new LogWriter(cls, traceCode, DEVELOP_MODE, infHdr, errHdr, CONSOLE_WRITER);
+      return new LogWriter(cls, PARENT_PID, traceCode, DEVELOP_MODE, infHdr, errHdr, CONSOLE_WRITER);
     } catch (Exception | Error e) {
       throw new RuntimeException("An exception occurred while creating the log writer instance. ", e);
     }
@@ -483,5 +487,18 @@ public final class LogUtil {
     }
     return "UnknownSource";
   }
-  
+
+  /**
+   * 親プロセスID取得.
+   *
+   * @return 親プロセスID（取得不可の場合は -1）
+   */
+  private static long getParentPid() {
+    final ProcessHandle current = ProcessHandle.current();
+    final Optional<ProcessHandle> parent = current.parent();
+    if (parent.isPresent()) {
+      return parent.get().pid();
+    }
+    return -1L;
+  }
 }

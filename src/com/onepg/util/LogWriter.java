@@ -21,6 +21,8 @@ public final class LogWriter {
 
   /** 生成クラス名. */
   private final String clsName;
+  /** 親プロセスID. */
+  private final long ppid;
   /** スレッド名. */
   private final String threadName;
   /** 情報ログテキストハンドラー. */
@@ -53,17 +55,19 @@ public final class LogWriter {
    * コンストラクタ.
    *
    * @param cls               ログ対象クラス
+   * @param ppid              親プロセスID
    * @param traceCode         トレースコード（省略可能）
    * @param isDevelopMode     開発モード
    * @param infLogFileHandler 情報ログテキストハンドラー
    * @param errLogFileHandler エラーログテキストハンドラー
    * @param consoleWriter     コンソールライター
    */
-  LogWriter(final Class<?> cls, final String traceCode, final boolean isDevelopMode,
+  LogWriter(final Class<?> cls, final long ppid, final String traceCode, final boolean isDevelopMode,
       final LogTxtHandler infLogTxtHandler, final LogTxtHandler errLogTxtHandler,
       final PrintWriter consoleWriter) {
 
     this.clsName = cls.getName();
+    this.ppid = ppid;
     this.threadName = Thread.currentThread().getName();
     this.traceCode = ValUtil.nvl(traceCode);
     this.isDevelopMode = isDevelopMode;
@@ -79,7 +83,7 @@ public final class LogWriter {
     this.infPrefix = prefixTraceCode + " [INF] ";
     this.errPrefix = prefixTraceCode + " [ERR] ";
     this.devPrefix = prefixTraceCode + " [DEV] ";
-    this.beginEndSuffix = LogUtil.joinKeyVal("class", this.clsName, "thread", this.threadName);
+    this.beginEndSuffix = LogUtil.joinKeyVal("class", this.clsName, "ppid", this.ppid, "thread", this.threadName);
   }
 
   /**

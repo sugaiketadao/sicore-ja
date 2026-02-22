@@ -277,7 +277,7 @@ public final class LogWriter {
   }
 
   // 定数の追加
-  private static final long MILLIS_PER_SECOND = 1000L;
+  private static final long MILLIS_PER_SECOND = 1_000L;
   private static final long MILLIS_PER_MINUTE = MILLIS_PER_SECOND * 60;
   private static final long MILLIS_PER_HOUR = MILLIS_PER_MINUTE * 60;
 

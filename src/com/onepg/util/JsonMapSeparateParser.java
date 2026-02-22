@@ -62,7 +62,7 @@ final class JsonMapSeparateParser extends AbstractStringSeparateParser {
 
     // 性能対応（1000文字を境界とした最適化）
     final char[] valChars;
-    final boolean useCharAry = (value.length() > 1000);
+    final boolean useCharAry = (value.length() > 1_000);
     if (useCharAry) {
       // char[]配列使用
       valChars = value.toCharArray();

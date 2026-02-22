@@ -434,24 +434,24 @@ public final class LogUtil {
         return "0T00:00:00.000";
       }
       // オーバーフロー対策
-      if (Long.MAX_VALUE < (msec / 1000)) {
+      if (Long.MAX_VALUE < (msec / 1_000)) {
         return ValUtil.BLANK;
       }
 
-      final long sec = msec / 1000;
+      final long sec = msec / 1_000;
       final long min = sec / 60;
       final long hur = min / 60;
       long day = hur / 24;
       
       // 非現実的な値のチェック
-      if (day > 999999) { // 約2700年以上
+      if (day > 999_999) { // 約2700年以上
         day = -1;
       }
 
       final long sepHur = hur % 24;     // 0-23の範囲
       final long sepMin = min % 60;     // 0-59の範囲
       final long sepSec = sec % 60;     // 0-59の範囲
-      final long sepMsec = msec % 1000; // 0-999の範囲（ミリ秒）
+      final long sepMsec = msec % 1_000; // 0-999の範囲（ミリ秒）
       
       final StringBuilder sb = new StringBuilder();
       sb.append(day).append("T");

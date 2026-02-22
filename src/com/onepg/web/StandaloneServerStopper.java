@@ -18,7 +18,7 @@ import java.util.Scanner;
 public final class StandaloneServerStopper {
 
   /** HTTP接続タイムアウト（ミリ秒）. */
-  private static final int HTTP_TIMEOUT_MS = 5000;
+  private static final int HTTP_TIMEOUT_MS = 5_000;
 
   /**
    * メイン処理.
@@ -97,14 +97,14 @@ public final class StandaloneServerStopper {
     // 最大10回、1秒間隔で確認
     for (int i = 0; i < 10; i++) {
       try {
-        Thread.sleep(1000); // 1秒待機
+        Thread.sleep(1_000); // 1秒待機
 
         final URI uri = new URI(checkUrl);
         final URL url = uri.toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        connection.setConnectTimeout(1000);
-        connection.setReadTimeout(1000);
+        connection.setConnectTimeout(1_000);
+        connection.setReadTimeout(1_000);
 
         final int responseCode = connection.getResponseCode();
         connection.disconnect();

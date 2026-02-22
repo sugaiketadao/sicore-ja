@@ -54,7 +54,6 @@
   --onepg-base--height--inputitem: 2rem;
   /* 入力項目枠線幅 */
   --onepg-base--border-width--inputitem: 1px;
-  /* 計算済入力項目行高さ */
   --onepg-base--line-height--inputitem-calc: calc(var(--onepg-base--height--inputitem) - var(--onepg-base--border-width--inputitem) * 2);
   /* 入力項目枠内左右余白 */
   --onepg-base--spacing--inputitem-lr: 0.25rem;
@@ -388,7 +387,7 @@ div.table table > tbody label {
   white-space: nowrap;
   /* テキストボックスと文字位置・高さを揃える */
   display: inline-block;
-  line-height: var(--onepg-base--line-height--inputitem-calc);
+  line-height: var(--onepg-base--line-height--inputitem-calc); /* 計算済入力項目行高さ */
   vertical-align: middle;
   height: var(--onepg-base--height--inputitem);
   border-top: var(--onepg-base--border-width--inputitem) solid transparent;
@@ -605,7 +604,7 @@ button.danger:not(:disabled) {
 a.button {
   /* ボタンの形にするスタイル */
   display: inline-block;
-  line-height: var(--onepg-base--line-height--inputitem-calc);
+  line-height: var(--onepg-base--line-height--inputitem-calc); /* 計算済入力項目行高さ */
   vertical-align: middle;
   text-decoration: none;
   text-align: center;

@@ -25,6 +25,7 @@
           <li><a href="#section-5">テーブルスタイル.</a></li>
           <li><a href="#section-6">ユーティリティスタイル.</a></li>
           <li><a href="#section-7">メッセージ表示／項目ハイライトスタイル.</a></li>
+          <li><a href="#constants">定数一覧</a></li>
         </ul>
       </div>
     </div>
@@ -169,6 +170,210 @@
 <li>ハイライト表示する項目は Java フレームワーク部品 <code>Io#putMsg()</code> の引数でメッセージ文言とともに指定する。</li>
 </ul>
       </div>
+    </div>
+    <div class="section" id="constants">
+      <h2>定数一覧</h2>
+      <p class="constants-note">すべての定数名は <code>--onepg-base--</code> から始まります。（例: <code>line-height--all</code> → <code>--onepg-base--line-height--all</code>）</p>
+      <table class="constants-table">
+        <thead><tr><th>定数名称</th><th>定数名（--onepg-base-- 以降）</th><th>設定値</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>全体行高さ</td>
+            <td><code>line-height--all</code></td>
+            <td><code>1.5</code></td>
+          </tr>
+          <tr>
+            <td>セクション左右余白</td>
+            <td><code>spacing--section-lr</code></td>
+            <td><code>1.5rem</code></td>
+          </tr>
+          <tr>
+            <td>セクション間上下余白</td>
+            <td><code>spacing--section-tb</code></td>
+            <td><code>1rem</code></td>
+          </tr>
+          <tr>
+            <td>ヘッダーフッターセクション間上下余白</td>
+            <td><code>spacing--section-tb-header-footer</code></td>
+            <td><code>0.5rem</code></td>
+          </tr>
+          <tr>
+            <td>入力項目高さ</td>
+            <td><code>height--inputitem</code></td>
+            <td><code>2rem</code></td>
+          </tr>
+          <tr>
+            <td>入力項目枠線幅</td>
+            <td><code>border-width--inputitem</code></td>
+            <td><code>1px</code></td>
+          </tr>
+          <tr>
+            <td>入力項目枠内左右余白</td>
+            <td><code>spacing--inputitem-lr</code></td>
+            <td><code>0.25rem</code></td>
+          </tr>
+          <tr>
+            <td>入力項目枠角丸め</td>
+            <td><code>radius--inputitem</code></td>
+            <td><code>4px</code></td>
+          </tr>
+          <tr>
+            <td>ボタン枠角丸め</td>
+            <td><code>radius--button</code></td>
+            <td><code>calc(var(--onepg-base--height--inputitem) / 2)</code></td>
+          </tr>
+          <tr>
+            <td>ボタン枠内左右余白</td>
+            <td><code>spacing--button-lr</code></td>
+            <td><code>var(--onepg-base--radius--button)</code></td>
+          </tr>
+          <tr>
+            <td>項目左右余白</td>
+            <td><code>spacing--item-lr</code></td>
+            <td><code>0.25rem</code></td>
+          </tr>
+          <tr>
+            <td>グリッド行間余白</td>
+            <td><code>spacing--grid-rows</code></td>
+            <td><code>0.75rem</code></td>
+          </tr>
+          <tr>
+            <td>グリッド列間余白</td>
+            <td><code>spacing--grid-cols</code></td>
+            <td><code>0.25rem</code></td>
+          </tr>
+          <tr>
+            <td>背景色</td>
+            <td><code>color--bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#e5e4e6;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#e5e4e6</code></td>
+          </tr>
+          <tr>
+            <td>ヘッダー・フッター背景色</td>
+            <td><code>color--bg-header-footer</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#eae5e3;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#eae5e3</code></td>
+          </tr>
+          <tr>
+            <td>テーブルストライプ背景色</td>
+            <td><code>color--bg-stripe</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#dddcd6;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#dddcd6</code></td>
+          </tr>
+          <tr>
+            <td>テキスト色</td>
+            <td><code>color--text</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#2e2930;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#2e2930</code></td>
+          </tr>
+          <tr>
+            <td>非活性テキスト色</td>
+            <td><code>color--text-disabled</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#9ea1a3;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#9ea1a3</code></td>
+          </tr>
+          <tr>
+            <td>警告テキスト色</td>
+            <td><code>color--text-danger</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#e83929;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#e83929</code></td>
+          </tr>
+          <tr>
+            <td>入力項目背景色</td>
+            <td><code>color--input-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#f8fbf8;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#f8fbf8</code></td>
+          </tr>
+          <tr>
+            <td>枠線色</td>
+            <td><code>color--border</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#c8c2c6;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#c8c2c6</code></td>
+          </tr>
+          <tr>
+            <td>非活性背景色</td>
+            <td><code>color--input-bg-disabled</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:transparent;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>transparent</code></td>
+          </tr>
+          <tr>
+            <td>ボタン背景色</td>
+            <td><code>color--button-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#595857;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#595857</code></td>
+          </tr>
+          <tr>
+            <td>危険ボタン色</td>
+            <td><code>color--button-bg-danger</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#d3381c;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#d3381c</code></td>
+          </tr>
+          <tr>
+            <td>ボタン枠線色</td>
+            <td><code>color--button-border</code></td>
+            <td><code>var(--onepg-base--color--border)</code></td>
+          </tr>
+          <tr>
+            <td>ボタン非活性背景色</td>
+            <td><code>color--button-bg-disabled</code></td>
+            <td><code>var(--onepg-base--color--button-border)</code></td>
+          </tr>
+          <tr>
+            <td>ボタン非活性枠線色</td>
+            <td><code>color--button-border-disabled</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#dcd6d9;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#dcd6d9</code></td>
+          </tr>
+          <tr>
+            <td>ボタンテキスト色</td>
+            <td><code>color--button-text</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#fffffc;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#fffffc</code></td>
+          </tr>
+          <tr>
+            <td>テーブル罫線色</td>
+            <td><code>color--table-border</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#a89dac;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#a89dac</code></td>
+          </tr>
+          <tr>
+            <td>フォーカス枠線色</td>
+            <td><code>color--focus</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#2ca9e1;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#2ca9e1</code></td>
+          </tr>
+          <tr>
+            <td>メッセージ表示エリア左右余白</td>
+            <td><code>spacing--msg-lr</code></td>
+            <td><code>0.5rem</code></td>
+          </tr>
+          <tr>
+            <td>情報メッセージ背景色</td>
+            <td><code>color--info-msg-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#bce2e8;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#bce2e8</code></td>
+          </tr>
+          <tr>
+            <td>警告メッセージ背景色</td>
+            <td><code>color--warn-msg-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#f8e58c;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#f8e58c</code></td>
+          </tr>
+          <tr>
+            <td>エラーメッセージ背景色</td>
+            <td><code>color--err-msg-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#eebbcb;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#eebbcb</code></td>
+          </tr>
+          <tr>
+            <td>情報項目背景色</td>
+            <td><code>color--info-item-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#bce2e8;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#bce2e8</code></td>
+          </tr>
+          <tr>
+            <td>警告項目背景色</td>
+            <td><code>color--warn-item-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#f8e58c;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#f8e58c</code></td>
+          </tr>
+          <tr>
+            <td>エラー項目背景色</td>
+            <td><code>color--err-item-bg</code></td>
+            <td><span style="display:inline-block;width:1em;height:1em;background:#eebbcb;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span><code>#eebbcb</code></td>
+          </tr>
+          <tr>
+            <td>フォーカス影</td>
+            <td><code>shadow--focus</code></td>
+            <td><code>0 0 0 2px var(--onepg-base--color--focus)</code></td>
+          </tr>
+          <tr>
+            <td>ヘッダー・フッター固定用影</td>
+            <td><code>shadow--header-footer</code></td>
+            <td><code>0 2px 4px rgba(0, 0, 0, 0.1)</code></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
   <div class="footer">

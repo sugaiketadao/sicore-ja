@@ -25,7 +25,7 @@ const search = async function () {
   PageUtil.clearRows('list');
   // DB抽出条件エリアの値を取得
   const req = PageUtil.getValues(DomUtil.getById('searchConditionsArea'));
-  // 今回の DB抽出条件をセッション保存
+  // 今回の DB抽出条件をブラウザストレージ保存
   StorageUtil.setPageObj('searchConditions', req); 
   // 一覧検索 Webサービス呼び出し
   const res = await HttpUtil.callJsonService('/services/exmodule/ExampleListSearch', req);

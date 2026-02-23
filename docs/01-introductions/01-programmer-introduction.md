@@ -56,7 +56,7 @@ URL: http://localhost:8080/services/exmodule/ExampleListSearch
 - ブラウザの`sessionStorage`で状態を管理する。
 - スケールアウトが容易である。
 
-### 1.5 セッションストレージの3階層スコープ
+### 1.5 ブラウザストレージの3階層スコープ
 
 | スコープ | メソッド | 使用例 |
 |-|-|-|

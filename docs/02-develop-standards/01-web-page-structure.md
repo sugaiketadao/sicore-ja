@@ -494,7 +494,7 @@ init();
     - リクエストデータの作成
     - Webサーバー処理の呼出
     - 要素の非活性化／非表示化／読取専用化 制御
-    - セッション管理
+    - ブラウザストレージ管理
 - ページ読み込み時にセットするフォーム入力要素の初期値は Webサービスからレスポンスとして返すこととし、JavaScript だけで初期値のセットは行わない。
 
 ### フレームワーク基本部品
@@ -510,8 +510,8 @@ init();
 | `HttpUtil.callJsonService()` | JSON Webサービス呼出 |
 | `HttpUtil.movePage()` | 指定URL遷移 |
 | `HttpUtil.getUrlParams()` | URLパラメーター取得 |
-| `StorageUtil.getPageObj()` | ページ単位セッションデータ取得 |
-| `StorageUtil.setPageObj()` | ページ単位セッションデータ格納 |
+| `StorageUtil.getPageObj()` | ページ単位ブラウザストレージ取得 |
+| `StorageUtil.setPageObj()` | ページ単位ブラウザストレージ格納 |
 | `DomUtil.getByName()` | `name`属性セレクター要素取得 |
 | `DomUtil.getById()` | `id`属性セレクター要素取得 |
 | `DomUtil.setEnable()` | 要素の活性切替 |
@@ -519,7 +519,7 @@ init();
 
 <!-- AI_SKIP_START -->
 ### StorageUtil の３階層スコープ
-セッションストレージは用途に応じて３つのスコープで管理できます。
+ブラウザストレージは用途に応じて３つのスコープで管理できます。
 
 | スコープ | `StorageUtil` 取得メソッド | 格納メソッド | 用途 | 使用例 |
 |-|-|-|-|-|

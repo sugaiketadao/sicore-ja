@@ -15,6 +15,8 @@ import java.util.Map;
  * <li>複数行の可変型マップをリストで保持することができる。</li>
  * <li>文字列配列（リスト）をリストで保持することができる。</li>
  * <li>上記のデータ構造は格納時・取得時ともにディープコピーされる。</li>
+ * <li>サーバーとWebページ間で共有するセッションデータを保持することができる。</li>
+ * <li>Webページへの表示用メッセージを保持することができる。</li>
  * <li>JSON を入出力することができる。</li>
  * <li>URLパラメーター を入出力することができる。</li>
  * <li>基本ルール・制限は <code>AbstractIoTypeMap</code> に準拠する。</li>
@@ -93,10 +95,20 @@ import java.util.Map;
  * </ul>
  * </li>
  * 
+ * <li>セッションデータについて
+ * <ul>
+ * <li>セッションデータへの操作は本インスタンスが保持するデータに直接影響する。</li>
+ * <li>JSON 取込時にセッションデータも格納される。</li>
+ * <li>JSON 作成時にセッションデータも出力される。</li>
+ * <li>JSON 入出力時のキーは <code>_session</code> 固定となる。</li>
+ * </ul>
+ * </li>
+ * 
  * <li>メッセージについて
  * <ul>
- * <li>メッセージIDと対象項目名等を保持することができ、メッセージは JSON 出力時に合わせて出力される。</li>
- * <li>JSON 出力時にメッセージテキストを引数渡しすることで保持しているメッセージ文言も合わせて出力される。</li>
+ * <li>メッセージIDと対象項目名等を保持することができ、JSON 作成時にメッセージも出力される。</li>
+ * <li>JSON 作成時のキーは <code>_msg</code> 固定となる。エラーフラグは <code>_has_err</code> 固定となる。</li>
+ * <li>JSON 作成時にメッセージテキスト（文言定義）を引数として渡すことで、保持しているメッセージIDに対応する文言も合わせて出力される。</li>
  * <li>メッセージテキスト内の <code>{0}, {1}, ...</code> はメッセージ追加時の引数で渡された文字列で置換される。</li>
  * </ul>
  * </li>
@@ -107,6 +119,13 @@ import java.util.Map;
  */
 public final class Io extends AbstractIoTypeMap {
 
+  /** キー - メッセージ配列. */
+  private static final String KEY_MSG = "_msg";
+  /** キー - エラー存在フラグ. */
+  private static final String KEY_HAS_ERR = "_has_err";
+  /** キー - セッションデータ. */
+  private static final String KEY_SESSION = "_session";
+
   /** 文字列リスト保持マップ. */
   private final Map<String, List<String>> listMap = new LinkedHashMap<>();
   /** ネストマップ保持マップ. */
@@ -115,6 +134,8 @@ public final class Io extends AbstractIoTypeMap {
   private final Map<String, IoRows> rowsMap = new LinkedHashMap<>();
   /** 配列リスト保持マップ. */
   private final Map<String, IoArrays> arysMap = new LinkedHashMap<>();
+  /** セッションデータ. */
+  private final IoItems sessionData = new IoItems();
 
   /** 保持タイプ. */
   private enum StorageType {
@@ -151,6 +172,7 @@ public final class Io extends AbstractIoTypeMap {
    * コンストラクタ.<br>
    * <ul>
    * <li>内容をディープコピーするため、ソースマップとの参照は切れる。</li>
+   * <li>セッションデータもコピーされる。</li>
    * <li>メッセージもコピーされる。</li>
    * </ul>
    *
@@ -165,6 +187,18 @@ public final class Io extends AbstractIoTypeMap {
 
     // ディープコピーするため、ソースマップとの参照は切れる。
     putAllByIoMap(srcMap, false);
+  }
+
+  /**
+   * セッションデータ参照.<br>
+   * <ul>
+   * <li>ディープコピーせず参照を返すため、戻り値への操作は本インスタンスが保持するセッションデータに直接影響する。</li>
+   * </ul>
+   * 
+   * @return セッションデータ（参照）
+   */
+  public AbstractIoTypeMap session() {
+    return this.sessionData;
   }
 
   /**
@@ -770,12 +804,18 @@ public final class Io extends AbstractIoTypeMap {
       sb.append('"').append(escVal).append('"').append(',');
     }
 
+    // セッションデータを追加
+    if (!ValUtil.isEmpty(sessionData)) {
+      final String json = sessionData.createJson();
+      sb.append('"').append(KEY_SESSION).append('"').append(':').append(json).append(',');
+    }
+
     // メッセージを追加（メッセージが存在する場合のみ）
     if (hasMsg()) {
       final String msg = createMsgJsoAry(msgTextMap);
-      sb.append('"').append("_msg").append('"').append(':').append(msg).append(',');
+      sb.append('"').append(KEY_MSG).append('"').append(':').append(msg).append(',');
       // エラーフラグを追加
-      sb.append('"').append("_has_err").append('"').append(':').append(hasErrorMsg()).append(',');
+      sb.append('"').append(KEY_HAS_ERR).append('"').append(':').append(hasErrorMsg()).append(',');
     }
 
     ValUtil.deleteLastChar(sb);
@@ -900,6 +940,21 @@ public final class Io extends AbstractIoTypeMap {
         sb.append(sval);
         sb.append(',');
       }
+      
+      // セッションデータを追加
+      if (!ValUtil.isEmpty(sessionData)) {
+        final String log = sessionData.createLogString();
+        sb.append(KEY_SESSION).append('=').append(log).append(',');
+      }
+
+      // メッセージを追加（メッセージが存在する場合のみ）
+      if (hasMsg()) {
+        final String log = createMsgLogString();
+        sb.append(KEY_MSG).append('=').append(log).append(',');
+        // エラーフラグを追加
+        sb.append(KEY_HAS_ERR).append('=').append(hasErrorMsg()).append(',');
+      }
+
       ValUtil.deleteLastChar(sb);
       sb.insert(0, '{');
       sb.append('}');
@@ -987,6 +1042,7 @@ public final class Io extends AbstractIoTypeMap {
    * 入出力マップ格納.<br>
    * <ul>
    * <li>内容をディープコピーするため、ソースマップとの参照は切れる。</li>
+   * <li>セッションデータもコピーされる。（ディープコピーとなる）</li> 
    * <li>メッセージもコピーされる。</li>
    * </ul>
    *
@@ -1024,6 +1080,10 @@ public final class Io extends AbstractIoTypeMap {
         putCopyArys(key, srcMap.arysMap.get(key), canOverwrite);
       }
     }
+
+    // セッションデータもコピー（ディープコピーとなる）
+    this.sessionData.putAllForce(srcMap.sessionData);
+    
     // メッセージもコピー
     copyMsg(srcMap);
   }
@@ -1109,6 +1169,11 @@ public final class Io extends AbstractIoTypeMap {
       final String val = keyVal[1];
 
       count++;
+      if (KEY_SESSION.equals(key)) {
+        // セッションデータ追加
+        sessionData.putAllByJson(val);
+        continue;
+      }
       if (JsonMapSeparateParser.JSON_MAP_PATTERN.matcher(val).find()) {
         // ネストマップ追加
         final Io nest = new Io();
@@ -1419,9 +1484,9 @@ public final class Io extends AbstractIoTypeMap {
      * @return メッセージタイプ
      */
     private MsgType getType() {
-      return type;
+      return this.type;
     }
-
+    
     /**
      * キー生成.<br>
      * <ul>
@@ -1433,16 +1498,16 @@ public final class Io extends AbstractIoTypeMap {
      */
     private String createKey() {
       final StringBuilder sb = new StringBuilder();
-      sb.append(this.type.ordinal()).append("_").append(this.msgId);
+      sb.append(this.type.ordinal()).append('_').append(this.msgId);
       if (!ValUtil.isEmpty(this.replaceVals)) {
-        sb.append("_").append(String.join("&", this.replaceVals));
+        sb.append('_').append(String.join("&", this.replaceVals));
       }
       if (!ValUtil.isBlank(this.itemId)) {
         if (ValUtil.isBlank(this.rowListId)) {
-          sb.append(this.itemId);
+          sb.append('_').append(this.itemId);
         } else {
-          sb.append(this.rowListId).append("[").append(ValUtil.paddingLeftZero(this.rowIndex, 4)).append("].")
-              .append(this.itemId);
+          sb.append('_').append(this.rowListId).append('[').append(ValUtil.paddingLeftZero(this.rowIndex, 4)).append("].")
+            .append(this.itemId);
         }
       }
       return sb.toString();
@@ -1511,6 +1576,28 @@ public final class Io extends AbstractIoTypeMap {
       final String regex = "\\{[0-9]+\\}";
       ret = ret.replaceAll(regex, ValUtil.BLANK);
       return ret;
+    }
+    
+    /**
+     * ログ文字列生成.
+     *
+     * @return ログ文字列
+     */
+    private String createLogString() {
+      final StringBuilder sb = new StringBuilder();
+      sb.append(this.type.ordinal()).append(':').append(this.msgId);
+      if (!ValUtil.isEmpty(this.replaceVals)) {
+        sb.append(':').append(String.join("&", this.replaceVals));
+      }
+      if (!ValUtil.isBlank(this.itemId)) {
+        if (ValUtil.isBlank(this.rowListId)) {
+          sb.append(':').append(this.itemId);
+        } else {
+          sb.append(':').append(this.rowListId).append('[').append(ValUtil.paddingLeftZero(this.rowIndex, 4)).append("].")
+            .append(this.itemId);
+        }
+      }
+      return sb.toString();
     }
   }
 
@@ -1667,8 +1754,7 @@ public final class Io extends AbstractIoTypeMap {
   /**
    * メッセージJSON配列作成.<br>
    * <ul>
-   * <li>メッセージテキストマップが指定されている
-   * 場合は、メッセージIDに対応するメッセージテキストをセットする。</li>
+   * <li>メッセージテキストマップが指定されている場合は、メッセージIDに対応するメッセージテキストをセットする。</li>
    * <li>メッセージテキストマップが指定されていない場合は、メッセージテキストは空文字列とする。</li>
    * </ul>
    * 
@@ -1682,6 +1768,25 @@ public final class Io extends AbstractIoTypeMap {
       for (final MsgBean msgBean : this.msgMap.values()) {
         final String msgJson = msgBean.createJson(msgTextMap);
         sb.append(msgJson).append(',');
+      }
+      ValUtil.deleteLastChar(sb);
+    }
+    sb.append(']');
+    return sb.toString();
+  }
+
+  /**
+   * メッセージログ出力文字列.
+   * 
+   * @return ログ出力文字列
+   */
+  private String createMsgLogString() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append('[');
+    if (!ValUtil.isEmpty(this.msgMap)) {
+      for (final MsgBean msgBean : this.msgMap.values()) {
+        final String log = msgBean.createLogString();
+        sb.append(log).append(',');
       }
       ValUtil.deleteLastChar(sb);
     }

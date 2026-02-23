@@ -126,7 +126,7 @@ const ValUtil = /** @lends ValUtil */ {
    *
    * @param {Object} obj1 比較対象その1
    * @param {Object} obj2 比較対象その2
-   * @param {string} ignoreKeys 比較対象外キー（複数指定可能）
+   * @param {Array<string>} [ignoreKeys] 比較対象外キー配列（省略可能）
    * @returns {boolean} 内容が同値の場合は <code>true</code>
    */
   equalsObj : function(obj1, obj2, ignoreKeys) {
@@ -136,15 +136,14 @@ const ValUtil = /** @lends ValUtil */ {
     if (!ValUtil.isObj(obj2)) {
       return false;
     }
-    const ignoreKeyAry = Array.prototype.slice.call(arguments, 2);
+    ignoreKeys = ignoreKeys || [];
     for (const key in obj1){
       // 比較対象外場合は無視する
-      if (ignoreKeyAry.indexOf(key) >= 0) {
+      if (ignoreKeys.indexOf(key) >= 0) {
         continue;
       }
       // 比較対象その2 にキーが無い場合は無視する
-      // ループと混同しないように比較値（<code>false</code>）を書いている
-      if (key in obj2 === false) {
+      if (!Object.hasOwn(obj2, key)) {
         continue;
       }
 
@@ -160,7 +159,8 @@ const ValUtil = /** @lends ValUtil */ {
       }
 
       if (t === 'array') {
-        // 配列の場合、１つの要素が連想配列である前提で処理する。
+        // 配列の場合、内部要素が連想配列である前提で処理する。
+        // val2 が配列でない場合は length が undefined となるため、同値でないと判断される。
         if (val1.length !== val2.length) {
           return false;
         }
@@ -678,10 +678,15 @@ const HttpUtil = /** @lends HttpUtil */ {
       // リクエストデータは連想配列とする
       throw new Error('HttpUtil#callJsonService: Request must be an object. ');
     }
+    // リクエストにセッションデータを追加
+    if (!ValUtil.isEmpty(SessionUtil._sessionData)) {
+      req[SessionUtil._IOKEY] = SessionUtil._sessionData;
+    }
+
     // ヘッダーをマージ
     const header = Object.assign(addHeader || {}, { 'Content-Type': 'application/json' });
 
-    return new Promise(function(resolve, reject) {
+    const pr = new Promise(function(resolve, reject) {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', url, true);
       for (const key in header) {
@@ -698,6 +703,13 @@ const HttpUtil = /** @lends HttpUtil */ {
           try {
             // 手動でJSONパース
             res = JSON.parse(xhr.response);
+            // レスポンスからセッションデータを取得して削除する
+            if (Object.hasOwn(res, SessionUtil._IOKEY)) {
+              if (ValUtil.isObj(res[SessionUtil._IOKEY])) {
+                SessionUtil._sessionData = res[SessionUtil._IOKEY];
+              }
+              delete res[SessionUtil._IOKEY];
+            }
             resolve(res);
           } catch (e) {
             reject(new Error(`Json parse error. \n${e.name}\n : ${e.message}`));
@@ -719,6 +731,12 @@ const HttpUtil = /** @lends HttpUtil */ {
       // 送信
       xhr.send(JSON.stringify(req));
     });
+
+    if (Object.hasOwn(req, SessionUtil._IOKEY)) {
+      // リクエストに追加したセッションデータを削除する
+      delete req[SessionUtil._IOKEY];
+    }
+    return pr;
   },
 };
 
@@ -1551,10 +1569,12 @@ const DomUtil = /** @lends DomUtil */ {
  */
 const PageUtil = /** @lends PageUtil */ {
 
-  /** @private メッセージ表示エリア要素の <code>id</code>属性名 および レスポンスデータ内のメッセージ配列のキー（Io.java で指定）. */
+  /** @private メッセージ表示エリア要素の <code>id</code>属性名. */
   _ITEMID_MSG: '_msg',
-  /** @private エラーメッセージがあれば <code>true</code> となるキー（Io.java で指定）. */
-  _ITEMID_HAS_ERR: '_has_err',
+  /** @private レスポンスデータ内のメッセージ配列のキー（Io.java で指定）. */
+  _IOKEY_MSG: '_msg',
+  /** @private レスポンスデータ内のエラー存在フラグのキー（Io.java で指定）. */
+  _IOKEY_HAS_ERR: '_has_err',
   /** @private <code>title</code>属性バックアップ用の属性名. */
   _ORG_ATTR_TITLE_BACKUP: 'data-title-backup',
   /** @private リスト部ラジオボタンの連想配列化時の <code>name</code>属性名. */
@@ -1576,7 +1596,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (!ValUtil.isObj(res)) {
       throw new Error('PageUtil#setMsg: Argument response is invalid. ');
     }
-    const msgs = res[PageUtil._ITEMID_MSG];
+    const msgs = res[PageUtil._IOKEY_MSG];
     if (ValUtil.isEmpty(msgs)) {
       PageUtil.clearMsg();
       return;
@@ -1653,7 +1673,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (!ValUtil.isObj(res)) {
       throw new Error('PageUtil#hasErr: Argument response is invalid. ');
     }
-    const hasErr = res[PageUtil._ITEMID_HAS_ERR];
+    const hasErr = res[PageUtil._IOKEY_HAS_ERR];
     return ValUtil.isTrue(hasErr);
   },
 
@@ -2592,9 +2612,9 @@ const PageUtil = /** @lends PageUtil */ {
 
 
 /**
- * ストレージユーティリティクラス.<br>
+ * ブラウザストレージユーティリティクラス.<br>
  * <ul>
- *   <li>ブラウザのセッションストレージに下記の単位＋キーで連想配列を格納・取得する。</li>
+ *   <li>ブラウザストレージに下記の単位＋キーで連想配列を格納・取得する。</li>
  *   <ul>
  *     <li>ページ単位（URLの HTMLファイル単位、１ページ内でデータ保持）</li>
  *     <li>機能単位（URLの機能ディレクトリ単位、ページ間でデータ共有）</li>
@@ -2620,7 +2640,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * ページ単位（URLの HTMLファイル単位）データ取得. <br>
    * <ul>
-   *   <li>ブラウザのセッションストレージからページ単位＋キーで連想配列を取得する。</li>
+   *   <li>ブラウザストレージからページ単位＋キーで連想配列を取得する。</li>
    * </ul>
    * @param {string} key 取得キー
    * @param {Object} [notExistsValue] 非存在時戻値（省略可能）
@@ -2638,7 +2658,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * 機能単位（URLの機能ディレクトリ単位）データ取得. <br>
    * <ul>
-   *   <li>ブラウザのセッションストレージから機能単位＋キーで連想配列を取得する。</li>
+   *   <li>ブラウザストレージから機能単位＋キーで連想配列を取得する。</li>
    * </ul>
    * @param {string} key 取得キー
    * @param {Object} [notExistsValue] 非存在時戻値（省略可能）
@@ -2656,7 +2676,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * システム単位データ取得.<br>
    * <ul>
-   *   <li>ブラウザのセッションストレージからキーで連想配列を取得する。</li>
+   *   <li>ブラウザストレージからキーで連想配列を取得する。</li>
    * </ul>
    * @param {string} key 取得キー
    * @param {Object} [notExistsValue] 非存在時戻値（省略可能）
@@ -2674,7 +2694,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * ページ単位データ（URLの HTMLファイル単位）格納.<br>
    * <ul>
-   *   <li>ブラウザのセッションストレージにページ単位＋キーで連想配列を格納する。</li>
+   *   <li>ブラウザストレージにページ単位＋キーで連想配列を格納する。</li>
    * </ul>
    * @param {string} key 格納キー
    * @param {Object} obj 格納データ
@@ -2691,7 +2711,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * 機能単位データ（URLの機能ディレクトリ単位）格納.<br>
    * <ul>
-   *   <li>ブラウザのセッションストレージに機能単位＋キーで連想配列を格納する。</li>
+   *   <li>ブラウザストレージに機能単位＋キーで連想配列を格納する。</li>
    * </ul>
    * @param {string} key 格納キー
    * @param {Object} obj 格納データ
@@ -2708,7 +2728,7 @@ const StorageUtil = /** @lends StorageUtil */ {
   /**
    * システム単位データ格納.<br>
    * <ul>
-   *   <li>ブラウザのセッションストレージにキーで連想配列を格納する。</li>
+   *   <li>ブラウザストレージにキーで連想配列を格納する。</li>
    * </ul>
    * @param {string} key 格納キー
    * @param {Object} obj 格納データ
@@ -3067,6 +3087,97 @@ const StorageUtil = /** @lends StorageUtil */ {
       console.log('Other:', otherObj);
     } catch (e) {
       console.error('StorageUtil#_debugAllData: Failed to show data.', e);
+    }
+    
+    console.groupEnd();
+  }
+};
+
+
+/**
+ * セッションユーティリティクラス.<br>
+ * <ul>
+ *   <li>Webサービスと共有する情報を管理する。</li>
+ *   <li>本クラスで管理している情報はサーバーセッション単位で保持される。</li>
+ * </ul>
+ * @class
+ */
+const SessionUtil = /** @lends SessionUtil */ {
+
+  /** @private リクエスト・レスポンスデータ内のキー（Io.java で指定）. */
+  _IOKEY: '_session',
+  /** @private セッションデータ */
+  _sessionData: {},
+
+  /**
+   * セッション値取得.
+   *
+   * @param {string} key 取得キー
+   * @returns {string|null} 取得データ
+   */
+  getString: function(key) {
+    const val = SessionUtil._sessionData[key];
+    if (ValUtil.isNull(val)) {
+      return null;
+    }
+    return val;
+  },
+
+  /**
+   * セッション値格納.
+   *
+   * @param {string} key 格納キー
+   * @param {string} val セッション値
+   * @returns {boolean} 格納成功時は <code>true</code>
+   */
+  setString: function(key, val) {
+    if (ValUtil.toType(val) !== 'string') {
+      console.error(`SessionUtil#setString: store data must be a string.`);
+      return false;
+    }
+    SessionUtil._sessionData[key] = val;
+    return true;
+  },
+
+  /**
+   * セッション値削除.
+   *
+   * @param {string} key キー
+   * @returns {boolean} 削除成功時は <code>true</code>
+   */
+  remove: function(key) {
+    if (Object.hasOwn(SessionUtil._sessionData, key)) {
+      delete SessionUtil._sessionData[key];
+      return true;
+    }
+    return false;
+  },
+
+  /**
+   * セッション値全削除.
+   *
+   * @returns {boolean} クリア成功時は <code>true</code>
+   */
+  clear: function() {
+    SessionUtil._sessionData = {};
+    return true;
+  },
+
+  /**
+   * @private
+   * デバッグ用：セッション値全件表示.<br>
+   * <ul>
+   *   <li>現在格納されているすべてのセッション値をコンソールに表示する。</li>
+   *   <li>開発・デバッグ用途でのみ使用する。</li>
+   * </ul>
+   */
+  _debugAll: function() {
+    console.group('SessionUtil#_debugAll: All Data');
+    
+    try {      
+      console.log('Session Data:', SessionUtil._sessionData);
+    } catch (e) {
+      console.error('SessionUtil#_debugAll: Failed to show data.', e);
     }
     
     console.groupEnd();

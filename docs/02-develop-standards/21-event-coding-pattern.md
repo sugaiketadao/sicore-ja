@@ -71,7 +71,7 @@
     2. 初期処理 Webサービス `/services/exmodule/ExampleListInit` を呼び出す。
     3. Webサービスクラス `ExampleListInit` が実行される。
     4. Webサービスのレスポンスがブラウザに返される。
-    5. セッションから前回の DB抽出条件を取得する。
+    5. ブラウザストレージから前回の DB抽出条件を取得する。
     6. Webサービスレスポンスと前回 DB抽出条件をマージする。
     7. マージした値を DB抽出条件エリアにセットする。
 <!-- AI_SKIP_END -->
@@ -129,7 +129,7 @@ public class ExampleListInit extends AbstractDbAccessWebService {
     1. メッセージをクリアする。
     2. 一覧エリアをクリアする。
     3. DB抽出条件エリアから検索条件を取得する。
-    4. 検索条件をセッションに保存する（次回初期表示用）。
+    4. 検索条件をブラウザストレージに保存する（次回初期表示用）。
     5. 検索 Webサービス `/services/exmodule/ExampleListSearch` を呼び出す。
     6. Webサービスクラス `ExampleListSearch` が実行される。
         1. バリデーションを実行する（エラー時はエラーメッセージをセットして終了する）。
@@ -151,7 +151,7 @@ const search = async function () {
   PageUtil.clearRows('list');
   // 検索条件取得
   const req = PageUtil.getValues(DomUtil.getById('searchConditionsArea'));
-  // 検索条件をセッション保存（任意）
+  // 検索条件をブラウザストレージ保存（任意）
   StorageUtil.setPageObj('searchConditions', req);
   // Webサービス呼び出し
   const res = await HttpUtil.callJsonService('/services/exmodule/ExampleListSearch', req);

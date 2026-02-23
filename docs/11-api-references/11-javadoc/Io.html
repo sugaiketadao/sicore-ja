@@ -61,6 +61,8 @@
 <li>複数行の可変型マップをリストで保持することができる。</li>
 <li>文字列配列（リスト）をリストで保持することができる。</li>
 <li>上記のデータ構造は格納時・取得時ともにディープコピーされる。</li>
+<li>サーバーとWebページ間で共有するセッションデータを保持することができる。</li>
+<li>Webページへの表示用メッセージを保持することができる。</li>
 <li>JSON を入出力することができる。</li>
 <li>URLパラメーター を入出力することができる。</li>
 <li>基本ルール・制限は <code>AbstractIoTypeMap</code> に準拠する。</li>
@@ -139,10 +141,20 @@
 </ul>
 </li>
 
+<li>セッションデータについて
+<ul>
+<li>セッションデータへの操作は本インスタンスが保持するデータに直接影響する。</li>
+<li>JSON 取込時にセッションデータも格納される。</li>
+<li>JSON 作成時にセッションデータも出力される。</li>
+<li>JSON 入出力時のキーは <code>_session</code> 固定となる。</li>
+</ul>
+</li>
+
 <li>メッセージについて
 <ul>
-<li>メッセージIDと対象項目名等を保持することができ、メッセージは JSON 出力時に合わせて出力される。</li>
-<li>JSON 出力時にメッセージテキストを引数渡しすることで保持しているメッセージ文言も合わせて出力される。</li>
+<li>メッセージIDと対象項目名等を保持することができ、JSON 作成時にメッセージも出力される。</li>
+<li>JSON 作成時のキーは <code>_msg</code> 固定となる。エラーフラグは <code>_has_err</code> 固定となる。</li>
+<li>JSON 作成時にメッセージテキスト（文言定義）を引数として渡すことで、保持しているメッセージIDに対応する文言も合わせて出力される。</li>
 <li>メッセージテキスト内の <code>{0}, {1}, ...</code> はメッセージ追加時の引数で渡された文字列で置換される。</li>
 </ul>
 </li>
@@ -1999,6 +2011,23 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>int</code> - ハッシュコード</p>
+        </div>
+      </div>
+      <div class="method" id="session">
+        <h3 class="method-name">session</h3>
+        <div class="method-signature">
+          <code>public AbstractIoTypeMap session()</code>
+        </div>
+        <div class="method-description">
+          セッションデータ参照.<br>
+<ul>
+<li>ディープコピーせず参照を返すため、戻り値への操作は本インスタンスが保持するセッションデータに直接影響する。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>AbstractIoTypeMap</code> - セッションデータ（参照）</p>
         </div>
       </div>
       <div class="method" id="getList">

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ログテキストハンドラークラス.<br>
@@ -29,7 +29,7 @@ public final class LogTxtHandler implements AutoCloseable {
   private static final String ERR_FILE_PROP_KEY_SUFFIX = ".err.file";
 
   /** ログテキストハンドラープールマップ&lt;ファイルパス、ログテキストハンドラー&gt;（シングルトン）. */
-  private static final Map<String, LogTxtHandler> logTxtPoolMaps_ = new HashMap<>();
+  private static final Map<String, LogTxtHandler> logTxtPoolMaps_ = new ConcurrentHashMap<>();
 
   /** 基本ファイルパス（拡張子抜き）. */
   private final String baseFilePath;
@@ -154,7 +154,7 @@ public final class LogTxtHandler implements AutoCloseable {
   /**
    * ファイルオープン.
    */
-  private final void open() {
+  private void open() {
     this.tw = new TxtSerializeWriter(this.filePath, LineSep.LF, CharSet.UTF8, false, true, false);
   }
 
@@ -188,6 +188,9 @@ public final class LogTxtHandler implements AutoCloseable {
     if (!nowDate.equals(this.beforePrintDate)) {
       rolling(nowDate);
     }
+    if (ValUtil.isNull(this.tw)) {
+      throw new RuntimeException("Text writer is not available. " + LogUtil.joinKeyVal("path", this.filePath));
+    }
     return this.tw;
   }
 
@@ -214,8 +217,16 @@ public final class LogTxtHandler implements AutoCloseable {
       return;
     }
     
+    // close()を呼ぶとプールから削除されてしまうため、直接テキストライターをクローズしてからファイル移動する
     try {
-      close();
+      this.tw.close();
+    } catch (final Exception e) {
+      // ログクローズ時のエラーは握り潰すが、デバッグ用に出力
+      LogUtil.stdout(e, "An exception occurred while closing the text writer. " + LogUtil.joinKeyVal("path", this.tw.getFilePath()));
+      return;
+    }
+    this.tw = null;
+    try {
       if (FileUtil.exists(this.filePath)) {
         FileUtil.move(this.filePath, destPath);
       }

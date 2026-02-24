@@ -72,6 +72,7 @@ public final class DbConnPooled extends DbConn {
       try {
         super.close();
       } catch (SQLException ce) {
+        // super.close() は BreakException をスローするためここに到達することはないが、万が一到達した場合は例外を投げる
         super.logger.error(ce, "Exception error occurred during database close. ");
         throw new BreakException();
       }

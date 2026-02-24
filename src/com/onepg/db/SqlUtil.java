@@ -372,6 +372,7 @@ public final class SqlUtil {
 
       sbInto.addQuery(" ( ");
       sbVals.addQuery(" ( ");
+      int count = 0;
       for (final String itemName : params.keySet()) {
         if (!itemClsMap.containsKey(itemName)) {
           // テーブルに存在しないパラメーターはスキップ
@@ -386,6 +387,12 @@ public final class SqlUtil {
         // SQL追加
         sbInto.addQuery(itemName).addQuery(",");
         sbVals.addQuery("?,", param);
+        count++;
+      }
+      if (count <= 0) {
+        // 登録対象項目なし
+        throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
+            "params", params));
       }
 
       // SQL組み立て
@@ -455,6 +462,7 @@ public final class SqlUtil {
 
       sbInto.addQuery(" ( ");
       sbVals.addQuery(" ( ");
+      int count = 0;
       for (final String itemName : params.keySet()) {
         if (!itemClsMap.containsKey(itemName)) {
           // テーブルに存在しないパラメーターはスキップ
@@ -473,7 +481,14 @@ public final class SqlUtil {
         // SQL追加
         sbInto.addQuery(itemName).addQuery(",");
         sbVals.addQuery("?,", param);
+        count++;
       }
+      if (count <= 0) {
+        // 登録対象項目なし
+        throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
+            "params", params));
+      }
+
       // タイムスタンプSQL追加
       sbInto.addQuery(tsItem);
       sbVals.addQuery(curTs);
@@ -666,6 +681,50 @@ public final class SqlUtil {
   }
 
   /**
+   * テーブル指定全件更新.<br>
+   * <ul>
+   * <li>テーブル名を指定して全件更新します。</li>
+   * <li>テーブルに存在しないパラメーターは無視されます。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
+   * 実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * </ul>
+   *
+   * @param conn       DB接続
+   * @param tableName  テーブル名
+   * @param params     パラメーター値
+   *
+   * @return 更新件数
+   */
+  public static int updateAll(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
+
+    if (ValUtil.isEmpty(params)) {
+      throw new RuntimeException("Parameters are required. ");
+    }
+
+    final SqlBuilder sb = new SqlBuilder();
+    try {
+      // DB項目名・クラスタイプマップ
+      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
+      sb.addQuery("UPDATE ").addQuery(tableName);
+      // SET句追加
+      addSetQuery(sb, params, null, itemClsMap);
+
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during data update SQL generation. " + LogUtil.joinKeyVal("tableName", tableName,
+          "params", params), e);
+    }
+
+    try {
+      // SQL実行
+      final int ret = executeSql(conn, sb);
+      return ret;
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during data update. " + LogUtil.joinKeyVal("sql", sb), e);
+    }
+  }
+
+  /**
    * テーブル指定１件削除.<br>
    * <ul>
    * <li>テーブル名を指定して１件削除します。</li>
@@ -788,6 +847,31 @@ public final class SqlUtil {
   }
 
   /**
+   * テーブル指定全削除.<br>
+   * <ul>
+   * <li>テーブル名を指定して全件削除します。</li>
+   * </ul>
+   *
+   * @param conn DB接続
+   * @param tableName テーブル名
+   *
+   * @return 削除件数
+   */
+  public static int deleteAll(final Connection conn, final String tableName) {
+
+    final SqlBuilder sb = new SqlBuilder();
+    sb.addQuery("DELETE FROM ").addQuery(tableName);
+
+    try {
+      // SQL実行
+      final int ret = executeSql(conn, sb);
+      return ret;
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during data delete. " + LogUtil.joinKeyVal("sql", sb), e);
+    }
+  }
+
+  /**
    * SET句追加.
    *
    * @param sb         SQLビルダー
@@ -809,6 +893,7 @@ public final class SqlUtil {
       whereItemList = Arrays.asList(whereItems);
     }
 
+    int count = 0;
     for (final String itemName : params.keySet()) {
       if (!itemClsMap.containsKey(itemName)) {
         // テーブルに存在しないパラメーターはスキップ
@@ -825,7 +910,12 @@ public final class SqlUtil {
       final Object param = getValueFromIoItemsByItemCls(params, itemName, itemCls);
       // SQL追加
       sb.addQuery(itemName).addQuery("=?", param).addQuery(",");
+      count++;
     }
+    if (count == 0) {
+      throw new RuntimeException("No columns to update. " + LogUtil.joinKeyVal("params", params, "whereItems", whereItems));
+    }
+    // 最後のカンマ削除
     sb.delLastChar();
   }
 
@@ -842,20 +932,22 @@ public final class SqlUtil {
       final AbstractIoTypeMap params, final String[] whereItems, final Map<String, ItemClsType> itemClsMap) {
 
     if (ValUtil.isEmpty(whereItems)) {
-      return;
+      // 抽出条件項目名が指定されていない場合はエラー
+      throw new RuntimeException("Extraction condition column names are required. " + LogUtil.joinKeyVal("tableName", tableName, "params", params));
     }
 
     // WHERE句の作成
     sb.addQuery(" WHERE ");
     for (final String itemName : whereItems) {
       if (!itemClsMap.containsKey(itemName)) {
-        // テーブルに存在しないパラメーターはスキップ
-        continue;
+        // テーブルに存在しない場合はエラー
+        throw new RuntimeException("Extraction condition field does not exist in table. " +
+          LogUtil.joinKeyVal("tableName", tableName, "whereItemName", itemName, "params", params));
       }
       if (!params.containsKey(itemName)) {
         // 抽出条件項目がパラメーターに存在しない場合はエラー
-        throw new RuntimeException("Extraction condition field does not exist in parameters. " + LogUtil.joinKeyVal("tableName",
-            tableName, "whereItemName", itemName, "params", params));
+        throw new RuntimeException("Extraction condition field does not exist in parameters. " +
+          LogUtil.joinKeyVal("tableName", tableName, "whereItemName", itemName, "params", params));
       }
 
       // 項目クラスタイプ
@@ -1048,20 +1140,20 @@ public final class SqlUtil {
     // DBメタ情報
     final DatabaseMetaData cmeta = conn.getMetaData();
     // 列情報結果セット
-    final ResultSet rset = cmeta.getColumns(null, null, tableName, null);
+    try (final ResultSet rset = cmeta.getColumns(null, null, tableName, null)) {
+      while (rset.next()) {
+        // 列名
+        final String itemName = rset.getString("COLUMN_NAME").toLowerCase();
+        // 型No
+        final int typeNo = rset.getInt("DATA_TYPE");
+        // 型名
+        // Oracle は DATE型も時刻を持っており TIMESTAMP と判断されるので型名で判断する必要がある。
+        final String typeName = rset.getString("TYPE_NAME");
+        // 項目クラスタイプ
+        final ItemClsType itemCls = convItemClsType(typeNo, typeName, dbmsName);
 
-    while (rset.next()) {
-      // 列名
-      final String itemName = rset.getString("COLUMN_NAME").toLowerCase();
-      // 型No
-      final int typeNo = rset.getInt("DATA_TYPE");
-      // 型名
-      // Oracle は DATE型も時刻を持っており TIMESTAMP と判断されるので型名で判断する必要がある。
-      final String typeName = rset.getString("TYPE_NAME");
-      // 項目クラスタイプ
-      final ItemClsType itemCls = convItemClsType(typeNo, typeName, dbmsName);
-
-      itemClsMap.put(itemName, itemCls);
+        itemClsMap.put(itemName, itemCls);
+      }
     }
     return itemClsMap;
   }
@@ -1267,8 +1359,7 @@ public final class SqlUtil {
       return true;
     } 
     // MS-SqlServer 一意制約違反エラー判定
-    if (dbmsName == DbmsName.MSSQL && "23000".equals(e.getSQLState())
-        && e.getMessage().contains("Violation of UNIQUE KEY constraint")) {
+    if (dbmsName == DbmsName.MSSQL && (e.getErrorCode() == 2627 || e.getErrorCode() == 2601)) {
       return true;
     }
     // SQLite 一意制約違反エラー判定
@@ -1309,10 +1400,10 @@ public final class SqlUtil {
   private static final Map<DbmsName, SqlConst> SQL_SELECT_TODAY = new HashMap<>();
   static {
     SQL_SELECT_TODAY.put(DbmsName.POSTGRESQL, SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today").end());
-    SQL_SELECT_TODAY.put(DbmsName.ORACLE,    SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM DUAL").end());
-    SQL_SELECT_TODAY.put(DbmsName.MSSQL,     SqlConst.begin().addQuery("SELECT CONVERT(VARCHAR, FORMAT(GETDATE(), 'yyyyMMdd')) today").end());
-    SQL_SELECT_TODAY.put(DbmsName.SQLITE,    SqlConst.begin().addQuery("SELECT strftime('%Y%m%d', 'now', 'localtime') today").end());
-    SQL_SELECT_TODAY.put(DbmsName.DB2, SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM SYSIBM.DUAL").end());
+    SQL_SELECT_TODAY.put(DbmsName.ORACLE,     SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM DUAL").end());
+    SQL_SELECT_TODAY.put(DbmsName.MSSQL,      SqlConst.begin().addQuery("SELECT CONVERT(VARCHAR, FORMAT(GETDATE(), 'yyyyMMdd')) today").end());
+    SQL_SELECT_TODAY.put(DbmsName.SQLITE,     SqlConst.begin().addQuery("SELECT strftime('%Y%m%d', 'now', 'localtime') today").end());
+    SQL_SELECT_TODAY.put(DbmsName.DB2,        SqlConst.begin().addQuery("SELECT TO_CHAR(CURRENT_TIMESTAMP,'YYYYMMDD') today FROM SYSIBM.DUAL").end());
   }
   
   /**
@@ -1382,7 +1473,7 @@ public final class SqlUtil {
    */
   private static String trimQuerySpaces(final String sql) {
     if (ValUtil.isBlank(sql)) {
-        return ValUtil.BLANK;
+      return ValUtil.BLANK;
     }
     
     final int length = sql.length();
@@ -1396,31 +1487,30 @@ public final class SqlUtil {
     
     // 前後のトリムを事前計算
     while (beginPos < endPos && Character.isWhitespace(chars[beginPos])) {
-        beginPos++;
+      beginPos++;
     }
     while (endPos > beginPos && Character.isWhitespace(chars[endPos - 1])) {
-        endPos--;
+      endPos--;
     }
     
     for (int i = beginPos; i < endPos; i++) {
-        final char c = chars[i];
-
-        if (c == '\'' && (i == 0 || chars[i-1] != '\\')) {
-            inSq = !inSq;
-            ret.append(c);
-            prevSpace = false;
-        } else if (inSq) {
-            ret.append(c);
-            prevSpace = false;
-        } else if (Character.isWhitespace(c)) {
-            if (!prevSpace) {
-                ret.append(' ');
-                prevSpace = true;
-            }
-        } else {
-            ret.append(c);
-            prevSpace = false;
+      final char c = chars[i];
+      if (c == '\'') {
+        inSq = !inSq;
+        ret.append(c);
+        prevSpace = false;
+      } else if (inSq) {
+        ret.append(c);
+        prevSpace = false;
+      } else if (Character.isWhitespace(c)) {
+        if (!prevSpace) {
+          ret.append(' ');
+          prevSpace = true;
         }
+      } else {
+        ret.append(c);
+        prevSpace = false;
+      }
     }
     
     return ret.toString();

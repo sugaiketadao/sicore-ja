@@ -31,7 +31,8 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
   private final Map<String, ItemClsType> nameClsMap;
   /** 接続シリアルコード. */
   private final String serialCode;
-
+  /** イテレーター作成済みフラグ. */
+  private boolean iteCreated = false;
   /** 読込済行数. */
   private int readedCount = 0;
   /** 最終行読込済判定. */
@@ -46,7 +47,7 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
    * @param serialCode 接続シリアルコード
    */
   SqlResultSet(final PreparedStatement stmt, final ResultSet rset,
-      final Map<String, ItemClsType> nameClsMap, final String serialCode) throws SQLException {
+      final Map<String, ItemClsType> nameClsMap, final String serialCode) {
     super();
     this.rset = rset;
     this.stmt = stmt;
@@ -61,6 +62,10 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
    */
   @Override
   public Iterator<IoItems> iterator() {
+    if (this.iteCreated) {
+      throw new RuntimeException("Iterator has already been created.");
+    }
+    this.iteCreated = true;
     return new SqlResultRowIterator();
   }
 

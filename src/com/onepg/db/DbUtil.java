@@ -288,11 +288,8 @@ public final class DbUtil {
    * 
    */
   public static synchronized void closePooledConn() {
-    // 削除するのでイテレーターを使う
-    final Iterator<String> connNameIte = connPoolMaps_.keySet().iterator();
-    // 接続プール管理マップのループ
-    while (connNameIte.hasNext()) {
-      final String connName = connNameIte.next();
+    // プーリングから削除するためキーのコピーを作成してイテレート
+    for (final String connName : new ArrayList<>(connPoolMaps_.keySet())) {
       // 接続プール（スレッドセーフ）
       final ConcurrentMap<String, Connection> connPoolMap = connPoolMaps_.get(connName);
       // 使用中接続（スレッドセーフ）
@@ -304,7 +301,7 @@ public final class DbUtil {
         final String serialCode = connEnt.getKey();
         if (connBusyList.contains(serialCode)) {
           // 使用中接続の場合
-          LogUtil.stdout("Warninng! Database connection is currently busy during close pooled connections. "
+          LogUtil.stdout("Warning! Database connection is currently busy during close pooled connections. "
               + LogUtil.joinKeyVal("serialCode", serialCode));
         }
         // DB接続
@@ -412,7 +409,10 @@ public final class DbUtil {
       final String productName =
           ValUtil.nvl(conn.getMetaData().getDatabaseProductName()).toLowerCase();
       for (final DbmsName dbmsName : DbmsName.values()) {
-        if (dbmsName.toString().toLowerCase().contains(productName)) {
+        if (dbmsName == DbmsName.ETC) {
+          continue;
+        } 
+        if (productName.contains(dbmsName.toString().toLowerCase())) {
           return dbmsName;
         }
       }

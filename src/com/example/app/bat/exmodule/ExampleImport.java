@@ -89,7 +89,7 @@ public class ExampleImport extends AbstractDbAccessBatch {
           SqlUtil.executeOne(getDbConn(), SQL_INS_USER.bind(row));
         }
       }
-      if (cr.getReadedCount() <= 1) {
+      if (cr.getReadedCount() == 0) {
         // ゼロ行またはヘッダ行しか無い場合
         super.logger.info("No data found to import. " + LogUtil.joinKeyVal("input", inputPath));
       }

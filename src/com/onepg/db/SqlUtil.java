@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * SQL実行ユーティリティクラス.
@@ -56,7 +57,7 @@ public final class SqlUtil {
    * <ul>
    * <li>DB項目の型に対応する Java の変数クラスを示す。</li>
    * <li>数値の型は BigDecimal に統一する。</li>
-   * <li>StringToDateCls と StringToTsCls は SQLLite 用で文字列から日付/タイムスタンプへの変換を行う。</li>
+   * <li>STRING_TO_DATE_CLS と STRING_TO_TS_CLS は SQLLite 用で文字列から日付/タイムスタンプへの変換を行う。</li>
    * </ul>
    */
   enum ItemClsType {
@@ -127,8 +128,8 @@ public final class SqlUtil {
    * 最初の１件取得.<br>
    * <ul>
    * <li>結果がゼロ件の場合は <code>null</code> を返す。</li>
-   * <li>複数件取得できた場合でもエラーとしない場合は multiDataIgnore 引数に <code>true</code> を渡す。<br>
-   * 複数件取得できた場合は最初の１件を返す。</li>
+   * <li>複数件取得できた場合でもエラーとしない場合は multiDataIgnore 引数に <code>true</code> を渡す。</li>
+   * <li>複数件取得できた場合は最初の１件を返す。</li>
    * <li>multiDataIgnore 引数が <code>false</code> を渡し、かつ複数件取得できた場合は例外エラーを投げる。</li>
    * <li>項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
@@ -216,8 +217,7 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
-   * を使用する。</li>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code> を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
@@ -236,8 +236,7 @@ public final class SqlUtil {
    * <li>複数行リストを返す。</li>
    * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
    * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code>
-   * を使用する。</li>
+   * <li>本メソッドはメモリを消費するのでループ処理する場合は <code>#select(Connection, SqlBean)</code> を使用する。</li>
    * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
    * </ul>
    *
@@ -346,8 +345,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件登録します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
    * </ul>
    *
@@ -432,8 +430,7 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件登録します。</li>
    * <li>楽観排他制御用のタイムスタンプをセットします。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
    * </ul>
    *
@@ -523,13 +520,12 @@ public final class SqlUtil {
   }
 
   /**
-   * テーブル指定1件更新.<br>
+   * テーブル指定１件更新.<br>
    * <ul>
-   * <li>テーブル名を指定して1件更新します。</li>
+   * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
    * <li>キー項目で WHERE句が作成される。</li>
    * <li>キー項目はパラメーター値に含まれている必要があります。</li>
    * <li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
@@ -537,7 +533,7 @@ public final class SqlUtil {
    *
    * @param conn      DB接続
    * @param tableName テーブル名
-   * @param params    パラメーター値（キー項目名を含む）
+   * @param params    パラメーター値（キー項目を含む）
    * @param keyItems  キー項目名
    *
    * @return １件更新された場合は <code>true</code>、０件の場合は <code>false</code>
@@ -562,19 +558,17 @@ public final class SqlUtil {
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
    * <li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
-   * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code>
-   * のキールール）</li>
+   * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>タイムスタンプ項目は現在日時で更新されます。</li>
    * <li>タイムスタンプ排他制御不要な場合は <code>#updateOne(Connection, String, AbstractIoTypeMap, String[])</code> を使用してください。</li>
    * </ul>
    *
    * @param conn      DB接続
    * @param tableName テーブル名
-   * @param params    パラメーター値（キー項目名を含む）
+   * @param params    パラメーター値（キー項目、タイムスタンプ項目を含む）
    * @param keyItems  キー項目名
    * @param tsItem    タイムスタンプ項目名（楽観排他制御用）
    *
@@ -630,12 +624,63 @@ public final class SqlUtil {
   }
 
   /**
+   * テーブル指定主キー１件更新.<br>
+   * <ul>
+   * <li>テーブル名を指定して１件更新します。</li>
+   * <li>複数件更新した場合は例外エラーとする。</li>
+   * <li>テーブルに存在しないパラメーターは無視されます。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>テーブル主キー項目で WHERE句が作成される。</li>
+   * <li>主キーが存在しないテーブルは例外エラーとする。</li>
+   * <li>主キー項目はパラメーター値に含まれている必要があります。</li>
+   * </ul>
+   *
+   * @param conn      DB接続
+   * @param tableName テーブル名
+   * @param params    パラメーター値（主キー項目を含む）
+   *
+   * @return １件更新された場合は <code>true</code>、０件の場合は <code>false</code>
+   */
+  public static boolean updateOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
+    final String[] pkItems = getPkeys(conn, tableName);
+    return updateOne(conn, tableName, params, pkItems);
+  }
+
+  /**
+   * テーブル指定主キー１件更新（タイムスタンプ排他制御更新）.<br>
+   * <ul>
+   * <li>テーブル名を指定して１件更新します。</li>
+   * <li>複数件更新した場合は例外エラーとする。</li>
+   * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>テーブルに存在しないパラメーターは無視されます。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>テーブル主キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
+   * <li>主キーが存在しないテーブルは例外エラーとする。</li>
+   * <li>主キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
+   * <li>タイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>タイムスタンプ項目は現在日時で更新されます。</li>
+   * <li>タイムスタンプ排他制御不要な場合は <code>#updateOneByPkey(Connection, String, AbstractIoTypeMap)</code> を使用してください。</li>
+   * </ul>
+   *
+   * @param conn      DB接続
+   * @param tableName テーブル名
+   * @param params    パラメーター値（主キー項目、タイムスタンプ項目を含む）
+   * @param tsItem    タイムスタンプ項目名（楽観排他制御用）
+   *
+   * @return １件更新された場合は <code>true</code>、０件の場合は <code>false</code>
+   */
+  public static boolean updateOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params,
+      final String tsItem) {
+    final String[] pkItems = getPkeys(conn, tableName);
+    return updateOne(conn, tableName, params, pkItems, tsItem);
+  }
+
+  /**
    * テーブル指定更新.<br>
    * <ul>
    * <li>テーブル名を指定して複数件更新します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
    * <li>抽出条件項目で WHERE句が作成される。</li>
    * <li>抽出条件項目はパラメーター値に含まれている必要があります。</li>
    * <li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
@@ -643,7 +688,7 @@ public final class SqlUtil {
    *
    * @param conn       DB接続
    * @param tableName  テーブル名
-   * @param params     パラメーター値（抽出条件項目名を含む）
+   * @param params     パラメーター値（抽出条件項目を含む）
    * @param whereItems 抽出条件項目名（省略可能）省略した場合は <code>null</code>
    *
    * @return 更新件数
@@ -685,8 +730,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して全件更新します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は<br>
-   * 実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
    * </ul>
    *
    * @param conn       DB接続
@@ -731,12 +775,13 @@ public final class SqlUtil {
    * <li>複数件削除した場合は例外エラーとする。</li>
    * <li>キー項目で WHERE句が作成される。</li>
    * <li>キー項目はパラメーター値に含まれる必要があります。</li>
+   * <li>キー項目でないパラメーターは無視されます。</li>
    * <li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
    *
    * @param conn      DB接続
    * @param tableName テーブル名
-   * @param params    パラメーター値（キー項目名を含む）
+   * @param params    パラメーター値（キー項目を含む）
    * @param keyItems  キー項目名
    *
    * @return １件削除された場合は <code>true</code>、０件の場合は <code>false</code>
@@ -762,16 +807,14 @@ public final class SqlUtil {
    * <li>タイムスタンプで楽観排他制御を行います。</li>
    * <li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
-   * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code>
-   * のキールール）</li>
-   * <li>タイムスタンプ排他制御不要な場合は
-   * <code>#deleteOne(Connection, String, AbstractIoTypeMap, String[])</code>
-   * を使用してください。</li>
+   * <li>キー項目とタイムスタンプ項目でないパラメーターは無視されます。</li>
+   * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>タイムスタンプ排他制御不要な場合は <code>#deleteOne(Connection, String, AbstractIoTypeMap, String[])</code> を使用してください。</li>
    * </ul>
    *
    * @param conn      DB接続
    * @param tableName テーブル名
-   * @param params    パラメーター値（キー項目名を含む）
+   * @param params    パラメーター値（キー項目、タイムスタンプ項目を含む）
    * @param keyItems  キー項目名
    * @param tsItem    タイムスタンプ項目名（楽観排他制御用）
    *
@@ -801,6 +844,55 @@ public final class SqlUtil {
   }
 
   /**
+   * テーブル指定主キー１件削除.<br>
+   * <ul>
+   * <li>テーブル名を指定して１件削除します。</li>
+   * <li>複数件削除した場合は例外エラーとする。</li>
+   * <li>テーブル主キー項目で WHERE句が作成される。</li>
+   * <li>主キーが存在しないテーブルは例外エラーとする。</li>
+   * <li>主キー項目はパラメーター値に含まれている必要があります。</li>
+   * <li>主キー項目でないパラメーターは無視されます。</li>
+   * </ul>
+   *
+   * @param conn      DB接続
+   * @param tableName テーブル名
+   * @param params    パラメーター値（主キー項目を含む）
+   *
+   * @return １件削除された場合は <code>true</code>、０件の場合は <code>false</code>
+   */
+  public static boolean deleteOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
+    final String[] pkItems = getPkeys(conn, tableName);
+    return deleteOne(conn, tableName, params, pkItems);
+  }
+
+  /**
+   * テーブル指定主キー１件削除（タイムスタンプ排他制御削除）.<br>
+   * <ul>
+   * <li>テーブル名を指定して１件削除します。</li>
+   * <li>複数件削除した場合は例外エラーとする。</li>
+   * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>テーブル主キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
+   * <li>主キーが存在しないテーブルは例外エラーとする。</li>
+   * <li>主キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
+   * <li>主キー項目とタイムスタンプ項目でないパラメーターは無視されます。</li>
+   * <li>タイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>タイムスタンプ排他制御不要な場合は <code>#deleteOneByPkey(Connection, String, AbstractIoTypeMap)</code> を使用してください。</li>
+   * </ul>
+   *
+   * @param conn      DB接続
+   * @param tableName テーブル名
+   * @param params    パラメーター値（主キー項目、タイムスタンプ項目を含む）
+   * @param tsItem    タイムスタンプ項目名（楽観排他制御用）
+   *
+   * @return １件削除された場合は <code>true</code>、０件の場合は <code>false</code>
+   */
+  public static boolean deleteOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params,
+      final String tsItem) {
+    final String[] pkItems = getPkeys(conn, tableName);
+    return deleteOne(conn, tableName, params, pkItems, tsItem);
+  }
+
+  /**
    * テーブル指定削除.<br>
    * <ul>
    * <li>テーブル名を指定して複数件削除します。</li>
@@ -811,7 +903,7 @@ public final class SqlUtil {
    *
    * @param conn DB接続
    * @param tableName テーブル名
-   * @param params パラメーター値（抽出条件項目名を含む）
+   * @param params パラメーター値（抽出条件項目を含む）
    * @param whereItems 抽出条件項目名
    *
    * @return 削除件数
@@ -875,7 +967,7 @@ public final class SqlUtil {
    * SET句追加.
    *
    * @param sb         SQLビルダー
-   * @param params     パラメーター値（抽出条件項目名を含む）
+   * @param params     パラメーター値（抽出条件項目を含む）
    * @param whereItems 抽出条件項目名（省略可能）省略した場合は <code>null</code>
    * @param itemClsMap DB項目名・クラスタイプマップ
    */
@@ -924,7 +1016,7 @@ public final class SqlUtil {
    *
    * @param sb         SQLビルダー
    * @param tableName  テーブル名
-   * @param params     パラメーター値（抽出条件項目名を含む）
+   * @param params     パラメーター値（抽出条件項目を含む）
    * @param whereItems 抽出条件項目名（省略可能）省略した場合は <code>null</code>
    * @param itemClsMap DB項目名・クラスタイプマップ
    */
@@ -1375,6 +1467,33 @@ public final class SqlUtil {
     return false;
   }
 
+  /**
+   * 主キー項目名取得.<br>
+   * <ul>
+   * <li>JDBCメタ情報からテーブルの主キー項目名を取得します。</li>
+   * <li>主キーが存在しないテーブルは実行時エラーとなります。</li>
+   * <li>項目物理名は英字小文字に変換します。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * </ul>
+   *
+   * @param conn      DB接続
+   * @param tableName テーブル名
+   * @return 主キー項目名配列（KEY_SEQ 順）
+   */
+  private static String[] getPkeys(final Connection conn, final String tableName) {
+    try {
+      // KEY_SEQ 順で並べる
+      final Map<Short, String> pkMap = new TreeMap<>();
+      try (final ResultSet rset = conn.getMetaData().getPrimaryKeys(null, null, tableName)) {
+        while (rset.next()) {
+          pkMap.put(rset.getShort("KEY_SEQ"), rset.getString("COLUMN_NAME").toLowerCase());
+        }
+      }
+      return pkMap.values().toArray(new String[0]);
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during primary key retrieval. " + LogUtil.joinKeyVal("tableName", tableName), e);
+    }
+  }
+
   /** タイムスタンプ取得SQL（小数秒6桁） マップ. */
   private static final Map<DbmsName, String> SQL_CUR_TS = new HashMap<>();
   /** タイムスタンプ取得SQL（小数秒6桁） その他. */
@@ -1430,7 +1549,7 @@ public final class SqlUtil {
    * <ul>
    * <li>SQL文字列を StringBuilder に追加します。</li>
    * <li>引数SQLの先頭がブランクの場合、先頭に１文字ブランク追加します。（ただし既存SQLが空または最後がブランクの場合は追加しない）</li>
-   * <li>引数SQLの前後のブランクをトリムし、２文字以上のブランクを1文字ブランクに置き換えます。</li>
+   * <li>引数SQLの前後のブランクをトリムし、２文字以上のブランクを１文字ブランクに置き換えます。</li>
    * <li>引数SQLの最後がブランクの場合、最後に１文字ブランク追加します。</li>
    * </ul>
    * 
@@ -1450,7 +1569,7 @@ public final class SqlUtil {
     }
 
     // 前後のブランクをトリム
-    // ２文字以上のブランクを1文字ブランクに置き換え
+    // ２文字以上のブランクを１文字ブランクに置き換え
     // ただしシングルクォーテーションに挟まれたブランクは置き換えない
     toSb.append(trimQuerySpaces(sql));
 
@@ -1461,10 +1580,10 @@ public final class SqlUtil {
   }
 
   /**
-   * SQL文字列内の２文字以上のブランクを1文字ブランクに置き換え.<br>
+   * SQL文字列内の２文字以上のブランクを１文字ブランクに置き換え.<br>
    * <ul>
    * <li>前後のブランクをトリム。</li>
-   * <li>２文字以上のブランクを1文字ブランクに置き換え。</li>
+   * <li>２文字以上のブランクを１文字ブランクに置き換え。</li>
    * <li>シングルクォーテーションに挟まれたブランクは置き換えない。</li>
    * </ul>
    * 

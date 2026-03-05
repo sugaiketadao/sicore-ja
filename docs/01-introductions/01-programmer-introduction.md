@@ -84,6 +84,12 @@ URL: http://localhost:8080/services/exmodule/ExampleListSearch
 - レスポンシブに対応済みである（PC・タブレット・スマートフォン）。
 - 学習コストが低い（覚えるクラス名が少ない）。
 
+### 1.7 LDAP認証
+
+- `web.properties` で `ldap.enabled=true` に設定することで、LDAPサーバーと連携したサインイン認証を有効化できる。
+- サインイン後はJWTトークンで認証状態を維持し、サーバー側にセッションを持たない（ステートレス）。
+
+
 ---
 
 ## 2. データフロー

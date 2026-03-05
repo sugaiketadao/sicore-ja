@@ -28,7 +28,11 @@
 │   │   └── util/                # 共通部品 Javaパッケージ：バッチ処理 Javaクラスから使用する共通部品を格納する。［パッケージ名 util は例］
 │   └── com/onpg/                 # 本フレームワークドメイン Javaパッケージ
 ├── classes/                       # Javaクラスコンパイル先ディレクトリ
-└── lib/                           # Javaライブラリファイル格納ディレクトリ
+├── lib/                           # Javaライブラリファイル格納ディレクトリ
+├── script/                        # バッチ実行シェルスクリプト格納ディレクトリ（Linux用）
+│   └── sub/                      # 共通サブスクリプト格納ディレクトリ（環境変数定義、Java実行等）
+└── script-win/                    # バッチ実行スクリプト格納ディレクトリ（Windows用）
+     └── sub/                      # 共通サブスクリプト格納ディレクトリ（環境変数定義、Java実行等）
 ```
 
 ### ファイル作成単位
@@ -72,6 +76,18 @@ public class ExampleBatch extends AbstractBatch {
 ```
 java com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
 ```
+
+> `script/`（Linux）および `script-win/`（Windows）配下に、バッチ実行スクリプトが用意されています。
+> `sub/java-exec.sh`（または `java-exec.bat`）を呼び出すことでクラスパスや環境変数の設定が共通化されるため、単体テスト以降のフェーズでは `java` コマンドを直接実行するのではなく、実行スクリプト経由でバッチを起動してください。
+>
+> **Linux**（`script/JOB-EXAMPLE.sh`）:
+> ```bash
+> bash $(dirname $0)/sub/java-exec.sh $(basename $0 .sh) com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
+> ```
+> **Windows**（`script-win\JOB-EXAMPLE.bat`）:
+> ```bat
+> call %~dp0sub\java-exec.bat %~n0 com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
+> ```
 
 ### DBアクセス処理
 - 処理内で DBアクセスする場合は、`AbstractDbAccessBatch` クラスを継承することで、`doExecute` メソッド処理中はクラス内のどこでも `getDbConn` メソッドから DBコネクションを取得できます。

@@ -62,14 +62,14 @@ public final class DbUtil {
   /** デフォルトDB接続名（.dbcon.url より前の部分）. */
   private static final String DEFAULT_CONN_NAME = "default";
 
-  /** DB接続 - URL 接尾語. */
-  private static final String PKEY_SUFFIX_URL = ".conn.url";
-  /** DB接続 - ユーザー 接尾語. */
-  private static final String PKEY_SUFFIX_USER = ".conn.user";
-  /** DB接続 - パスワード 接尾語. */
-  private static final String PKEY_SUFFIX_PASS = ".conn.pass";
-  /** DB接続 - 最大接続数（プール数） 接尾語. */
-  private static final String PKEY_SUFFIX_MAX = ".conn.max";
+  /** DB接続設定 - URL 接尾語. */
+  private static final String PPKEY_SUFFIX_URL = ".conn.url";
+  /** DB接続設定 - ユーザー 接尾語. */
+  private static final String PPKEY_SUFFIX_USER = ".conn.user";
+  /** DB接続設定 - パスワード 接尾語. */
+  private static final String PPKEY_SUFFIX_PASS = ".conn.pass";
+  /** DB接続設定 - 最大接続数（プール数） 接尾語. */
+  private static final String PPKEY_SUFFIX_MAX = ".conn.max";
 
   /** DB設定. */
   private static final IoItems PROP_MAP;
@@ -90,8 +90,7 @@ public final class DbUtil {
    * <li>接続シリアルコードは接続確立時に <code>DbConn</code> クラス内で発番される。</li>
    * </ul>
    */
-  private static final Map<String, ConcurrentMap<String, Connection>> connPoolMaps_ =
-      new HashMap<>();
+  private static final Map<String, ConcurrentMap<String, Connection>> connPoolMaps_ = new HashMap<>();
 
   /**
    * 使用中接続管理マップ&lt;DB接続名、使用中接続リスト&lt;接続シリアルコード&gt;&gt;（シングルトン）.<br>
@@ -260,7 +259,7 @@ public final class DbUtil {
     // 不使用の接続が無い場合かつ最大接続数に達していない場合は新規接続して返す。
 
     // 最大接続数（プール数）
-    final int maxSize = PROP_MAP.getInt(connName + PKEY_SUFFIX_MAX);
+    final int maxSize = PROP_MAP.getInt(connName + PPKEY_SUFFIX_MAX);
 
     if (connPoolMap.size() >= maxSize) {
       throw new RuntimeException("Database connection limit reached. " + LogUtil.joinKeyVal("maxSize", maxSize));
@@ -324,20 +323,20 @@ public final class DbUtil {
    * @return DB接続
    */
   private static Connection createConn(final String connName) {
-    if (!PROP_MAP.containsKey(connName + PKEY_SUFFIX_URL)) {
+    if (!PROP_MAP.containsKey(connName + PPKEY_SUFFIX_URL)) {
       throw new RuntimeException("Configuration does not exist. "  + LogUtil.joinKeyVal("ConnName", connName));
     }
 
     // DB URL
-    final String url = PROP_MAP.getString(connName + PKEY_SUFFIX_URL);
+    final String url = PROP_MAP.getString(connName + PPKEY_SUFFIX_URL);
 
     // DBユーザー
     final String user;
     // DBパスワード
     final String pass;
-    if (PROP_MAP.containsKey(connName + PKEY_SUFFIX_USER)) {
-      user = PROP_MAP.getString(connName + PKEY_SUFFIX_USER);
-      pass = PROP_MAP.getString(connName + PKEY_SUFFIX_PASS);
+    if (PROP_MAP.containsKey(connName + PPKEY_SUFFIX_USER)) {
+      user = PROP_MAP.getString(connName + PPKEY_SUFFIX_USER);
+      pass = PROP_MAP.getString(connName + PPKEY_SUFFIX_PASS);
     } else {
       user = null;
       pass = null;
@@ -457,8 +456,8 @@ public final class DbUtil {
   public static List<String> getConnNames() {
     final List<String> ret = new ArrayList<>();
     for (final String key : PROP_MAP.keySet()) {
-      if (key.endsWith(PKEY_SUFFIX_URL)) {
-        final String connName = key.substring(0, key.length() - PKEY_SUFFIX_URL.length());
+      if (key.endsWith(PPKEY_SUFFIX_URL)) {
+        final String connName = key.substring(0, key.length() - PPKEY_SUFFIX_URL.length());
         ret.add(connName);
       }
     }

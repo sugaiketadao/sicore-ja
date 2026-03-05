@@ -145,7 +145,7 @@ const ValUtil = /** @lends ValUtil */ {
         continue;
       }
       // 比較対象その2 にキーが無い場合は無視する
-      if (!Object.hasOwn(obj2, key)) {
+      if (!ValUtil.existsObj(obj2, key)) {
         continue;
       }
 
@@ -179,6 +179,24 @@ const ValUtil = /** @lends ValUtil */ {
       }
     }
     return true;
+  },
+
+  /**
+   * 連想配列存在チェック.<br>
+   * <ul>
+   *   <li>指定されたキーが連想配列に存在するかをチェックする。</li>
+   *   <li>連想配列でない場合は「存在しない」と判断する。</li>
+   * </ul>
+   *
+   * @param {Object} obj チェック対象連想配列
+   * @param {string} key 存在チェック対象キー
+   * @returns {boolean} キーが存在する場合は <code>true</code>
+   */
+  existsObj : function(obj, key) {
+    if (!ValUtil.isObj(obj)) {
+      return false;
+    }
+    return Object.hasOwn(obj, key);
   },
 
   /**
@@ -642,6 +660,8 @@ const HttpUtil = /** @lends HttpUtil */ {
    * <li><pre>［例］
    *      <code>url = 'editpage.html'、params = {user_id: 'U001', upd_ts: '20251231T245959001000'}</code> の場合
    *      <code>editpage.html?user_id=U001&upd_ts=20251231T245959001000</code> にアクセスする。</pre></li>
+   * <li>遷移前に <code>SessionUtil</code> で管理しているセッションデータとトークンが <code>sessionStorage</code> に一時保存される。</li>
+   * <li><code>sessionStorage</code> に一時保存されることで、ページ遷移後にセッションデータの復元が可能になる。</li>
    * </ul>
    *
    * @param {string} url 遷移先URL
@@ -658,6 +678,8 @@ const HttpUtil = /** @lends HttpUtil */ {
         loc += params;
       }
     }
+    // ページ遷移前にセッションデータを sessionStorage に退避する
+    SessionUtil._saveToStorage();
     // replaceにすることで 戻る で戻らせない（一番最初に開いたページまで戻らせる）
     location.replace(loc);
   },
@@ -667,6 +689,10 @@ const HttpUtil = /** @lends HttpUtil */ {
    * <ul>
    * <li>指定URL に対して <code>POST</code>メソッド で JSONリクエストを送信して JSONレスポンスを受信する。</li>
    * <li>リクエスト／レスポンスは連想配列でやり取りする。</li>
+   * <li>リクエストには <code>SessionUtil</code> で管理しているセッションデータが自動で追加される。</li>
+   * <li>レスポンスからセッションデータが自動で取得され、<code>SessionUtil</code> で管理しているセッションデータに保存される。</li>
+   * <li><code>SessionUtil</code> で管理しているトークンがあれば Authorization ヘッダーに付与される。</li>
+   * <li>通信エラーや JSONパースエラーが発生した場合は例外がスローされる。</li>
    * </ul>
    * 
    * @param {string} url 送信先URL
@@ -687,6 +713,10 @@ const HttpUtil = /** @lends HttpUtil */ {
 
     // ヘッダーをマージ
     const header = Object.assign(addHeader || {}, { 'Content-Type': 'application/json' });
+    // トークンが存在すれば Authorization ヘッダーに付与する
+    if (!ValUtil.isBlank(SessionUtil._token)) {
+      header['Authorization'] = 'Bearer ' + SessionUtil._token;
+    }
 
     const pr = new Promise(function(resolve, reject) {
       const xhr = new XMLHttpRequest();
@@ -695,7 +725,7 @@ const HttpUtil = /** @lends HttpUtil */ {
         const val = header[key];
         xhr.setRequestHeader(key, val);
       }
-      // 確認のため自動でJSONパースさせない
+      // パースエラーをキャッチするため、自動JSONパースを無効にして手動でパースする
       xhr.responseType = 'text';
 
       // 通信完了イベント
@@ -706,9 +736,15 @@ const HttpUtil = /** @lends HttpUtil */ {
             // 手動でJSONパース
             res = JSON.parse(xhr.response);
             // レスポンスからセッションデータを取得して削除する
-            if (Object.hasOwn(res, SessionUtil._IOKEY)) {
+            if (ValUtil.existsObj(res, SessionUtil._IOKEY)) {
               if (ValUtil.isObj(res[SessionUtil._IOKEY])) {
                 SessionUtil._sessionData = res[SessionUtil._IOKEY];
+                // セッションデータに JWT があれば _token に保存する
+                if (ValUtil.existsObj(SessionUtil._sessionData, SessionUtil._SSKEY_JWT)) {
+                  SessionUtil._token = SessionUtil._sessionData[SessionUtil._SSKEY_JWT];
+                  // セッションデータからは JWT を削除する
+                  delete SessionUtil._sessionData[SessionUtil._SSKEY_JWT];
+                }
               }
               delete res[SessionUtil._IOKEY];
             }
@@ -734,7 +770,7 @@ const HttpUtil = /** @lends HttpUtil */ {
       xhr.send(JSON.stringify(req));
     });
 
-    if (Object.hasOwn(req, SessionUtil._IOKEY)) {
+    if (ValUtil.existsObj(req, SessionUtil._IOKEY)) {
       // リクエストに追加したセッションデータを削除する
       delete req[SessionUtil._IOKEY];
     }
@@ -2193,7 +2229,7 @@ const PageUtil = /** @lends PageUtil */ {
    * @private
    * 行内要素に独自属性でインデックスを付加.<br>
    * <ul>
-   *   <li>行内要素（<code>'."</code> 区切りの <code>name</code>属性を持つ要素）かつデータ送信要素（<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>）を対象とする。</li>
+   *   <li>行内要素（<code>'.'</code> 区切りの <code>name</code>属性を持つ要素）かつデータ送信要素（<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>）を対象とする。</li>
    *   <li><code>data-obj-row-idx</code>属性としてインデックスを付加する。</li>
    *   <li>付加したインデックスは <code>PageUtil#getValues</code> で連想配列化する際に使用する。</li>
    *   <li>付加したインデックスは Webサービスから返ってきた際のレスポンス値表示の目印ともなる。</li>
@@ -2629,12 +2665,12 @@ const PageUtil = /** @lends PageUtil */ {
  */
 const StorageUtil = /** @lends StorageUtil */ {
 
-  /** @private ページ単位キープレフィックス */
-  _KEY_PREFIX_PAGE: '@page',
-  /** @private 機能単位キープレフィックス */
-  _KEY_PREFIX_MODULE: '@module',
-  /** @private システム共通キープレフィックス */
-  _KEY_PREFIX_SYSTEM: '@system',
+  /** @private ストレージ保管 ページ単位キープレフィックス */
+  _STKEY_PREFIX_PAGE: '_page@onepg',
+  /** @private ストレージ保管 機能単位キープレフィックス */
+  _STKEY_PREFIX_MODULE: '_module@onepg',
+  /** @private ストレージ保管 システム共通キープレフィックス */
+  _STKEY_PREFIX_SYSTEM: '_system@onepg',
 
   /** @private ルートディレクトリ名 */
   _ROOT_DIR_NAME: '[root]',
@@ -2782,7 +2818,7 @@ const StorageUtil = /** @lends StorageUtil */ {
       console.error('StorageUtil#removeSystem: key is required.');
       return false;
     }
-    const sysKey = StorageUtil._KEY_PREFIX_SYSTEM + key;
+    const sysKey = StorageUtil._STKEY_PREFIX_SYSTEM + key;
     return StorageUtil._remove(sysKey);
   },
 
@@ -2944,7 +2980,7 @@ const StorageUtil = /** @lends StorageUtil */ {
       // ルートディレクトリの場合
       mdlName = StorageUtil._ROOT_DIR_NAME;
     }
-    return `${StorageUtil._KEY_PREFIX_PAGE}/${mdlName}/${pageName}/`;
+    return `${StorageUtil._STKEY_PREFIX_PAGE}/${mdlName}/${pageName}/`;
   },
 
   /**
@@ -2973,7 +3009,7 @@ const StorageUtil = /** @lends StorageUtil */ {
       // ルートディレクトリの場合
       mdlName = StorageUtil._ROOT_DIR_NAME;
     }
-    return `${StorageUtil._KEY_PREFIX_MODULE}/${mdlName}/`;
+    return `${StorageUtil._STKEY_PREFIX_MODULE}/${mdlName}/`;
   },
 
   /**
@@ -2983,7 +3019,7 @@ const StorageUtil = /** @lends StorageUtil */ {
    * @returns {string} システム単位キー
    */
   _createSystemKey: function(key) {
-    return `${StorageUtil._KEY_PREFIX_SYSTEM}/${key}`;
+    return `${StorageUtil._STKEY_PREFIX_SYSTEM}/${key}`;
   },
 
   /**
@@ -3018,7 +3054,7 @@ const StorageUtil = /** @lends StorageUtil */ {
    * @returns {boolean} クリア成功時は <code>true</code>
    */
   clearSystem: function() {
-    const prefix = StorageUtil._KEY_PREFIX_SYSTEM;
+    const prefix = StorageUtil._STKEY_PREFIX_SYSTEM;
     return StorageUtil._clear(prefix);
   },
 
@@ -3070,22 +3106,22 @@ const StorageUtil = /** @lends StorageUtil */ {
           continue;
         }
         const value = sessionStorage.getItem(key);
-        if (key.startsWith(StorageUtil._KEY_PREFIX_SYSTEM)) {
-          const orgKey = key.substring(StorageUtil._KEY_PREFIX_SYSTEM.length);
+        if (key.startsWith(StorageUtil._STKEY_PREFIX_SYSTEM)) {
+          const orgKey = key.substring(StorageUtil._STKEY_PREFIX_SYSTEM.length);
           sysObj[orgKey] = value;
-        } else if (key.startsWith(StorageUtil._KEY_PREFIX_MODULE)) {
-          const orgKey = key.substring(StorageUtil._KEY_PREFIX_MODULE.length);
+        } else if (key.startsWith(StorageUtil._STKEY_PREFIX_MODULE)) {
+          const orgKey = key.substring(StorageUtil._STKEY_PREFIX_MODULE.length);
           mdlObj[orgKey] = value;
-        } else if (key.startsWith(StorageUtil._KEY_PREFIX_PAGE)) {
-          const orgKey = key.substring(StorageUtil._KEY_PREFIX_PAGE.length);
+        } else if (key.startsWith(StorageUtil._STKEY_PREFIX_PAGE)) {
+          const orgKey = key.substring(StorageUtil._STKEY_PREFIX_PAGE.length);
           pageObj[orgKey] = value;
         } else {
           otherObj[key] = value;
         }
       }
-      console.log(StorageUtil._KEY_PREFIX_SYSTEM + ':', sysObj);
-      console.log(StorageUtil._KEY_PREFIX_MODULE + ':', mdlObj);
-      console.log(StorageUtil._KEY_PREFIX_PAGE + ':', pageObj);
+      console.log(StorageUtil._STKEY_PREFIX_SYSTEM + ':', sysObj);
+      console.log(StorageUtil._STKEY_PREFIX_MODULE + ':', mdlObj);
+      console.log(StorageUtil._STKEY_PREFIX_PAGE + ':', pageObj);
       console.log('Other:', otherObj);
     } catch (e) {
       console.error('StorageUtil#_debugAllData: Failed to show data.', e);
@@ -3099,8 +3135,11 @@ const StorageUtil = /** @lends StorageUtil */ {
 /**
  * セッションユーティリティクラス.<br>
  * <ul>
- *   <li>Webサービスと共有する情報を管理する。</li>
- *   <li>本クラスで管理している情報はサーバーセッション単位で保持される。</li>
+ *   <li>Webサービス呼び出し時にリクエストとともに送信され、レスポンスデータで自動更新される。</li>
+ *   <li>JavaScript の変数（インメモリ）でデータを保持する。</li>
+ *   <li>リンクでのページ遷移やリロードでデータが失われる。</li>
+ *   <li>ページ遷移は <code>HttpUtil.movePage</code> を使用することでデータを保持できる。</li>
+ *   <li>JWT を保持し Webサービス呼び出し時、リクエストヘッダーに自動的に付与される。</li>
  * </ul>
  * @class
  */
@@ -3108,8 +3147,14 @@ const SessionUtil = /** @lends SessionUtil */ {
 
   /** @private リクエスト・レスポンスデータ内のキー（Io.java で指定）. */
   _IOKEY: '_session',
+  /** @private セッションキー - JWT */
+  _SSKEY_JWT: 'token',
+  /** @private ストレージ保管キー（ページ遷移時の一時退避用）. */
+  _STKEY: '_session@onepg',
   /** @private セッションデータ */
   _sessionData: {},
+  /** @private トークン */
+  _token: '',
 
   /**
    * セッション値取得.
@@ -3142,13 +3187,38 @@ const SessionUtil = /** @lends SessionUtil */ {
   },
 
   /**
+   * トークン保持確認.
+   *
+   * @returns {boolean} トークンが存在する場合は <code>true</code>
+   */
+  hasToken: function() {
+    return !ValUtil.isBlank(SessionUtil._token);
+  },
+
+  /**
+   * @private
+   * トークン値格納.
+   *
+   * @param {string} val トークン値
+   * @returns {boolean} 格納成功時は <code>true</code>
+   */
+  _setToken: function(val) {
+    if (ValUtil.toType(val) !== 'string') {
+      console.error(`SessionUtil#setToken: store data must be a string.`);
+      return false;
+    }
+    SessionUtil._token = val;
+    return true;
+  },
+
+  /**
    * セッション値削除.
    *
    * @param {string} key キー
    * @returns {boolean} 削除成功時は <code>true</code>
    */
   remove: function(key) {
-    if (Object.hasOwn(SessionUtil._sessionData, key)) {
+    if (ValUtil.existsObj(SessionUtil._sessionData, key)) {
       delete SessionUtil._sessionData[key];
       return true;
     }
@@ -3162,7 +3232,54 @@ const SessionUtil = /** @lends SessionUtil */ {
    */
   clear: function() {
     SessionUtil._sessionData = {};
+    SessionUtil._token = '';
     return true;
+  },
+
+  /**
+   * @private
+   * セッションデータ退避.<br>
+   * <ul>
+   *   <li>セッションデータとトークンを sessionStorage に一時保存する。</li>
+   *   <li><code>HttpUtil.movePage</code> から呼び出される想定。</li>
+   * </ul>
+   */
+  _saveToStorage: function() {
+    try {
+      const data = {};
+      data['sessionData'] = SessionUtil._sessionData;
+      data['token'] = SessionUtil._token;
+      sessionStorage.setItem(SessionUtil._STKEY, JSON.stringify(data));
+    } catch (e) {
+      console.error('SessionUtil#_saveToStorage: Failed to save session data.', e);
+    }
+  },
+
+  /**
+   * @private
+   * セッションデータ復元.<br>
+   * <ul>
+   *   <li>sessionStorage からセッションデータとトークンを復元し、即座に削除する。</li>
+   *   <li>スクリプトロード時に自動実行される。</li>
+   * </ul>
+   */
+  _restoreFromStorage: function() {
+    try {
+      const json = sessionStorage.getItem(SessionUtil._STKEY);
+      // 取得後は即削除する
+      sessionStorage.removeItem(SessionUtil._STKEY);
+      if (ValUtil.isBlank(json)) {
+        return;
+      }
+      const data = JSON.parse(json);
+      if (ValUtil.existsObj(data, 'sessionData')) {
+        SessionUtil._sessionData = data['sessionData'];
+        // セッションデータが存在した時点でトークンも必ず上書きする
+        SessionUtil._token = ValUtil.nvl(data['token']);
+      }
+    } catch (e) {
+      console.error('SessionUtil#_restoreFromStorage: Failed to restore session data.', e);
+    }
   },
 
   /**
@@ -3185,4 +3302,7 @@ const SessionUtil = /** @lends SessionUtil */ {
     console.groupEnd();
   }
 };
+
+// ページロード時にセッションデータを自動復元する
+SessionUtil._restoreFromStorage();
 

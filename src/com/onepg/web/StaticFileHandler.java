@@ -24,7 +24,8 @@ final class StaticFileHandler extends AbstractHttpHandler {
    * コンストラクタ.
    */
   StaticFileHandler() {
-    super();
+    // 静的ファイルはJWT検証不要
+    super(false);
     this.serverDeployPath = PropertiesUtil.APPLICATION_DIR_PATH;
   }
 

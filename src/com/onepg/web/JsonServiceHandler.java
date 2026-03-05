@@ -1,19 +1,12 @@
 package com.onepg.web;
 
 import com.onepg.util.Io;
-import com.onepg.util.IoItems;
 import com.onepg.util.LogUtil;
-import com.onepg.util.ResourcesUtil;
-import com.onepg.util.ResourcesUtil.FwResourceName;
 import com.sun.net.httpserver.HttpExchange;
 import java.net.HttpURLConnection;
 
 /**
- * JSON サービスハンドラークラス.<br>
- * <ul>
- * <li>HTTPリクエストを受信し、対応するWebサービスクラスに処理を委譲します。</li>
- * <li>URLパスからサービスクラス名を動的に解決し、リフレクションで実行します。</li>
- * </ul>
+ * JSON サービスハンドラークラス.
  * @hidden
  */
 final class JsonServiceHandler extends AbstractHttpHandler {
@@ -23,9 +16,6 @@ final class JsonServiceHandler extends AbstractHttpHandler {
 
   /** サービスクラスパッケージ. */
   private final String svcClsPackage;
-
-  /** メッセージマップ&lt;メッセージID、メッセージテキスト&gt;. */
-  private final IoItems msgMap;
 
   /**
    * コンストラクタ.<br>
@@ -40,14 +30,13 @@ final class JsonServiceHandler extends AbstractHttpHandler {
     super();
     this.contextPath = contextPath;
     this.svcClsPackage = svcClsPackage;
-    this.msgMap = ResourcesUtil.getJson(FwResourceName.MSG);
   }
 
   /**
    * {@inheritDoc}
    * <ul>
-   * <li>リクエストURLからサービスクラスを動的に解決し実行します。</li>
-   * <li><code>GET/POST</code>メソッドに応じてパラメーターを処理します。</li>
+   * <li>URLパスからサービスクラス名を動的に解決し、リフレクションで実行します。</li>
+   * <li><code>GET/POST</code>メソッドに応じてリクエストパラメーターを解析し、サービスクラスに渡します。</li>
    * </ul>
    */
   @Override
@@ -56,7 +45,7 @@ final class JsonServiceHandler extends AbstractHttpHandler {
     final String reqPath = exchange.getRequestURI().getPath();
     // クラス名構築
     final String clsName = buildClsNameByReq(reqPath);
-    
+
     try {
       // サービスクラスの生成と検証
       final AbstractWebService serviceObj = createWebServiceClsInstance(clsName);
@@ -68,14 +57,14 @@ final class JsonServiceHandler extends AbstractHttpHandler {
       serviceObj.execute(io);
       
       // レスポンス
-      final String resJson = io.createJsonWithMsg(this.msgMap);
+      final String resJson = io.createJsonWithMsg(ServerUtil.MSG_MAP);
       ServerUtil.responseJson(exchange, resJson);
       
     } catch (final ClassNotFoundException e) {
       super.logger.error(e, "Web service class not found. " + LogUtil.joinKeyVal("class", clsName));
       ServerUtil.responseText(exchange, HttpURLConnection.HTTP_NOT_FOUND, "Json service class not found. ");
     } catch (final Exception | Error e) {
-      super.logger.error(e, "An exception error occurred in web service execution. " + LogUtil.joinKeyVal("class", clsName));
+      super.logger.error(e, "An exception error occurred in json service execution. " + LogUtil.joinKeyVal("class", clsName));
       ServerUtil.responseText(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, "Unexpected json service error. ");
     }
   }

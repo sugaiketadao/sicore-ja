@@ -62,7 +62,7 @@ URL: http://localhost:8080/services/exmodule/ExampleListSearch
 |-|-|-|
 | ページ単位 | `get/setPageObj()` | 一覧ページで検索条件を保持する。 |
 | モジュール単位 | `get/setModuleObj()` | ページ間で入力中データを保持する。 |
-| システム単位 | `get/setSystemObj()` | ログイン情報を保持する。 |
+| システム単位 | `get/setSystemObj()` | サインイン情報を保持する。 |
 
 ### 1.6 独自CSS（外部フレームワーク不使用）
 

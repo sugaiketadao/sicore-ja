@@ -1002,6 +1002,7 @@ public final class ValUtil {
    * 左ゼロ詰め.<br>
    * <ul>
    * <li>文字列の左に <code>"0"</code> を詰める。</li>
+   * <li>引数が <code>null</code> の場合は <code>0</code> を詰める。</li>
    * </ul>
    *
    * @param value 文字列
@@ -1010,7 +1011,7 @@ public final class ValUtil {
    */
   public static String paddingLeftZero(final String value, final int digit) {
     if (ValUtil.isNull(value)) {
-      return String.format("%0" + digit + "d", 0);
+      return ("%0" + digit + "d").formatted(0);
     }
     if (value.length() >= digit) {
       // 長さが超えている場合はそのまま返す
@@ -1034,7 +1035,7 @@ public final class ValUtil {
    * @return 処理後の文字
    */
   public static String paddingLeftZero(final int value, final int digit) {
-    return String.format("%0" + String.valueOf(digit) + "d", value);
+    return ("%0" + digit + "d").formatted(value);
   }
 
 
@@ -1087,7 +1088,7 @@ public final class ValUtil {
   /**
    * URLデコード変換.
    *
-   * @param url 変換文字列
+   * @param url 変換対象文字列
    * @return 変換後文字列
    */
   public static String urlDecode(final String url) {
@@ -1260,7 +1261,7 @@ public final class ValUtil {
       final String tmPart = tm.substring(keta[0], keta[1]);
       final int tmPartInt = Integer.parseInt(tmPart);
       final String tmPart36 = Integer.toString(tmPartInt, Character.MAX_RADIX);
-      sb.append(String.format("%2s", tmPart36).replace(' ', '0').toUpperCase());
+      sb.append("%2s".formatted(tmPart36).replace(' ', '0').toUpperCase());
     }
     return sb.toString();
   }

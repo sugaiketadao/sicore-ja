@@ -113,7 +113,7 @@ public class ExampleListInit extends AbstractDbAccessWebService {
 ### 応用ポイント
 
 - 初期表示する選択肢（プルダウン等）をDBから取得してセットする。
-- ログインユーザー情報に基づく初期値をセットする。
+- サインインユーザー情報に基づく初期値をセットする。
 <!-- AI_SKIP_END -->
 
 ---

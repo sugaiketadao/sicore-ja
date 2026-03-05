@@ -525,7 +525,7 @@ init();
 |-|-|-|-|-|
 | ページ単位 | `getPageObj()` | `setPageObj()` | URLの HTMLファイル単位、１ページ内でデータ保持 | 一覧ページで検索条件の保持 |
 | 機能単位 | `getModuleObj()` | `setModuleObj()` | URLの機能ディレクトリ単位、ページ間でデータ共有 | ヘッダ編集ページ⇔明細編集ページ 間の入力中データ保持 |
-| システム単位 | `getSystemObj()` | `setSystemObj()` | システム全体でデータ共有 | ログイン情報の保持 |
+| システム単位 | `getSystemObj()` | `setSystemObj()` | システム全体でデータ共有 | サインイン情報の保持 |
 <!-- AI_SKIP_END -->
 
 

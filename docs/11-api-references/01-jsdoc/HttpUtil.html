@@ -97,6 +97,8 @@
 <li><pre>［例］
      <code>url = 'editpage.html'、params = {user_id: 'U001', upd_ts: '20251231T245959001000'}</code> の場合
      <code>editpage.html?user_id=U001&upd_ts=20251231T245959001000</code> にアクセスする。</pre></li>
+<li>遷移前に <code>SessionUtil</code> で管理しているセッションデータとトークンが <code>sessionStorage</code> に一時保存される。</li>
+<li><code>sessionStorage</code> に一時保存されることで、ページ遷移後にセッションデータの復元が可能になる。</li>
 </ul>
 
         </div>
@@ -135,6 +137,10 @@
 <ul>
 <li>指定URL に対して <code>POST</code>メソッド で JSONリクエストを送信して JSONレスポンスを受信する。</li>
 <li>リクエスト／レスポンスは連想配列でやり取りする。</li>
+<li>リクエストには <code>SessionUtil</code> で管理しているセッションデータが自動で追加される。</li>
+<li>レスポンスからセッションデータが自動で取得され、<code>SessionUtil</code> で管理しているセッションデータに保存される。</li>
+<li><code>SessionUtil</code> で管理しているトークンがあれば Authorization ヘッダーに付与される。</li>
+<li>通信エラーや JSONパースエラーが発生した場合は例外がスローされる。</li>
 </ul>
 
         </div>

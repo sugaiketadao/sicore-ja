@@ -58,7 +58,7 @@ public final class PropertiesUtil {
   /** デフォルト設定ディレクトリ名. */
   private static final String DEFAULT_PROP_DIRNAME = "config";
   /** 設定キー - 設定ディレクトリ指定. */
-  private static final String PROPDIR_PKEY = "config.dir";
+  private static final String PROPDIR_PPKEY = "config.dir";
   /** プロパティファイル拡張子. */
   private static final String PROPERTIES_TYPEMARK = "properties";
 
@@ -171,7 +171,7 @@ public final class PropertiesUtil {
       // デフォルト設定
       final IoItems propMap = getPropertiesMap(propDirFilePath);
       // 設定ディレクトリパス
-      final String path = propMap.getString(PROPDIR_PKEY);
+      final String path = propMap.getString(PROPDIR_PPKEY);
       if (!FileUtil.exists(path)) {
         throw new RuntimeException("Configuration directory does not exist. " + LogUtil.joinKeyVal("path", path));
       }

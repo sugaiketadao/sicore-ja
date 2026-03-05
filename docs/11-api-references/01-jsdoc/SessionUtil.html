@@ -24,8 +24,11 @@
         <h3>説明</h3>
         <div>セッションユーティリティクラス.<br>
 <ul>
-  <li>Webサービスと共有する情報を管理する。</li>
-  <li>本クラスで管理している情報はサーバーセッション単位で保持される。</li>
+  <li>Webサービス呼び出し時にリクエストとともに送信され、レスポンスデータで自動更新される。</li>
+  <li>JavaScript の変数（インメモリ）でデータを保持する。</li>
+  <li>リンクでのページ遷移やリロードでデータが失われる。</li>
+  <li>ページ遷移は <code>HttpUtil.movePage</code> を使用することでデータを保持できる。</li>
+  <li>JWT を保持し Webサービス呼び出し時、リクエストヘッダーに自動的に付与される。</li>
 </ul></div>
       </div>
     </div>
@@ -100,6 +103,20 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>boolean</code> - 格納成功時は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="hasToken" class="method-name">hasToken</h3>
+        <div class="method-signature">
+          <code>hasToken()</code>
+        </div>
+        <div class="method-description">
+          トークン保持確認.
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - トークンが存在する場合は <code>true</code></p>
         </div>
       </div>
       <div class="method">

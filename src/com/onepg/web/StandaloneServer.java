@@ -3,10 +3,7 @@ package com.onepg.web;
 import com.onepg.db.DbUtil;
 import com.onepg.util.LogTxtHandler;
 import com.onepg.util.LogUtil;
-import com.onepg.util.PropertiesUtil;
 import com.onepg.util.ValUtil;
-import com.onepg.util.PropertiesUtil.FwPropertiesName;
-import com.onepg.util.IoItems;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -91,13 +88,10 @@ public final class StandaloneServer {
   private void start(final String[] args) throws IOException {
     LogUtil.stdout("Starting web server startup processing. ");
 
-    // Webサーバー設定
-    final IoItems propMap = PropertiesUtil.getFrameworkProps(FwPropertiesName.WEB);
-
     // Webサーバー生成
-    final int portNo = propMap.getInt("port.no");
-    final int waitingProcessesCount = propMap.getInt("waiting.processes.count");
-    final int parallelProcessesCount = propMap.getInt("parallel.processes.count");
+    final int portNo = ServerUtil.PROP_MAP.getInt("port.no");
+    final int waitingProcessesCount = ServerUtil.PROP_MAP.getInt("waiting.processes.count");
+    final int parallelProcessesCount = ServerUtil.PROP_MAP.getInt("parallel.processes.count");
     this.server = HttpServer.create(new InetSocketAddress(portNo), waitingProcessesCount);
     this.server.setExecutor(Executors.newFixedThreadPool(parallelProcessesCount));
 
@@ -106,22 +100,27 @@ public final class StandaloneServer {
     this.server.createContext("/", new RootHandler());
 
     // サーバー停止URLハンドラー
-    final String serverStopContext = propMap.getString("server.stop.context");
+    final String serverStopContext = ServerUtil.PROP_MAP.getString("server.stop.context");
     LogUtil.stdout("Creating context. '/" + serverStopContext + "'");
     this.server.createContext("/" + serverStopContext, new StopHandler());
 
     // 静的ファイルハンドラー
-    final String staticFileContext = propMap.getString("static.file.context");
+    final String staticFileContext = ServerUtil.PROP_MAP.getString("static.file.context");
     LogUtil.stdout("Creating context. '/" + staticFileContext + "'");
     this.server.createContext("/" + staticFileContext, new StaticFileHandler());
     
     // JSONサービスハンドラー
-    final String jsonServiceContext = propMap.getString("json.service.context");
-    final String jsonServicePackage = propMap.getString("json.service.package");
+    final String jsonServiceContext = ServerUtil.PROP_MAP.getString("json.service.context");
+    final String jsonServicePackage = ServerUtil.PROP_MAP.getString("json.service.package");
     LogUtil.stdout("Creating context. '/" + jsonServiceContext + "'" + " (Java package '"
         + jsonServicePackage + "')");
     this.server.createContext("/" + jsonServiceContext,
         new JsonServiceHandler(jsonServiceContext, jsonServicePackage));
+
+    // サインインサービスハンドラー
+    final String signinServiceContext = ServerUtil.PROP_MAP.getString("signin.service.context");
+    LogUtil.stdout("Creating context. '/" + signinServiceContext + "'");
+    this.server.createContext("/" + signinServiceContext, new SigninServiceHandler());
 
     // 開始
     this.server.start();
@@ -197,8 +196,8 @@ public final class StandaloneServer {
     } catch (final Exception | Error e) {
       LogUtil.stdout(e, "An exception error occurred in log text file close.");
     }
-    // 注意: System.exit() は呼ばない
-    // - シャットダウンフック経由の場合：JVMが既に終了プロセス中
-    // - HTTP経由の場合：StopHandler側でSystem.exit()を実行
+    // System.exit() は呼ばない
+    // シャットダウンフック経由の場合は JVMが既に終了プロセス中のため
+    // HTTP経由の場合は StopHandler側でSystem.exit()を実行のため
   }
 }

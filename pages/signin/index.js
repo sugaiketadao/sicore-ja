@@ -1,4 +1,12 @@
 /**
+ * 初期処理.
+ */
+const init = async function () {
+  // メッセージクリア
+  PageUtil.clearMsg();
+};
+
+/**
  * サインイン処理.
  * LDAP認証を行い、成功時はポータルページへ遷移する。
  */
@@ -23,3 +31,6 @@ const signin = async function () {
   // ポータルページへ遷移
   HttpUtil.movePage('../index.html');
 };
+
+// 初期処理実行
+init();

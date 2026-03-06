@@ -62,6 +62,8 @@ final class ServerUtil {
   static final String LDAP_URL;
   /** LDAP ユーザーDNフォーマット. */
   static final String LDAP_USER_DN_FMT;
+  /** サインイン後サービスクラス名. */
+  static final String SIGNIN_AFTER_SERVICE_CLS;
 
   /** メッセージマップ&lt;メッセージID、メッセージテキスト&gt;. */
   static final IoItems MSG_MAP;
@@ -70,8 +72,9 @@ final class ServerUtil {
     // WEB設定取得
     PROP_MAP = PropertiesUtil.getFrameworkProps(FwPropertiesName.WEB);
     LDAP_ENABLED = PROP_MAP.getBooleanOrDefault("ldap.enabled", false);
-    LDAP_URL = PROP_MAP.getString("ldap.url");
-    LDAP_USER_DN_FMT = PROP_MAP.getString("ldap.user.dn.fmt");
+    LDAP_URL = PROP_MAP.getStringOrDefault("ldap.url", ValUtil.BLANK);
+    LDAP_USER_DN_FMT = PROP_MAP.getStringOrDefault("ldap.user.dn.fmt", ValUtil.BLANK);
+    SIGNIN_AFTER_SERVICE_CLS = PROP_MAP.getStringOrDefault("signin.after.service", ValUtil.BLANK);
     // メッセージマップ取得
     MSG_MAP = ResourcesUtil.getJson(FwResourceName.MSG);
   }

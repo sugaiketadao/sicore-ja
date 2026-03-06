@@ -82,45 +82,6 @@ final class JsonServiceHandler extends AbstractHttpHandler {
     return this.svcClsPackage + "."
         + reqPath.replace("/" + this.contextPath + "/", "").replace("/", ".");
   }
-
-  /**
-   * サービスインスタンスの生成.<br>
-   * <ul>
-   * <li>クラス名からサービスインスタンスを生成し、型チェックを行います。</li>
-   * </ul>
-   *
-   * @param clsName クラス名
-   * @return サービスインスタンス
-   * @throws Exception インスタンス生成エラー
-   */
-  private AbstractWebService createWebServiceClsInstance(final String clsName) throws Exception {
-    final Class<?> cls = getCls(clsName);
-    final Object clsObj = cls.getDeclaredConstructor().newInstance();
-
-    if (!(clsObj instanceof AbstractWebService)) {
-      throw new RuntimeException("Classes not inheriting from web service base class (AbstractWebService) cannot be executed. ");
-    }
-
-    return (AbstractWebService) clsObj;
-  }
-
-  /**
-   * クラスの取得.<br>
-   * <ul>
-   * <li>クラス名からClassオブジェクトを取得します。</li>
-   * </ul>
-   *
-   * @param clsName クラス名
-   * @return Classオブジェクト
-   * @throws ClassNotFoundException クラスが見つからない場合
-   */
-  private Class<?> getCls(final String clsName) {
-    try {
-      return Class.forName(clsName);
-    } catch (final ClassNotFoundException e) {
-      throw new RuntimeException("Web service class not found. " + LogUtil.joinKeyVal("class", clsName), e);
-    }
-  }
   
   /**
    * リクエストパラメーターをI/Oパラメーターに変換.<br>

@@ -80,6 +80,7 @@ java com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
 > `script/`（Linux）および `script-win/`（Windows）配下に、バッチ実行スクリプトが用意されています。
 > `sub/java-exec.sh`（または `java-exec.bat`）を呼び出すことでクラスパスや環境変数の設定が共通化されるため、単体テスト以降のフェーズでは `java` コマンドを直接実行するのではなく、実行スクリプト経由でバッチを起動してください。
 >
+<!-- AI_SKIP_START -->
 > **Linux**（`script/JOB-EXAMPLE.sh`）:
 > ```bash
 > bash $(dirname $0)/sub/java-exec.sh $(basename $0 .sh) com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
@@ -88,6 +89,7 @@ java com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
 > ```bat
 > call %~dp0sub\java-exec.bat %~n0 com.example.app.bat.exmodule.ExampleBatch "param1=value1&param2=value2"
 > ```
+<!-- AI_SKIP_END -->
 
 ### DBアクセス処理
 - 処理内で DBアクセスする場合は、`AbstractDbAccessBatch` クラスを継承することで、`doExecute` メソッド処理中はクラス内のどこでも `getDbConn` メソッドから DBコネクションを取得できます。
@@ -197,6 +199,32 @@ SqlConst.begin()
 // 値をバインドしてSqlBean生成
 SQL_INS_USER.bind(row)
 ```
+
+#### プリペアードステートメントキャッシュ実行
+- ループ処理内で同じ SQL を繰り返し実行する場合は、`SqlUtil.executeOneCache` または `SqlUtil.executeCache` を使用することでプリペアードステートメントをキャッシュし、性能改善が見込めます。
+- キャッシュを使用するためには、`AbstractDbAccessBatch`の `getDbConn()` が返す `DbConn` インスタンスと、`SqlConst`（固定SQL）が必要です。`SqlBuilder`（動的SQL）はキャッシュ対象外です。
+- キャッシュされたプリペアードステートメントは DB切断まで保持されます。
+
+**実装例**:
+```java
+@Override
+public int doExecute(final IoItems io) throws Exception {
+  // 一括取得
+  final IoRows rows = SqlUtil.selectBulkAll(getDbConn(), SQL_SEL_IMPORT_DATA);
+
+  for (final IoItems row : rows) {
+    // ループ内で同じSQLを繰り返し実行 → キャッシュで性能改善
+    SqlUtil.executeOneCache(getDbConn(), SQL_INS_USER.bind(row));
+  }
+  return 0;
+}
+```
+
+**主要メソッド**:
+| メソッド | 戻り値 | 説明 |
+|-|-|-|
+| `SqlUtil.executeOneCache(conn, sb)` | `boolean` | 1件実行。複数件更新時は例外。0件は `false`、1件は `true` |
+| `SqlUtil.executeCache(conn, sb)` | `int` | 複数件実行。反映件数を返す |
 
 ### ログ出力処理
 ログ出力には、スーパークラス `AbstractBatch`（`AbstractDbAccessBatch`を含む）が持つ `logger` インスタンスを使用します。

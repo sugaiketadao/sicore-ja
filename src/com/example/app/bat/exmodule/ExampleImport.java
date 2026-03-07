@@ -84,9 +84,9 @@ public class ExampleImport extends AbstractDbAccessBatch {
     // DB抽出してファイル出力
     try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL_LF)) {
       for (final IoItems row : cr) {
-        if (!SqlUtil.executeOne(getDbConn(), SQL_UPD_USER.bind(row))) {
+        if (!SqlUtil.executeOneCache(getDbConn(), SQL_UPD_USER.bind(row))) {
           // 更新件数０件の場合は登録実行
-          SqlUtil.executeOne(getDbConn(), SQL_INS_USER.bind(row));
+          SqlUtil.executeOneCache(getDbConn(), SQL_INS_USER.bind(row));
         }
       }
       if (cr.getReadedCount() == 0) {

@@ -17,9 +17,13 @@ import java.util.Map;
  * <li>SQL実行時には、バインド値を持つパラメーターをこのSQLと共に渡します。</li>
  * <li>同じ項目名を同じ型で複数回バインド可能です。</li>
  * <li>バインド項目が無い場合は、そのまま使用します。</li>
+ * <li>おもにバッチ処理での使用を想定しています。</li>
+ * <li>本クラスを使用することでプリペアードステートメントのキャッシュが可能になるため、Webサービス処理での性能改善目的の使用も想定しています。</li>
+ * <li>プリペアードステートメントのキャッシュを使用して実行するには <code>SqlUtil.executeOneCache</code> または <code>SqlUtil.executeCache</code> を使用します。</li>
  * </ul>
  * <pre>
- * ［SQL宣言例１］<code>SqlConst SQL_INS_PET = SqlConst.begin()
+ * ［SQL宣言例 バインド項目有り］
+ * <code>SqlConst SQL_INS_PET = SqlConst.begin()
  *     .addQuery("INSERT INTO t_pet ( ")
  *     .addQuery("  pet_no ")
  *     .addQuery(", pet_nm ")
@@ -34,8 +38,10 @@ import java.util.Map;
  *     .addQuery(", ? ", "now_ts", BindType.Timestamp)
  *     .addQuery(" ) ")
  *     .end();</code>
- * ［SQL実行例１］ <code>SqlUtil.executeOne(conn, SQL_INS_PET.bind(io));</code>
- * ［SQL宣言例２］<code>SqlConst SQL_SEL_USER = SqlConst.begin()
+ * ［SQL実行例 バインド項目有り］
+ * <code>SqlUtil.executeOne(conn, SQL_INS_PET.bind(io));</code>
+ * ［SQL宣言例 バインド項目無し］
+ * <code>SqlConst SQL_SEL_USER = SqlConst.begin()
  *     .addQuery("SELECT ")
  *     .addQuery("  u.user_id ")
  *     .addQuery(", u.user_nm ")
@@ -44,7 +50,10 @@ import java.util.Map;
  *     .addQuery(" FROM t_user u ")
  *     .addQuery(" ORDER BY u.user_id ")
  *     .end();</code>
- * ［SQL実行例２］ <code>SqlResultSet rSet = SqlUtil.select(getDbConn(), SQL_SEL_USER);</code>
+ * ［SQL実行例 バインド項目無し］
+ * <code>SqlResultSet rSet = SqlUtil.select(getDbConn(), SQL_SEL_USER);</code>
+ * ［SQL実行例 プリペアードステートメントキャッシュ実行］
+ * <code>SqlUtil.executeOneCache(conn, SQL_INS_PET.bind(io));</code>
  * </pre>
  */
 public final class SqlConst extends SqlBean {

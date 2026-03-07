@@ -10,6 +10,7 @@ import java.util.List;
  * <li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
  * <li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
  * <li><code>add*</code>メソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
+ * <li>おもにWebサービス処理での使用を想定しています。</li>
  * </ul>
  * <pre>
  * ［SQL追加例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>

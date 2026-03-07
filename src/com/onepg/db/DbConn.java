@@ -16,6 +16,7 @@ import java.sql.Savepoint;
 import java.sql.ShardingKey;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -39,6 +40,9 @@ public class DbConn implements Connection {
   private final Connection conn;
   /** 接続シリアルコード. */
   protected final String serialCode;
+
+  /** プリペアードステートメントキャッシュ &lt;SQL-ID, PreparedStatement&gt;. */
+  private final Map<String, PreparedStatement> psCache = new HashMap<>();
 
   /**
    * コンストラクタ.
@@ -95,12 +99,71 @@ public class DbConn implements Connection {
   }
 
   /**
+   * プリペアードステートメント生成（プリペアードステートメントキャッシュ）.<br>
+   * <ul>
+   * <li>引数のSQL文字列でプリペアードステートメントを生成して返します。</li>
+   * <li>プリペアードステートメントはSQL-IDをキーとしてキャッシュされ、同じSQL-IDであればキャッシュされたプリペアードステートメントを返します。</li>
+   * <li>キャッシュされたプリペアードステートメントはDBクローズされるまで再利用されます。</li>
+   * </ul>
+   * 
+   * @param sqlId SQL識別ID
+   * @param sql SQL文字列
+   * @return プリペアードステートメント
+   * @throws SQLException SQL例外
+   */
+  PreparedStatement prepareStatementCache(final String sqlId, final String sql) throws SQLException {
+    if (ValUtil.isBlank(sqlId)) {
+      throw new RuntimeException("SQL-ID must not be blank. " + LogUtil.joinKeyVal("sqlId", sqlId));
+    }
+    if (ValUtil.isBlank(sql)) {
+      throw new RuntimeException("SQL must not be blank. " + LogUtil.joinKeyVal("sqlId", sqlId, "sql", sql));
+    }
+    // キャッシュに存在する場合はキャッシュから返却
+    if (this.psCache.containsKey(sqlId)) {
+      if (this.logger.isDevelopMode()) {
+        this.logger.develop("Prepared statement cache hit. " + LogUtil.joinKeyVal("sqlId", sqlId));
+      }
+      return this.psCache.get(sqlId);
+    }
+    // キャッシュに存在しない場合は生成してキャッシュに保存して返却
+    if (this.logger.isDevelopMode()) {
+      this.logger.develop("Prepared statement cache miss. " + LogUtil.joinKeyVal("sqlId", sqlId));
+    }
+    final PreparedStatement ps = this.conn.prepareStatement(sql);
+    this.psCache.put(sqlId, ps);
+    return ps;
+  }
+
+  /**
+   * プリペアードステートメントキャッシュクリア.<br>
+   * <ul>
+   * <li>キャッシュしているプリペアードステートメントを全てクローズしてキャッシュをクリアします。</li>
+   * </ul>
+   * 
+   */
+  void closePsCache() {
+    for (final Map.Entry<String, PreparedStatement> entry : this.psCache.entrySet()) {
+      final PreparedStatement ps = entry.getValue();
+      try {
+        ps.close();
+        this.logger.develop("Prepared statement closed. " + LogUtil.joinKeyVal("sqlId", entry.getKey()));
+      } catch (SQLException e) {
+        this.logger.error(e, "Exception error occurred during prepared statement close. " + LogUtil.joinKeyVal("sqlId", entry.getKey()));
+      }
+    }
+    this.psCache.clear();
+  }
+
+  /**
    * 強制ロールバック＆DB切断.<br>
    * <ul>
    * <li>部品からは <code>#close()</code> ではなくエラーをスローしない本メソッドを使用する。</li>
    * </ul>
    */
   void rollbackCloseForce() {
+    // プリペアードステートメントキャッシュクローズ
+    closePsCache();
+
     try {
       if (this.conn.isClosed()) {
         this.logger.develop("Database connection is already closed. ");

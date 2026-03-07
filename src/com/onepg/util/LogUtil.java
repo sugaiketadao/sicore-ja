@@ -472,18 +472,35 @@ public final class LogUtil {
    * <ul>
    * <li>スタックトレースから呼び出し元の クラスパッケージ＋クラス名＋行番号 を取得する。</li>
    * </ul>
-   * @param callerClass 呼び出し元クラス
+   * @param callerCls 呼び出し元クラス
    * @return クラスパッケージ＋クラス名＋行番号
    */
-  public static String getClassNameAndLineNo(final Class<?> callerClass) {
-    final String callerClassName = callerClass.getName();
+  public static String getClsNameAndLineNo(final Class<?> callerCls) {
+    final String callerClsName = callerCls.getName();
+    final String thisClsName = LogUtil.class.getName();
     final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     for (final StackTraceElement element : stackTrace) {
-      final String className = element.getClassName();
-      if (!className.equals(callerClassName)
-          && !className.equals(Thread.class.getName())) {
-        return className + "[" + element.getLineNumber() + "]";
+      final String clsName = element.getClassName();
+      if (clsName.equals(Thread.class.getName())) {
+        continue;
       }
+      if (clsName.equals(thisClsName)) {
+        continue;
+      }
+      if (clsName.equals(callerClsName) || clsName.startsWith(callerClsName + "$")) {
+        // callerCls 自身およびその内部クラスはスキップ
+        continue;
+      }
+      try {
+        final Class<?> elementCls = Class.forName(clsName);
+        if (elementCls.isAssignableFrom(callerCls)) {
+          // callerCls のスーパークラス・スーパーインターフェースはスキップ
+          continue;
+        }
+      } catch (final ClassNotFoundException ignore) {
+        // 処理なし
+      }
+      return clsName + "[" + element.getLineNumber() + "]";
     }
     return "UnknownSource";
   }

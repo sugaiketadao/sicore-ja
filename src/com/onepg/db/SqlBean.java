@@ -15,31 +15,31 @@ import java.util.List;
  */
 public class SqlBean {
 
-  /** SQL識別ID.  */
+  /** SQL-ID.  */
   protected final String id;
-  
   /** SQL文字列. */
   protected final String query;
-  
   /** SQL文字列ビルダー. */
   protected final StringBuilder queryBuilder;
-
   /** バインド値リスト. */
   protected final List<Object> bindValues;
   
   /**
-   * 固定SQL用 コンストラクタ.
+   * SqlConst（固定SQL）用 コンストラクタ.
    */
   protected SqlBean(final String query) {
     // IDとしてクラスパッケージ＋クラス名＋行番号を取得
-    this.id = LogUtil.getClassNameAndLineNo(this.getClass());
+    this.id = LogUtil.getClsNameAndLineNo(this.getClass());
     this.query = query;
     this.queryBuilder = null;
     this.bindValues = new ArrayList<>();
   }
   
   /**
-   * 固定SQLバインド値用 コンストラクタ.
+   * SqlConst（固定SQL）#bind用 バインド値付きコンストラクタ.<br>
+   * <ul>
+   * <li>SQL-IDは生成元のIDを引き継ぐ想定。</li>
+   * </ul>
    */
   protected SqlBean(final String id, final String query, final List<Object> bindValues) {
     this.id = id;
@@ -49,7 +49,10 @@ public class SqlBean {
   }
   
   /**
-   * 動的SQL用 コンストラクタ.
+   * SqlBuilder（動的SQL）用 コンストラクタ.<br>
+   * <ul>
+   * <li>SQL-IDはブランク固定。</li>
+   * </ul>
    */
   protected SqlBean() {
     this.id = ValUtil.BLANK;
@@ -59,9 +62,9 @@ public class SqlBean {
   }
 
   /**
-   * SQL識別ID取得.
+   * SQL-ID取得.
    *
-   * @return SQL識別ID（null有り）
+   * @return SQL-ID（null有り）
    */
   String getId() {
     return this.id;

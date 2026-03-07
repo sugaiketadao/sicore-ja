@@ -161,8 +161,7 @@ public final class SqlUtil {
    * 複数件取得.<br>
    * <ul>
    * <li><code>SqlResultSet</code> で返す。</li>
-   * <li><code>SqlResultSet</code>
-   * のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li><code>SqlResultSet</code> のイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>try 句（try-with-resources文）で使用する。</li>
    * <li>本クラスではデフォルトフェッチサイズを 500 としている。全件フェッチしたい場合は <code>SqlUtil#selectFetchAll(Connection, SqlBean)</code> を使用する。</li>
    * <li>DBMSごとのフェッチサイズについて
@@ -345,8 +344,9 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件登録します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が登録される点に注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -430,8 +430,9 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件登録します。</li>
    * <li>楽観排他制御用のタイムスタンプをセットします。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が登録されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が登録される点に注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -525,10 +526,11 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>キー項目で WHERE句が作成される。</li>
    * <li>キー項目はパラメーター値に含まれている必要があります。</li>
    * <li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -558,12 +560,13 @@ public final class SqlUtil {
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
    * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>タイムスタンプ項目は現在日時で更新されます。</li>
    * <li>タイムスタンプ排他制御不要な場合は <code>#updateOne(Connection, String, AbstractIoTypeMap, String[])</code> を使用してください。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -629,10 +632,11 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>テーブル主キー項目で WHERE句が作成される。</li>
    * <li>主キーが存在しないテーブルは例外エラーとする。</li>
    * <li>主キー項目はパラメーター値に含まれている必要があります。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -653,13 +657,14 @@ public final class SqlUtil {
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>テーブル主キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>主キーが存在しないテーブルは例外エラーとする。</li>
    * <li>主キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
    * <li>タイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>タイムスタンプ項目は現在日時で更新されます。</li>
    * <li>タイムスタンプ排他制御不要な場合は <code>#updateOneByPkey(Connection, String, AbstractIoTypeMap)</code> を使用してください。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -680,10 +685,11 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して複数件更新します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>抽出条件項目で WHERE句が作成される。</li>
    * <li>抽出条件項目はパラメーター値に含まれている必要があります。</li>
    * <li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn       DB接続
@@ -730,7 +736,8 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して全件更新します。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
-   * <li>実装完了後にテーブルに項目が追加され、その項目名が元からパラメーターに存在する場合は実装修正無しで追加項目に値が更新されるので注意が必要です。</li>
+   * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn       DB接続
@@ -777,6 +784,7 @@ public final class SqlUtil {
    * <li>キー項目はパラメーター値に含まれる必要があります。</li>
    * <li>キー項目でないパラメーターは無視されます。</li>
    * <li>キー項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -810,6 +818,7 @@ public final class SqlUtil {
    * <li>キー項目とタイムスタンプ項目でないパラメーターは無視されます。</li>
    * <li>キー項目名とタイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>タイムスタンプ排他制御不要な場合は <code>#deleteOne(Connection, String, AbstractIoTypeMap, String[])</code> を使用してください。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -852,6 +861,7 @@ public final class SqlUtil {
    * <li>主キーが存在しないテーブルは例外エラーとする。</li>
    * <li>主キー項目はパラメーター値に含まれている必要があります。</li>
    * <li>主キー項目でないパラメーターは無視されます。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -877,6 +887,7 @@ public final class SqlUtil {
    * <li>主キー項目とタイムスタンプ項目でないパラメーターは無視されます。</li>
    * <li>タイムスタンプ項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * <li>タイムスタンプ排他制御不要な場合は <code>#deleteOneByPkey(Connection, String, AbstractIoTypeMap)</code> を使用してください。</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn      DB接続
@@ -899,6 +910,7 @@ public final class SqlUtil {
    * <li>抽出条件項目で WHERE句が作成される。</li>
    * <li>抽出条件項目はパラメーター値に含まれる必要があります。</li>
    * <li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
    * </ul>
    *
    * @param conn DB接続
@@ -1096,19 +1108,95 @@ public final class SqlUtil {
   private static int executeSql(final Connection conn, final SqlBean sb)
       throws SQLException {
         
-    if (logger.isDevelopMode()) {
-      // SQLログ出力
-      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sb));
-    }
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     // ステートメント生成
     try (final PreparedStatement stmt = conn.prepareStatement(sb.getQuery());) {
       // ステートメントにパラメーターセット
       setStmtParameters(stmt, sb.getBindValues(), dbmsName);
+      if (logger.isDevelopMode()) {
+        // SQLログ出力
+        logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sb));
+      }
       // SQL実行
       final int ret = stmt.executeUpdate();
       return ret;
     }
+  }
+
+  /**
+   * SQL １件登録・更新・削除（プリペアードステートメントキャッシュ）.<br>
+   * <ul>
+   * <li>反映件数が複数件の場合は例外エラーとする。</li>
+   * <li>複数回同じ SQL を実行する場合に性能改善が見込める。</li>
+   * <li>キャッシュ済みのプリペアードステートメントを使用して実行する。</li>
+   * <li>キャッシュを使用するためには、DbConn（DB接続ラッパー）インスタンスと SQL-ID を持つ SqlConst（固定SQL）インスタンスが必要です。</li>
+   * </ul>
+   *
+   * @param conn DB接続
+   * @param sb SQL Bean
+   * @return 反映件数が１件の場合は <code>true</code>、０件の場合は <code>false</code>
+   */
+  public static boolean executeOneCache(final Connection conn, final SqlBean sb) {
+    final int ret = executeCache(conn, sb);
+    if (ret > 1) {
+      throw new RuntimeException("Multiple records were affected. " + LogUtil.joinKeyVal("sql", sb));
+    }
+    return (ret == 1);
+  }
+
+  /**
+   * SQL 登録・更新・削除（プリペアードステートメントキャッシュ）.<br>
+   * <ul>
+   * <li>複数回同じ SQL を実行する場合に性能改善が見込める。</li>
+   * <li>キャッシュ済みのプリペアードステートメントを使用して実行する。</li>
+   * <li>キャッシュを使用するためには、DbConn（DB接続ラッパー）インスタンスと SQL-ID を持つ SqlConst（固定SQL）インスタンスが必要です。</li>
+   * </ul>
+   *
+   * @param conn DB接続
+   * @param sb SQL Bean
+   * @return 反映件数
+   */
+  public static int executeCache(final Connection conn, final SqlBean sb) {
+    try {
+      return executeSqlCache(conn, sb);
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during SQL execution. " + LogUtil.joinKeyVal("sql", sb), e);
+    }
+  }
+
+  /**
+   * SQL実行（プリペアードステートメントキャッシュ）.
+   *
+   * @param conn DB接続
+   * @param sb SQL Bean
+   * @return 反映件数
+   * @throws SQLException SQL例外エラー
+   */
+  private static int executeSqlCache(final Connection conn, final SqlBean sb)
+      throws SQLException {
+
+    final String sqlId = sb.getId();
+    if (ValUtil.isBlank(sqlId)) {
+      throw new RuntimeException("A SqlConst (fixed SQL) instance with a SQL-ID is required. " + LogUtil.joinKeyVal("sql", sb));
+    }
+    if (!(conn instanceof DbConn)) {
+      throw new RuntimeException("A cache-enabled DbConn (DB connection wrapper) instance is required. " + LogUtil.joinKeyVal("sql", sb));
+    }
+    final DbConn dbConn = (DbConn) conn;        
+    final DbmsName dbmsName = DbUtil.getDbmsName(conn);
+    // ステートメント生成
+    final PreparedStatement stmt = dbConn.prepareStatementCache(sqlId, sb.getQuery());
+    // ステートメントにパラメーターセット
+    setStmtParameters(stmt, sb.getBindValues(), dbmsName);
+    if (logger.isDevelopMode()) {
+      // SQLログ出力
+      logger.develop("SQL#EXECUTE execution. " + LogUtil.joinKeyVal("sql", sb));
+    }
+    // SQL実行
+    final int ret = stmt.executeUpdate();
+    // キャッシュして再利用するためステートメントのパラメータークリア
+    stmt.clearParameters();
+    return ret;
   }
 
   /**

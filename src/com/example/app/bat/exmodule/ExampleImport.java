@@ -81,7 +81,7 @@ public class ExampleImport extends AbstractDbAccessBatch {
       throw new RuntimeException("Input path not exists. " + LogUtil.joinKeyVal("input", inputPath));
     }
 
-    // DB抽出してファイル出力
+    // ファイル読込してDB登録
     try (final CsvReader cr = new CsvReader(inputPath, CharSet.UTF8, CsvType.DQ_ALL_LF)) {
       for (final IoItems row : cr) {
         if (!SqlUtil.executeOneCache(getDbConn(), SQL_UPD_USER.bind(row))) {

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -50,6 +51,15 @@ public final class DbUtil {
      */
     private DbmsName(final String value) {
       this.productName = value;
+    }
+
+    /**
+     * メタ情報のテーブル名や列名が大文字か.
+     *
+     * @return 大文字の場合は <code>true</code>
+     */ 
+    private boolean isMetaNameUpperCase() {
+      return this == ORACLE || this == DB2;
     }
 
     @Override
@@ -161,7 +171,7 @@ public final class DbUtil {
     // 接続シリアルコードを発番
     final String serialCode = createSerialCode(connName);
     // 新規接続
-    final Connection conn = createConn(connName);
+    final Connection conn = createConnByProp(connName);
     // ラッピングして返す
     final DbConn dbConn = new DbConn(conn, serialCode, traceCode);
     return dbConn;
@@ -268,13 +278,34 @@ public final class DbUtil {
     // 接続シリアルコードを発番
     final String newSerialCode = createSerialCode(connName);
     // 新規接続確立
-    final Connection conn = createConn(connName);
+    final Connection conn = createConnByProp(connName);
     // 接続プールに追加
     connPoolMap.put(newSerialCode, conn);
     // 接続シリアルコードを使用中接続リストに追加（削除はDB切断時に行われる）
     connBusyList.add(newSerialCode);
     // ラッピングして返す
     final DbConnPooled dbConn = new DbConnPooled(conn, newSerialCode, connBusyList, traceCode);
+    return dbConn;
+  }
+
+  /**
+   * DB接続URL指定 DB接続取得.<br>
+   * <ul>
+   * <li>try 句（try-with-resources文）で宣言する。</li>
+   * </ul>
+   *
+   * @param url JDBC接続URL
+   * @param user DBユーザー
+   * @param pass DBパスワード
+   * @return DB接続
+   */
+  public static Connection getConnByUrl(final String url, final String user, final String pass, final String traceCode) {
+    // 接続シリアルコードを発番
+    final String serialCode = createSerialCode();
+    // 新規接続
+    final Connection conn = createConn(url, user, pass);
+    // ラッピングして返す
+    final DbConn dbConn = new DbConn(conn, serialCode, traceCode);
     return dbConn;
   }
 
@@ -317,12 +348,12 @@ public final class DbUtil {
   }
 
   /**
-   * DB接続確立.
+   * DB接続確立（設定ファイルより）.
    *
    * @param connName 設定ファイル上のDB名（.dbcon.url より前の部分）
    * @return DB接続
    */
-  private static Connection createConn(final String connName) {
+  private static Connection createConnByProp(final String connName) {
     if (!PROP_MAP.containsKey(connName + PPKEY_SUFFIX_URL)) {
       throw new RuntimeException("Configuration does not exist. "  + LogUtil.joinKeyVal("ConnName", connName));
     }
@@ -342,6 +373,18 @@ public final class DbUtil {
       pass = null;
     }
 
+    return createConn(url, user, pass);
+  }
+
+  /**
+   * DB接続確立.
+   *
+   * @param url JDBC接続URL
+   * @param user DBユーザー
+   * @param pass DBパスワード
+   * @return DB接続
+   */
+  private static Connection createConn(final String url, final String user, final String pass) {
     try {
       final Connection conn = DriverManager.getConnection(url, user, pass);
       return conn;
@@ -370,6 +413,16 @@ public final class DbUtil {
       return true;
     }
     return false;
+  }
+
+  /**
+   * シリアルコード発番.
+   *
+   * @return シリアルコード
+   */
+  private static String createSerialCode() {
+    final String serialCode = ValUtil.getSequenceCode();
+    return serialCode;
   }
 
   /**
@@ -405,8 +458,7 @@ public final class DbUtil {
   static DbmsName getDbmsName(final Connection conn) {
     try {
       // DB接続の製品名
-      final String productName =
-          ValUtil.nvl(conn.getMetaData().getDatabaseProductName()).toLowerCase();
+      final String productName = ValUtil.nvl(conn.getMetaData().getDatabaseProductName()).toLowerCase();
       for (final DbmsName dbmsName : DbmsName.values()) {
         if (dbmsName == DbmsName.ETC) {
           continue;
@@ -451,9 +503,9 @@ public final class DbUtil {
 
   /**
    * DB接続設定名取得.
-   * @return URLが設定されている接続名のリスト（デフォルト接続名も含まれる）
+   * @return URLが設定されている接続名の配列（デフォルト接続名も含まれる）
    */
-  public static List<String> getConnNames() {
+  public static String[] getConnNames() {
     final List<String> ret = new ArrayList<>();
     for (final String key : PROP_MAP.keySet()) {
       if (key.endsWith(PPKEY_SUFFIX_URL)) {
@@ -461,7 +513,7 @@ public final class DbUtil {
         ret.add(connName);
       }
     }
-    return ret;
+    return ret.toArray(new String[0]);
   }
 
   /**
@@ -484,7 +536,7 @@ public final class DbUtil {
   }
   
   /**
-   * エラー無視プリペアードステートメントクローズ.
+   * エラー無視結果セットクローズ.
    *
    * @param rset 結果セット
    */
@@ -500,6 +552,70 @@ public final class DbUtil {
     } catch (SQLException ignore) {
       // 処理なし
     }
+  }
+
+  /**
+   * DBMSにあわせたテーブル名変換.
+   * 
+   * @param conn DB接続
+   * @param tableName テーブル名
+   * @return 変換後のテーブル名
+   */
+  static String convTableNameByDbms(final Connection conn, final String tableName) {
+    final DbmsName dbmsName = getDbmsName(conn);
+    final String tableCondition;
+    // DBMSによってメタ情報のテーブル名や列名が大文字か小文字か異なるため、条件を変える
+    if (dbmsName.isMetaNameUpperCase()) {
+      tableCondition = tableName.toUpperCase();
+    } else {
+      tableCondition = tableName.toLowerCase();
+    }
+    return tableCondition;
+  }
+
+  /**
+   * テーブル存在チェック.
+   * 
+   * @param conn DB接続
+   * @param tableName テーブル名
+   * @return 存在する場合は <code>true</code>
+   */
+  public static boolean isExistsTable(final Connection conn, final String tableName) {
+    final String tableCondition = convTableNameByDbms(conn, tableName);
+    // メタ情報でテーブル存在チェック
+    try (final ResultSet rset = conn.getMetaData().getTables(null, null, tableCondition, null);) {
+      return rset.isBeforeFirst();
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred while checking table existence. " + LogUtil.joinKeyVal("tableName", tableName), e);
+    }
+  }
+
+  /**
+   * 主キーの列名を取得.<br>
+   * <ul>
+   * <li>JDBCメタ情報からテーブルの主キー項目名を取得します。</li>
+   * <li>主キーが存在しないテーブルは空の配列を返します。</li>
+   * <li>項目物理名は英字小文字に変換します。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * </ul>
+   * 
+   * @param conn DB接続
+   * @param tableName テーブル名
+   * @return 主キー項目名配列（小文字、KEY_SEQ 順）
+   */
+  public static String[] getPrimaryKeys(final Connection conn, final String tableName) {
+    final String tableCondition = convTableNameByDbms(conn, tableName);
+    // KEY_SEQ 順で並べる
+    final Map<Integer, String> pkMap = new TreeMap<>();
+    // メタ情報から主キー情報を取得
+    try (final ResultSet rset = conn.getMetaData().getPrimaryKeys(null, null, tableCondition);) {
+      while (rset.next()) {
+        // 列名を小文字に変換して追加
+        pkMap.put(rset.getInt("KEY_SEQ"), rset.getString("COLUMN_NAME").toLowerCase());
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during primary key retrieval. " + LogUtil.joinKeyVal("tableName", tableName), e);
+    }
+    return pkMap.values().toArray(new String[0]);
   }
 }
 

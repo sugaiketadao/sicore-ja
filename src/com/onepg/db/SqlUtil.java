@@ -1,6 +1,7 @@
 package com.onepg.db;
 
 import com.onepg.db.DbUtil.DbmsName;
+import com.onepg.db.SqlConst.BindType;
 import com.onepg.util.AbstractIoTypeMap;
 import com.onepg.util.IoItems;
 import com.onepg.util.IoRows;
@@ -9,7 +10,6 @@ import com.onepg.util.LogWriter;
 import com.onepg.util.ValUtil;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * SQL実行ユーティリティクラス.
@@ -343,6 +342,7 @@ public final class SqlUtil {
    * テーブル指定１件登録.<br>
    * <ul>
    * <li>テーブル名を指定して１件登録します。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が登録される点に注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
@@ -355,55 +355,49 @@ public final class SqlUtil {
    * @return 一意制約違反の場合は <code>false</code>、正常に１件登録された場合は <code>true</code>
    */
   public static boolean insertOne(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
+
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
     final SqlBuilder sbInto = new SqlBuilder();
     final SqlBuilder sbVals = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
-
-      sbInto.addQuery("INSERT INTO ").addQuery(tableName);
-
-      sbInto.addQuery(" ( ");
-      sbVals.addQuery(" ( ");
-      int count = 0;
-      for (final String itemName : params.keySet()) {
-        if (!itemClsMap.containsKey(itemName)) {
-          // テーブルに存在しないパラメーターはスキップ
-          continue;
-        }
-
-        // 項目クラスタイプ
-        final ItemClsType itemCls = itemClsMap.get(itemName);
-        // 項目クラスタイプごとの値取得
-        final Object param = getValueFromIoItemsByItemCls(params, itemName, itemCls);
-
-        // SQL追加
-        sbInto.addQuery(itemName).addQuery(",");
-        sbVals.addQuery("?,", param);
-        count++;
-      }
-      if (count <= 0) {
-        // 登録対象項目なし
-        throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
-            "params", params));
+    sbInto.addQuery("INSERT INTO ").addQuery(tableName);
+    sbInto.addQuery(" ( ");
+    sbVals.addQuery(" ( ");
+    
+    int count = 0;
+    for (final String itemName : params.keySet()) {
+      if (!itemClsMap.containsKey(itemName)) {
+        // テーブルに存在しないパラメーターはスキップ
+        continue;
       }
 
-      // SQL組み立て
-      sbInto.delLastChar();
-      sbVals.delLastChar();
-      sbInto.addQuery(" ) VALUES ");
-      sbVals.addQuery(" ) ");
-      sbInto.addSqlBuilder(sbVals);
+      // 項目クラスタイプ
+      final ItemClsType itemCls = itemClsMap.get(itemName);
+      // 項目クラスタイプごとの値取得
+      final Object param = getValueFromIoItemsByItemCls(params, itemName, itemCls);
 
-    } catch (final SQLException e) {
-      throw new RuntimeException("Exception error occurred during data insert SQL generation. "
-          + LogUtil.joinKeyVal("tableName", tableName, "params", params), e);
+      // SQL追加
+      sbInto.addQuery(itemName).addQuery(",");
+      sbVals.addQuery("?,", param);
+      count++;
     }
+    if (count <= 0) {
+      // 登録対象項目なし
+      throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
+          "params", params));
+    }
+
+    // SQL組み立て
+    sbInto.delLastChar();
+    sbVals.delLastChar();
+    sbInto.addQuery(" ) VALUES ");
+    sbVals.addQuery(" ) ");
+    sbInto.addSqlBuilder(sbVals);
 
     try{
       // SQL実行
@@ -429,6 +423,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件登録します。</li>
    * <li>楽観排他制御用のタイムスタンプをセットします。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が登録される点に注意が必要です。</li>
    * <li>一意制約違反以外で反映件数がゼロ件の場合は例外エラーを投げる。</li>
@@ -443,63 +438,56 @@ public final class SqlUtil {
    */
   public static boolean insertOne(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String tsItem) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
+
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     final String curTs = getCurrentTimestampSql(dbmsName);
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
 
     final SqlBuilder sbInto = new SqlBuilder();
     final SqlBuilder sbVals = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+    sbInto.addQuery("INSERT INTO ").addQuery(tableName);
+    sbInto.addQuery(" ( ");
+    sbVals.addQuery(" ( ");
 
-      sbInto.addQuery("INSERT INTO ").addQuery(tableName);
-
-      sbInto.addQuery(" ( ");
-      sbVals.addQuery(" ( ");
-      int count = 0;
-      for (final String itemName : params.keySet()) {
-        if (!itemClsMap.containsKey(itemName)) {
-          // テーブルに存在しないパラメーターはスキップ
-          continue;
-        }
-        if (tsItem.equals(itemName)) {
-          // タイムスタンプはスキップ
-          continue;
-        }
-
-        // 項目クラスタイプ
-        final ItemClsType itemCls = itemClsMap.get(itemName);
-        // 項目クラスタイプごとの値取得
-        final Object param = getValueFromIoItemsByItemCls(params, itemName, itemCls);
-
-        // SQL追加
-        sbInto.addQuery(itemName).addQuery(",");
-        sbVals.addQuery("?,", param);
-        count++;
+    int count = 0;
+    for (final String itemName : params.keySet()) {
+      if (!itemClsMap.containsKey(itemName)) {
+        // テーブルに存在しないパラメーターはスキップ
+        continue;
       }
-      if (count <= 0) {
-        // 登録対象項目なし
-        throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
-            "params", params));
+      if (tsItem.equals(itemName)) {
+        // タイムスタンプはスキップ
+        continue;
       }
 
-      // タイムスタンプSQL追加
-      sbInto.addQuery(tsItem);
-      sbVals.addQuery(curTs);
+      // 項目クラスタイプ
+      final ItemClsType itemCls = itemClsMap.get(itemName);
+      // 項目クラスタイプごとの値取得
+      final Object param = getValueFromIoItemsByItemCls(params, itemName, itemCls);
 
-      // SQL組み立て
-      sbInto.addQuery(" ) VALUES ");
-      sbVals.addQuery(" ) ");
-      sbInto.addSqlBuilder(sbVals);
-
-    } catch (final SQLException e) {
-      throw new RuntimeException("Exception error occurred during data insert SQL generation. "
-          + LogUtil.joinKeyVal("tableName", tableName, "params", params), e);
+      // SQL追加
+      sbInto.addQuery(itemName).addQuery(",");
+      sbVals.addQuery("?,", param);
+      count++;
     }
+    if (count <= 0) {
+      // 登録対象項目なし
+      throw new RuntimeException("No registration target items exist. " + LogUtil.joinKeyVal("tableName", tableName,
+          "params", params));
+    }
+
+    // タイムスタンプSQL追加
+    sbInto.addQuery(tsItem);
+    sbVals.addQuery(curTs);
+
+    // SQL組み立て
+    sbInto.addQuery(" ) VALUES ");
+    sbVals.addQuery(" ) ");
+    sbInto.addSqlBuilder(sbVals);
 
     try {
       // SQL実行
@@ -525,6 +513,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>キー項目で WHERE句が作成される。</li>
@@ -559,6 +548,7 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
@@ -579,7 +569,6 @@ public final class SqlUtil {
    */
   public static boolean updateOne(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String[] keyItems, final String tsItem) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
@@ -592,27 +581,20 @@ public final class SqlUtil {
     
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     final String curTs = getCurrentTimestampSql(dbmsName);
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
+    final String[] whereItems = Arrays.copyOf(keyItems, keyItems.length + 1);
+    whereItems[keyItems.length] = tsItem;
     
     final SqlBuilder sb = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
-
-      final String[] whereItems = Arrays.copyOf(keyItems, keyItems.length + 1);
-      whereItems[keyItems.length] = tsItem;
-
-      sb.addQuery("UPDATE ").addQuery(tableName);
-      // SET句追加
-      addSetQuery(sb, params, whereItems, itemClsMap);
-      // タイムスタンプ項目は現在日時で更新
-      sb.addQuery(",").addQuery(tsItem).addQuery("=").addQuery(curTs);
-      // WHERE句追加
-      addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
-
-    } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during data update SQL generation. " + LogUtil.joinKeyVal("tableName", tableName,
-          "keyItems", keyItems, "tsItem", tsItem, "params", params), e);
-    }
+    sb.addQuery("UPDATE ").addQuery(tableName);
+    // SET句追加
+    addSetQuery(sb, params, whereItems, itemClsMap);
+    // タイムスタンプ項目は現在日時で更新
+    sb.addQuery(",").addQuery(tsItem).addQuery("=").addQuery(curTs);
+    // WHERE句追加
+    addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
 
     try {
       // SQL実行
@@ -631,6 +613,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>テーブル主キー項目で WHERE句が作成される。</li>
@@ -646,7 +629,7 @@ public final class SqlUtil {
    * @return １件更新された場合は <code>true</code>、０件の場合は <code>false</code>
    */
   public static boolean updateOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
-    final String[] pkItems = getPkeys(conn, tableName);
+    final String[] pkItems = DbUtil.getPrimaryKeys(conn, tableName);
     return updateOne(conn, tableName, params, pkItems);
   }
 
@@ -656,6 +639,7 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件更新します。</li>
    * <li>複数件更新した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>テーブル主キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
@@ -676,7 +660,7 @@ public final class SqlUtil {
    */
   public static boolean updateOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String tsItem) {
-    final String[] pkItems = getPkeys(conn, tableName);
+    final String[] pkItems = DbUtil.getPrimaryKeys(conn, tableName);
     return updateOne(conn, tableName, params, pkItems, tsItem);
   }
 
@@ -684,6 +668,7 @@ public final class SqlUtil {
    * テーブル指定更新.<br>
    * <ul>
    * <li>テーブル名を指定して複数件更新します。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>抽出条件項目で WHERE句が作成される。</li>
@@ -701,26 +686,19 @@ public final class SqlUtil {
    */
   public static int update(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String[] whereItems) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
 
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
     final SqlBuilder sb = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
-
-      sb.addQuery("UPDATE ").addQuery(tableName);
-      // SET句追加
-      addSetQuery(sb, params, whereItems, itemClsMap);
-      // WHERE句追加
-      addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
-
-    } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during data update SQL generation. " + LogUtil.joinKeyVal("tableName", tableName,
-          "whereItems", whereItems, "params", params), e);
-    }
+    sb.addQuery("UPDATE ").addQuery(tableName);
+    // SET句追加
+    addSetQuery(sb, params, whereItems, itemClsMap);
+    // WHERE句追加
+    addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
 
     try {
       // SQL実行
@@ -735,6 +713,7 @@ public final class SqlUtil {
    * テーブル指定全件更新.<br>
    * <ul>
    * <li>テーブル名を指定して全件更新します。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブルに存在しないパラメーターは無視されます。</li>
    * <li>実装完了後にテーブルへ項目が追加された際、その項目名がすでにパラメーターに存在する場合は、実装修正なしにその値が更新される点に注意が必要です。</li>
    * <li>DBメタ情報を取得して SQL を生成するため、性能面では SQL を引数で渡すメソッドより劣る。</li>
@@ -747,24 +726,17 @@ public final class SqlUtil {
    * @return 更新件数
    */
   public static int updateAll(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
 
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
     final SqlBuilder sb = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
-
-      sb.addQuery("UPDATE ").addQuery(tableName);
-      // SET句追加
-      addSetQuery(sb, params, null, itemClsMap);
-
-    } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during data update SQL generation. " + LogUtil.joinKeyVal("tableName", tableName,
-          "params", params), e);
-    }
+    sb.addQuery("UPDATE ").addQuery(tableName);
+    // SET句追加
+    addSetQuery(sb, params, null, itemClsMap);
 
     try {
       // SQL実行
@@ -780,6 +752,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件削除します。</li>
    * <li>複数件削除した場合は例外エラーとする。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>キー項目で WHERE句が作成される。</li>
    * <li>キー項目はパラメーター値に含まれる必要があります。</li>
    * <li>キー項目でないパラメーターは無視されます。</li>
@@ -799,6 +772,7 @@ public final class SqlUtil {
     if (ValUtil.isEmpty(keyItems)) {
       throw new RuntimeException("Key column names are required. ");
     }
+
     final int ret = delete(conn, tableName, params, keyItems);
     if (ret > 1) {
       throw new RuntimeException("Multiple records were deleted. " + LogUtil.joinKeyVal("tableName", tableName,
@@ -813,6 +787,7 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件削除します。</li>
    * <li>複数件削除した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
    * <li>キー項目とタイムスタンプ項目でないパラメーターは無視されます。</li>
@@ -831,7 +806,6 @@ public final class SqlUtil {
    */
   public static boolean deleteOne(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String[] keyItems, final String tsItem) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
@@ -857,6 +831,7 @@ public final class SqlUtil {
    * <ul>
    * <li>テーブル名を指定して１件削除します。</li>
    * <li>複数件削除した場合は例外エラーとする。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブル主キー項目で WHERE句が作成される。</li>
    * <li>主キーが存在しないテーブルは例外エラーとする。</li>
    * <li>主キー項目はパラメーター値に含まれている必要があります。</li>
@@ -871,7 +846,7 @@ public final class SqlUtil {
    * @return １件削除された場合は <code>true</code>、０件の場合は <code>false</code>
    */
   public static boolean deleteOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params) {
-    final String[] pkItems = getPkeys(conn, tableName);
+    final String[] pkItems = DbUtil.getPrimaryKeys(conn, tableName);
     return deleteOne(conn, tableName, params, pkItems);
   }
 
@@ -881,6 +856,7 @@ public final class SqlUtil {
    * <li>テーブル名を指定して１件削除します。</li>
    * <li>複数件削除した場合は例外エラーとする。</li>
    * <li>タイムスタンプで楽観排他制御を行います。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>テーブル主キー項目とタイムスタンプ項目（排他制御）で WHERE句が作成される。</li>
    * <li>主キーが存在しないテーブルは例外エラーとする。</li>
    * <li>主キー項目とタイムスタンプ項目はパラメーター値に含まれている必要があります。</li>
@@ -899,7 +875,7 @@ public final class SqlUtil {
    */
   public static boolean deleteOneByPkey(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String tsItem) {
-    final String[] pkItems = getPkeys(conn, tableName);
+    final String[] pkItems = DbUtil.getPrimaryKeys(conn, tableName);
     return deleteOne(conn, tableName, params, pkItems, tsItem);
   }
 
@@ -907,6 +883,7 @@ public final class SqlUtil {
    * テーブル指定削除.<br>
    * <ul>
    * <li>テーブル名を指定して複数件削除します。</li>
+   * <li>おもにWebサービス処理での使用を想定しており、リクエストをそのままパラメーター値として渡して使うことを前提にしています。</li>
    * <li>抽出条件項目で WHERE句が作成される。</li>
    * <li>抽出条件項目はパラメーター値に含まれる必要があります。</li>
    * <li>抽出条件項目名の英字は小文字で指定する必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
@@ -922,24 +899,17 @@ public final class SqlUtil {
    */
   public static int delete(final Connection conn, final String tableName, final AbstractIoTypeMap params,
       final String[] whereItems) {
-
     if (ValUtil.isEmpty(params)) {
       throw new RuntimeException("Parameters are required. ");
     }
 
-    final SqlBuilder sb = new SqlBuilder();
-    try {
-      // DB項目名・クラスタイプマップ
-      final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
 
-      sb.addQuery("DELETE FROM ").addQuery(tableName);
-      // WHERE句追加
-      addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
-      
-    } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during data delete SQL generation. " + LogUtil.joinKeyVal("tableName", tableName,
-          "whereItems", whereItems, "params", params), e);
-    }
+    final SqlBuilder sb = new SqlBuilder();
+    sb.addQuery("DELETE FROM ").addQuery(tableName);
+    // WHERE句追加
+    addWhereQuery(sb, tableName, params, whereItems, itemClsMap);
 
     try {
       // SQL実行
@@ -1034,7 +1004,6 @@ public final class SqlUtil {
    */
   private static void addWhereQuery(final SqlBuilder sb, final String tableName,
       final AbstractIoTypeMap params, final String[] whereItems, final Map<String, ItemClsType> itemClsMap) {
-
     if (ValUtil.isEmpty(whereItems)) {
       // 抽出条件項目名が指定されていない場合はエラー
       throw new RuntimeException("Extraction condition column names are required. " + LogUtil.joinKeyVal("tableName", tableName, "params", params));
@@ -1105,9 +1074,7 @@ public final class SqlUtil {
    * @return 反映件数
    * @throws SQLException SQL例外エラー
    */
-  private static int executeSql(final Connection conn, final SqlBean sb)
-      throws SQLException {
-        
+  private static int executeSql(final Connection conn, final SqlBean sb) throws SQLException {
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
     // ステートメント生成
     try (final PreparedStatement stmt = conn.prepareStatement(sb.getQuery());) {
@@ -1172,9 +1139,7 @@ public final class SqlUtil {
    * @return 反映件数
    * @throws SQLException SQL例外エラー
    */
-  private static int executeSqlCache(final Connection conn, final SqlBean sb)
-      throws SQLException {
-
+  private static int executeSqlCache(final Connection conn, final SqlBean sb) throws SQLException {
     final String sqlId = sb.getId();
     if (ValUtil.isBlank(sqlId)) {
       throw new RuntimeException("A SqlConst (fixed SQL) instance with a SQL-ID is required. " + LogUtil.joinKeyVal("sql", sb));
@@ -1243,8 +1208,7 @@ public final class SqlUtil {
    * @param fetchSize フェッチサイズ
    * @throws SQLException SQL例外エラー
    */
-  private static void setStmtFetchProperty(final PreparedStatement stmt, final int fetchSize)
-      throws SQLException {
+  private static void setStmtFetchProperty(final PreparedStatement stmt, final int fetchSize) throws SQLException {
     // フェッチ方向とフェッチサイズをセット
     stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
     stmt.setFetchSize(fetchSize);
@@ -1259,13 +1223,12 @@ public final class SqlUtil {
    * </ul>
    *
    * @param rset 結果セット
-   * @return DB項目名・クラスタイプマップ
+   * @return DB項目名（小文字）・クラスタイプマップ
    * @throws SQLException SQL例外エラー
    */
-  private static Map<String, ItemClsType> createItemNameClsMap(final ResultSet rset)
-      throws SQLException {
+  private static Map<String, ItemClsType> createItemNameClsMap(final ResultSet rset) throws SQLException {
 
-    // DB項目名・クラスタイプマップ
+    // DB項目名（小文字）・クラスタイプマップ
     final Map<String, ItemClsType> itemClsMap = new LinkedHashMap<>();
 
     // DBMS名
@@ -1307,20 +1270,18 @@ public final class SqlUtil {
    *
    * @param conn DB接続
    * @param tableName テーブル名
-   * @throws SQLException SQL例外エラー
+   * @return DB項目名（小文字）・クラスタイプマップ
    */
-  private static Map<String, ItemClsType> createItemNameClsMapByMeta(final Connection conn,
-      final String tableName) throws SQLException {
+  private static Map<String, ItemClsType> createItemNameClsMapByMeta(final Connection conn, final String tableName) {
 
-    // DB項目名・クラスタイプマップ
+    final String tableCondition = DbUtil.convTableNameByDbms(conn, tableName);
+    // DB項目名（小文字）・クラスタイプマップ
     final Map<String, ItemClsType> itemClsMap = new LinkedHashMap<>();
 
     // DBMS名
     final DbmsName dbmsName = DbUtil.getDbmsName(conn);
-    // DBメタ情報
-    final DatabaseMetaData cmeta = conn.getMetaData();
     // 列情報結果セット
-    try (final ResultSet rset = cmeta.getColumns(null, null, tableName, null)) {
+    try (final ResultSet rset = conn.getMetaData().getColumns(null, null, tableCondition, null)) {
       while (rset.next()) {
         // 列名
         final String itemName = rset.getString("COLUMN_NAME").toLowerCase();
@@ -1334,6 +1295,8 @@ public final class SqlUtil {
 
         itemClsMap.put(itemName, itemCls);
       }
+    } catch (SQLException e) {
+      throw new RuntimeException("Exception error occurred during metadata acquisition. " + LogUtil.joinKeyVal("tableName", tableName), e);
     }
     return itemClsMap;
   }
@@ -1519,6 +1482,54 @@ public final class SqlUtil {
   }
 
   /**
+   * テーブル指定でDB項目名・バインドタイプマップ作成.<br>
+   * <ul>
+   * <li>DBメタ情報から項目名とバインドタイプのマップを作成する。</li>
+   * <li>マップは項目順を保持する。</li>
+   * <li>項目物理名は英字小文字に変換する。（<code>AbstractIoTypeMap</code> のキールールとあわせる）</li>
+   * </ul>
+   *
+   * @param conn DB接続
+   * @param tableName テーブル名
+   * @return DB項目名（小文字）・バインドタイプマップ
+   */
+  public static Map<String, BindType> createItemBindTypeMapByMeta(final Connection conn, final String tableName) {
+    
+    // DB項目名（小文字）・バインドタイプマップ
+    final Map<String, BindType> itemBindMap = new LinkedHashMap<>();
+
+    // DB項目名・クラスタイプマップ
+    final Map<String, ItemClsType> itemClsMap = createItemNameClsMapByMeta(conn, tableName);
+
+    for (final Map.Entry<String, ItemClsType> ent : itemClsMap.entrySet()) {
+      // 項目名
+      final String itemName = ent.getKey();
+      // 項目クラスタイプ
+      final ItemClsType itemCls = ent.getValue();
+      // バインドタイプ変換
+      final BindType bindType;
+      if (ItemClsType.STRING_CLS == itemCls) {
+        bindType = BindType.STRING;
+      } else if (ItemClsType.BIGDECIMAL_CLS == itemCls) {
+        bindType = BindType.BIGDECIMAL;
+      } else if (ItemClsType.DATE_CLS == itemCls) {
+        bindType = BindType.DATE;
+      } else if (ItemClsType.TIMESTAMP_CLS == itemCls) {
+        bindType = BindType.TIMESTAMP;
+      } else if (ItemClsType.STRING_TO_DATE_CLS == itemCls) {
+        bindType = BindType.DATE;
+      } else if (ItemClsType.STRING_TO_TS_CLS == itemCls) {
+        bindType = BindType.TIMESTAMP;
+      } else {
+        throw new RuntimeException("Item class type is invalid. "
+            + LogUtil.joinKeyVal("itemName", itemName, "itemCls", itemCls.toString()));
+      }
+      itemBindMap.put(itemName, bindType);
+    }
+    return itemBindMap;
+  }
+
+  /**
    * 一意制約違反エラー判定.<br>
    * <ul>
    * <li>DBMS別に一意制約違反エラーかどうかを判定する。</li>
@@ -1553,33 +1564,6 @@ public final class SqlUtil {
     }
 
     return false;
-  }
-
-  /**
-   * 主キー項目名取得.<br>
-   * <ul>
-   * <li>JDBCメタ情報からテーブルの主キー項目名を取得します。</li>
-   * <li>主キーが存在しないテーブルは実行時エラーとなります。</li>
-   * <li>項目物理名は英字小文字に変換します。（<code>AbstractIoTypeMap</code> のキールール）</li>
-   * </ul>
-   *
-   * @param conn      DB接続
-   * @param tableName テーブル名
-   * @return 主キー項目名配列（KEY_SEQ 順）
-   */
-  private static String[] getPkeys(final Connection conn, final String tableName) {
-    try {
-      // KEY_SEQ 順で並べる
-      final Map<Short, String> pkMap = new TreeMap<>();
-      try (final ResultSet rset = conn.getMetaData().getPrimaryKeys(null, null, tableName)) {
-        while (rset.next()) {
-          pkMap.put(rset.getShort("KEY_SEQ"), rset.getString("COLUMN_NAME").toLowerCase());
-        }
-      }
-      return pkMap.values().toArray(new String[0]);
-    } catch (SQLException e) {
-      throw new RuntimeException("Exception error occurred during primary key retrieval. " + LogUtil.joinKeyVal("tableName", tableName), e);
-    }
   }
 
   /** タイムスタンプ取得SQL（小数秒6桁） マップ. */

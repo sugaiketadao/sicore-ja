@@ -27,11 +27,11 @@
         <div>固定SQL.<br>
 <ul>
 <li>SQL文字列とバインド項目定義（項目名と型）を格納します。</li>
+<li>おもにバッチ処理での使用を想定しており、クラス変数（定数）として宣言します。</li>
+<li>本クラスを使用することでプリペアードステートメントのキャッシュが可能になるため、Webサービス処理での性能改善目的の使用も想定しています。</li>
 <li>SQL実行時には、バインド値を持つパラメーターをこのSQLと共に渡します。</li>
 <li>同じ項目名を同じ型で複数回バインド可能です。</li>
 <li>バインド項目が無い場合は、そのまま使用します。</li>
-<li>おもにバッチ処理での使用を想定しています。</li>
-<li>本クラスを使用することでプリペアードステートメントのキャッシュが可能になるため、Webサービス処理での性能改善目的の使用も想定しています。</li>
 <li>プリペアードステートメントのキャッシュを使用して実行するには <code>SqlUtil.executeOneCache</code> または <code>SqlUtil.executeCache</code> を使用します。</li>
 </ul>
 <pre>
@@ -242,6 +242,59 @@
                 <td><code>bindType</code></td>
                 <td><code>BindType</code></td>
                 <td>バインド型</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConstBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="delLastChar">
+        <h3 class="method-name">delLastChar</h3>
+        <div class="method-signature">
+          <code>public SqlConstBuilder delLastChar()</code>
+        </div>
+        <div class="method-description">
+          最終SQL文字列削除.
+<ul>
+<li>SQL文字列の最終文字（１文字）を削除します。</li>
+</ul>
+
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>SqlConstBuilder</code> - 自インスタンス</p>
+        </div>
+      </div>
+      <div class="method" id="delLastChar">
+        <h3 class="method-name">delLastChar</h3>
+        <div class="method-signature">
+          <code>public SqlConstBuilder delLastChar(int deleteCharCount)</code>
+        </div>
+        <div class="method-description">
+          最終SQL文字列削除.
+<ul>
+<li>SQL文字列の最後から指定文字数を削除します。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>deleteCharCount</code></td>
+                <td><code>int</code></td>
+                <td>削除文字数</td>
               </tr>
             </tbody>
           </table>

@@ -41,6 +41,17 @@ public final class ValUtil {
   public static final String CR = "\r";
   /** 改行コード - CRLF. */
   public static final String CRLF = "\r\n";
+  /** タブ文字 - TAB. */
+  public static final String TAB = "\t";
+
+  /** データ入出力用TSV - NULL置換文字 */
+  private static final String IOTSV_NULL = "\\\\0";
+  /** データ入出力用TSV - タブ置換文字 */
+  private static final String IOTSV_TAB = "\\\\t";
+  /** データ入出力用TSV - キャリッジリターン置換文字 */
+  private static final String IOTSV_CR = "\\\\r";
+  /** データ入出力用TSV - ラインフィード置換文字 */
+  private static final String IOTSV_LF = "\\\\n";
 
   /** 文字セット指定 - UTF-8. */
   public static final String UTF8 = StandardCharsets.UTF_8.name();
@@ -491,6 +502,60 @@ public final class ValUtil {
     } else {
       return value.replace("\"", "\"\"").replace(ValUtil.CRLF, " ").replace(ValUtil.CR, " ").replace(ValUtil.LF, " ");
     }
+  }
+  
+  /**
+   * 入出力用TSV連結.
+   *
+   * @param values 連結対象
+   * @return 連結したTSV文字列
+   */
+  static String joinIoTsv(final String[] values) {
+    final StringBuilder sb = new StringBuilder();
+    for (final String value : values) {
+      sb.append(ValUtil.escIoTsv(value)).append(ValUtil.TAB);
+    }
+    ValUtil.deleteLastChar(sb);
+    return sb.toString();
+  }
+
+  /**
+   * 入出力用TSVエスケープ変換.<br>
+   * <ul>
+   * <li><code>null</code> はエスケープする。</li>
+   * <li>値内にある改行コード（CRLF・CR・LF）とタブ文字はエスケープする。</li>
+   * </ul>
+   * 
+   * @param value 対象文字列
+   * @return 変換後文字列
+   */
+  static String escIoTsv(final String value) {
+    if (isNull(value)) {
+      return IOTSV_NULL;
+    }
+    final String ret = value.replaceAll(TAB, IOTSV_TAB)
+                      .replaceAll(CR, IOTSV_CR)
+                      .replaceAll(LF, IOTSV_LF);
+    return ret;
+  }
+
+  /**
+   * 入出力用TSVエスケープ戻し変換.<br>
+   * <ul>
+   * <li><code>#escIoTsv</code> でおこなったエスケープを元に戻す。</li>
+   * </ul>
+   * 
+   * @param value 対象文字列
+   * @return 変換後文字列
+   */
+  static String reEscIoTsv(final String value) {
+    if (IOTSV_NULL.equals(value)) {
+      return null;
+    }
+    final String ret = value.replaceAll(IOTSV_TAB, TAB)
+                      .replaceAll(IOTSV_CR, CR)
+                      .replaceAll(IOTSV_LF, LF);
+    return ret;
   }
 
   /**

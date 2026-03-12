@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SqlResultSet - JavaDoc</title>
+  <title>IoTsvReader - JavaDoc</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="header">
     <div class="header-content">
-      <h1>SqlResultSet</h1>
-      <p>フレームワーク部品 [com.onepg.db]</p>
+      <h1>IoTsvReader</h1>
+      <p>フレームワーク部品 [com.onepg.util]</p>
       <a href="index.html" class="back-link">← クラス一覧に戻る</a>
     </div>
   </div>
@@ -18,27 +18,30 @@
     <div class="section">
       <h2>クラス情報</h2>
       <div class="class-details">
-        <p><strong>パッケージ:</strong> com.onepg.db</p>
-        <p><strong>クラス名:</strong> SqlResultSet</p>
+        <p><strong>パッケージ:</strong> com.onepg.util</p>
+        <p><strong>クラス名:</strong> IoTsvReader</p>
       </div>
       <div class="class-description">
         <h3>説明</h3>
-        <div>SQL結果セットラッパークラス.
-
+        <div>データ入出力用TSVリーダークラス.<br>
 <ul>
-<li>結果セット <code>ResultSet</code> のラッパークラスでイテレーターの提供とステートメント、結果セットのクローズを受け持つ。</li>
-<li>このクラスを介することでイテレーターからしかデータを取り出せなくなる。</li>
+<li>テキストリーダー <code>TxtReader</code> のラッパークラス。</li>
 <li>try 句（try-with-resources文）で宣言する。</li>
-<li>本クラスのイテレーターから取得した行マップの項目物理名は英字小文字となる。（<code>IoItems</code> のキー）</li>
+<li>TSV の各行を <code>IoItems</code> として返すイテレーターを提供する。</li>
+<li>ファイルの1行目を列名とし <code>IoItems</code> のキーに使用する。</li>
+<li>キー名は <code>IoItems</code> オブジェクトキーとして有効な値である必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
+<li>ファイルの文字コードは UTF-8、改行コードは LF の前提とする。</li>
+<li>値内にある改行コード（CRLF・CR・LF）とタブ文字はエスケープされている前提とする。</li>
 </ul>
+<pre>［例］
+<code>try (final IoTsvReader tr = new IoTsvReader(filePath);) {
+  for (final IoItems items : tr) {
+    ：省略
+  }
+}</code>
+</pre>
 </div>
       </div>
-        <div class="see-also">
-          <h4>関連項目</h4>
-          <ul>
-            <li><a href="SqlUtil.html#select">SqlUtil#select(java.sql.Connection, SqlBuilder)</a></li>
-          </ul>
-        </div>
     </div>
     <div class="section">
       <h2>メソッド一覧</h2>
@@ -53,7 +56,7 @@
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>Iterator&lt;IoItems&gt;</code> - 結果行イテレーター</p>
+          <p><code>Iterator&lt;IoItems&gt;</code> - TSV行イテレーター</p>
         </div>
       </div>
       <div class="method" id="close">
@@ -62,29 +65,22 @@
           <code>public void close()</code>
         </div>
         <div class="method-description">
-          クローズ.<br>
-<ul>
-<li>結果セットとステートメントを閉じる。</li>
-</ul>
-
+          ファイルクローズ.
   
         </div>
       </div>
-      <div class="method" id="isExists">
-        <h3 class="method-name">isExists</h3>
+      <div class="method" id="getKeys">
+        <h3 class="method-name">getKeys</h3>
         <div class="method-signature">
-          <code>public boolean isExists()</code>
+          <code>public String[] getKeys()</code>
         </div>
         <div class="method-description">
-          データ有り（DB抽出条件に合致有り）確認.<br>
+          キー配列取得. <br>
 <ul>
-<li>DB2 では #isBeforeFirst（TYPE_FORWARD_ONLYで） はエラーとなる。</li>
+<li>ファイルの1行目から取得したキー配列を返す。</li>
+<li>ファイルがゼロ行の場合は長さゼロの配列を返す。</li>
 </ul>
-
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>boolean</code> - データが取得できた場合は <code>true</code></p>
+  
         </div>
       </div>
       <div class="method" id="getReadedCount">
@@ -93,9 +89,10 @@
           <code>public int getReadedCount()</code>
         </div>
         <div class="method-description">
-          読込済行数（DB抽出条件に合致した件数ではない）取得.<br>
+          読込済行数（ヘッダ行を除く）取得.<br>
 <ul>
 <li>イテレーターで読み込んだ件数を返す。</li>
+<li>ファイルの１行目をキー（ヘッダ行）として使用した場合、１行目はカウントされない。</li>
 </ul>
 
         </div>
@@ -118,31 +115,13 @@
           <p><code>boolean</code> - 最終行読込済の場合は <code>true</code></p>
         </div>
       </div>
-      <div class="method" id="getItemNames">
-        <h3 class="method-name">getItemNames</h3>
-        <div class="method-signature">
-          <code>public String[] getItemNames()</code>
-        </div>
-        <div class="method-description">
-          DB項目名取得.
-
-        </div>
-        <div class="method-returns">
-          <h4>戻り値</h4>
-          <p><code>String[]</code> - DB項目名文字列配列（小文字）</p>
-        </div>
-      </div>
       <div class="method" id="hasNext">
         <h3 class="method-name">hasNext</h3>
         <div class="method-signature">
           <code>public boolean hasNext()</code>
         </div>
         <div class="method-description">
-          次行確認.<br>
-<ul>
-<li>try 句が使用されなかった場合に備えて次行が存在しなかった場合は結果セットとステートメントを閉じる。</li>
-<li>連続した hasNext() 呼び出しでは再確認しない。</li>
-</ul>
+          次行確認.
 
         </div>
         <div class="method-returns">
@@ -156,12 +135,15 @@
           <code>public IoItems next()</code>
         </div>
         <div class="method-description">
-          次行取得.
+          次行取得.<br>
+<ul>
+<li><code>IoItems</code> に TSV行を格納して返す。</li>
+</ul>
 
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>IoItems</code> - 行マップ</p>
+          <p><code>IoItems</code> - TSV行の <code>IoItems</code></p>
         </div>
       </div>
     </div>

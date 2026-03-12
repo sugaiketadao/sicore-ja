@@ -132,6 +132,27 @@ public final class IoItems extends AbstractIoTypeMap {
   }
 
   /**
+   * データ入出力用TSV作成.<br>
+   * <ul>
+   * <li>マップへの値の追加順で TSV文字列を作成する。</li>
+   * <li><code>null</code> はエスケープする。</li>
+   * <li>値内にある改行コード（CRLF・CR・LF）とタブ文字はエスケープする。</li>
+   * </ul>
+   *
+   * @param csvType CSVタイプ
+   * @return CSV文字列
+   */
+  String createIoTsv() {
+    final StringBuilder sb = new StringBuilder();
+    for (final Entry<String, String> ent : super.getValMap().entrySet()) {
+      final String val = ValUtil.nvl(ent.getValue());
+      sb.append(ValUtil.escIoTsv(val)).append(ValUtil.TAB);
+    }
+    ValUtil.deleteLastChar(sb);
+    return sb.toString();
+  }
+
+  /**
    * URLパラメーター（URLの?より後ろの部分）作成.
    *
    * @return URLエンコードされたGETパラメーター
@@ -298,6 +319,46 @@ public final class IoItems extends AbstractIoTypeMap {
       // 値を格納
       count++;
       put(key, value.replace("\"\"", "\""));
+    }
+    return count;
+  }
+
+  /**
+   * データ入出力用TSV格納.
+   * <ul>
+   * <li>既に存在するキーでの格納は実行時エラーとなる。</li>
+   * <li><code>null</code> はエスケープされている前提とする。</li>
+   * <li>値内にある改行コード（CRLF・CR・LF）とタブ文字はエスケープされている前提とする。</li>
+   * </ul>
+   *
+   * @param keys キー配列
+   * @param tsv TSV文字列
+   * @return 格納項目数
+   */
+  int putAllByIoTsv(final String[] keys, final String tsv) {
+    // 最大インデックス
+    final int keyMaxIdx = keys.length - 1;
+
+    int keyIdx = -1;
+    int count = 0;
+
+    for (final String value : new SimpleSeparateParser(tsv, ValUtil.TAB)) {
+      keyIdx++;
+      if (keyMaxIdx < keyIdx) {
+        // 通常ありえないが TSV列がキー列より多い場合は終了する
+        break;
+      }
+
+      // キー名
+      final String key = keys[keyIdx];
+      if (ValUtil.isBlank(key)) {
+        // 通常ありえないが キー名がブランクの場合は不要項目としスキップする
+        continue;
+      }
+
+      // 値を格納
+      count++;
+      put(key, ValUtil.reEscIoTsv(value));
     }
     return count;
   }

@@ -14,6 +14,7 @@ import com.onepg.util.ValUtil.CharSet;
  * <li>CSV の各行を <code>IoItems</code> として返すイテレーターを提供する。</li>
  * <li>ファイルの1行目を列名とし <code>IoItems</code> のキーに使用する。</li>
  * <li>ファイルの1行目に列名が無い場合は <code>IoItems</code> のキーをコンストラクタに渡す必要がある。</li>
+ * <li>キー名は <code>IoItems</code> オブジェクトキーとして有効な値である必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
  * <li>引数のキー配列でキーがブランクの項目は <code>IoItems</code> に格納されない。（読み飛ばしたい列にはブランクキーを指定する）</li>
  * <li>CSV項目数がキー数より多い場合、余剰分の項目は格納されない。</li>
  * <li>キー数がCSV項目数より多い場合、そのキーの値は常にブランクとなります。</li>
@@ -66,6 +67,7 @@ public final class CsvReader implements Iterable<IoItems>, AutoCloseable {
    * コンストラクタ.<br>
    * <ul>
    * <li>引数のキー配列を使用し、ファイルの１行目からCSVデータとして読み込む。</li>
+   * <li>キー名は <code>IoItems</code> オブジェクトキーとして有効な値である必要があります。（<code>AbstractIoTypeMap</code> のキールール）</li>
    * </ul>
    *
    * @param filePath ファイルパス
@@ -98,6 +100,18 @@ public final class CsvReader implements Iterable<IoItems>, AutoCloseable {
   @Override
   public void close() {
     this.txtReader.close();
+  }
+
+  /**
+   * キー配列取得. <br>
+   * <ul>
+   * <li>ファイルの1行目をキーとした場合は、ファイルの1行目から取得したキー配列を返す。</li>
+   * <li>ファイルがゼロ行の場合は長さゼロの配列を返す。</li>
+   * <li>引数のキー配列を使用した場合は、引数のキー配列を返す。</li>
+   * </ul>
+   */
+  public String[] getKeys() {
+    return this.keys;
   }
 
   /**

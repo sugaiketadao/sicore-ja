@@ -36,6 +36,8 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
   /** 読み込んだ行 */
   private String nextLine = null;
 
+  /** イテレーター作成済みフラグ. */
+  private boolean iteCreated = false;
   /** 読込済行数. */
   private int readedCount = 0;
   /** 最終行読込済判定. */
@@ -71,6 +73,10 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
    */
   @Override
   public Iterator<String> iterator() {
+    if (this.iteCreated) {
+      throw new RuntimeException("Iterator has already been created.");
+    }
+    this.iteCreated = true;
     return new TxtReadIterator();
   }
 
@@ -112,7 +118,13 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
   }
 
   /**
-   * 1行スキップ.
+   * 1行スキップ.<br>
+   * <ul>
+   * <li>ヘッダ行などをスキップする。</li>
+   * <li>ファイル行よりスキップ行数が多くてもエラーとならず戻り値が <code>false</code> になる。</li>
+   * <li>スキップ行数はカウントアップされない。</li>
+   * <li>イテレーター作成後はスキップできない。</li>
+   * </ul>
    * 
    * @see #skip(int)
    * @return 行数が不足していた場合は <code>false</code>
@@ -126,7 +138,8 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
    * <ul>
    * <li>ヘッダ行などをスキップする。</li>
    * <li>ファイル行よりスキップ行数が多くてもエラーとならず戻り値が <code>false</code> になる。</li>
-   * <li>読み込み行数はカウントアップされない。</li>
+   * <li>スキップ行数はカウントアップされない。</li>
+   * <li>イテレーター作成後はスキップできない。</li>
    * </ul>
    *
    * @param count スキップ行数
@@ -139,7 +152,10 @@ public final class TxtReader implements Iterable<String>, AutoCloseable {
     if (count <= 0) {
       return true;
     }
-    
+    if (this.iteCreated) {
+      throw new RuntimeException("Cannot call skip() after iterator has been created.");
+    }
+
     try {
       for (int c = 1; c <= count; c++) {        
         // 1行読み飛ばし

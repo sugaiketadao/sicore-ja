@@ -293,6 +293,57 @@
           <p><code>Connection</code> - DB接続</p>
         </div>
       </div>
+      <div class="method" id="getConnByUrl">
+        <h3 class="method-name">getConnByUrl</h3>
+        <div class="method-signature">
+          <code>public Connection getConnByUrl(String url, String user, String pass, String traceCode)</code>
+        </div>
+        <div class="method-description">
+          DB接続URL指定 DB接続取得.<br>
+<ul>
+<li>try 句（try-with-resources文）で宣言する。</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>url</code></td>
+                <td><code>String</code></td>
+                <td>JDBC接続URL</td>
+              </tr>
+              <tr>
+                <td><code>user</code></td>
+                <td><code>String</code></td>
+                <td>DBユーザー</td>
+              </tr>
+              <tr>
+                <td><code>pass</code></td>
+                <td><code>String</code></td>
+                <td>DBパスワード</td>
+              </tr>
+              <tr>
+                <td><code>traceCode</code></td>
+                <td><code>String</code></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Connection</code> - DB接続</p>
+        </div>
+      </div>
       <div class="method" id="closePooledConn">
         <h3 class="method-name">closePooledConn</h3>
         <div class="method-signature">
@@ -311,14 +362,95 @@
       <div class="method" id="getConnNames">
         <h3 class="method-name">getConnNames</h3>
         <div class="method-signature">
-          <code>public List&lt;String&gt; getConnNames()</code>
+          <code>public String[] getConnNames()</code>
         </div>
         <div class="method-description">
           DB接続設定名取得.
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>List&lt;String&gt;</code> - URLが設定されている接続名のリスト（デフォルト接続名も含まれる）</p>
+          <p><code>String[]</code> - URLが設定されている接続名の配列（デフォルト接続名も含まれる）</p>
+        </div>
+      </div>
+      <div class="method" id="isExistsTable">
+        <h3 class="method-name">isExistsTable</h3>
+        <div class="method-signature">
+          <code>public boolean isExistsTable(Connection conn, String tableName)</code>
+        </div>
+        <div class="method-description">
+          テーブル存在チェック.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - 存在する場合は <code>true</code></p>
+        </div>
+      </div>
+      <div class="method" id="getPrimaryKeys">
+        <h3 class="method-name">getPrimaryKeys</h3>
+        <div class="method-signature">
+          <code>public String[] getPrimaryKeys(Connection conn, String tableName)</code>
+        </div>
+        <div class="method-description">
+          主キーの列名を取得.<br>
+<ul>
+<li>JDBCメタ情報からテーブルの主キー項目名を取得します。</li>
+<li>主キーが存在しないテーブルは空の配列を返します。</li>
+<li>項目物理名は英字小文字に変換します。（<code>AbstractIoTypeMap</code> のキールール）</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>conn</code></td>
+                <td><code>Connection</code></td>
+                <td>DB接続</td>
+              </tr>
+              <tr>
+                <td><code>tableName</code></td>
+                <td><code>String</code></td>
+                <td>テーブル名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String[]</code> - 主キー項目名配列（小文字、KEY_SEQ 順）</p>
         </div>
       </div>
     </div>

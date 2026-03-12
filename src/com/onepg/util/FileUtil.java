@@ -1,8 +1,13 @@
 package com.onepg.util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +18,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 /**
  * ファイル操作ユーティリティクラス.
@@ -69,6 +77,24 @@ public final class FileUtil {
       ret += File.separator;
     }
     return ret.toString();
+  }
+
+  /**
+   * 拡張子置き換え.<br>
+   * <ul>
+   * <li>ファイルパスの拡張子を置換する</li>
+   * </ul>
+   *
+   * @param paths ファイルパス
+   * @param typeMark 置換後の拡張子
+   * @return ファイルパス
+   */
+  public static String replaceTypeMark(final String path, final String typeMark) {
+    if (ValUtil.isBlank(path)) {
+      return ValUtil.BLANK;
+    }
+    final String[] names = splitTypeMark(path);
+    return names[0] + "." + typeMark;
   }
 
   /**
@@ -143,6 +169,21 @@ public final class FileUtil {
   }
 
   /**
+   * ディレクトリか確認.
+   *
+   * @param checkPath 確認パス
+   * @return ディレクトリの場合は <code>true</code>
+   */
+  public static boolean isDirectory(final String checkPath) {
+    final Path path = Paths.get(checkPath);
+    if (!Files.exists(path)) { 
+      // 冗長ではあるが存在しない場合はディレクトリではないとする。（Files.isDirectoryは存在しないパスに対して false を返す）
+      return false;
+    }
+    return Files.isDirectory(path);
+  }
+
+  /**
    * フルパスからファイル名取得（ディレクトリも可）.
    *
    * @param fullPath フルパス
@@ -153,13 +194,20 @@ public final class FileUtil {
   }
 
   /**
-   * フルパスから親ディレクトリパス取得（ディレクトリも可）.
+   * フルパスから親ディレクトリパス取得（ディレクトリも可）.<br>
+   * <ul>
+   * <li>親ディレクトリが無い場合は <code>null</code> を返す。</li>
+   * </ul>
    *
    * @param fullPath フルパス
    * @return 親ディレクトリパス
    */
   public static String getParentPath(final String fullPath) {
-    return Paths.get(fullPath).getParent().toString();
+    final Path parentPath = Paths.get(fullPath).getParent();
+    if (ValUtil.isNull(parentPath)) {
+      return null;
+    }
+    return parentPath.toString();
   }
 
   /**
@@ -169,6 +217,9 @@ public final class FileUtil {
    * @return ファイル更新日時（yyyyMMddHHmmss）
    */
   public static String getFileModifiedDateTime(final String fullPath) {
+    if (!exists(fullPath)) {
+      throw new RuntimeException("File does not exist. " + LogUtil.joinKeyVal("path", fullPath));
+    }
     final File file = new File(fullPath);
     final long lastModified = file.lastModified();
     final Instant lastInst = Instant.ofEpochMilli(lastModified);
@@ -183,7 +234,7 @@ public final class FileUtil {
    * @param fileName ファイル名またはフルパス
    * @return 文字配列｛拡張子より前の部分、拡張子｝（いずれもドットは含まない）
    */
-  public static String[] splitFileTypeMark(final String fileName) {
+  public static String[] splitTypeMark(final String fileName) {
     final int markIdx = fileName.lastIndexOf(".");
     final String[] ret = new String[2];
 
@@ -199,6 +250,46 @@ public final class FileUtil {
   }
 
   /**
+   * ファイル名から拡張子を取り除く.
+   *
+   * @param fileName ファイル名またはフルパス
+   * @return 拡張子より前の部分（ドットは含まない）
+   */
+  public static String trimTypeMark(final String fileName) {
+    final int markIdx = fileName.lastIndexOf(".");
+    final String tmpName;
+    if (markIdx <= 0) {
+      // 拡張子が無い、またはドット始まりのファイル名はそのまま処理
+      tmpName = fileName;
+    } else {
+      tmpName = fileName.substring(0, markIdx);
+    }
+    final int sepIdx = tmpName.lastIndexOf(File.separator);
+    if (sepIdx < 0) {
+      // 区切り文字が無い場合は引数がファイル名のみと判断
+      return tmpName;
+    }
+    // フルパスからファイル名のみ返す
+    return tmpName.substring(sepIdx + 1);
+  }
+
+  /**
+   * ファイル名から拡張子を取得.
+   *
+   * @param fileName ファイル名またはフルパス
+   * @return 拡張子（ドットは含まない）
+   */
+  public static String getTypeMark(final String fileName) {
+    final int markIdx = fileName.lastIndexOf(".");
+    if (markIdx <= 0) {
+      // 拡張子が無い、またはドット始まりのファイル名はブランクを返す
+      return ValUtil.BLANK;
+    }
+    // フルパスから拡張子のみ返す
+    return fileName.substring(markIdx + 1);
+  }
+
+  /**
    * ファイルパス（絶対パス）リスト取得.<br>
    * <ul>
    * <li>ファイル名、拡張子の検索文字は大文字小文字を区別しない。</li>
@@ -209,10 +300,10 @@ public final class FileUtil {
    * @param prefixMatch 検索ファイル名 前方一致（省略可能）省略した場合は <code>null</code>
    * @param middleMatch 検索ファイル名 中間一致（省略可能）省略した場合は <code>null</code>
    * @param suffixMatch 検索ファイル名 後方一致（省略可能）省略した場合は <code>null</code>
-   * @return ファイルパス（絶対パス）リスト
+   * @return ファイルパス（絶対パス）配列
    * @throws RuntimeException ディレクトリが存在しない場合
    */
-  public static List<String> getFileList(final String dirPath, final String typeMark,
+  public static String[] getFileList(final String dirPath, final String typeMark,
       final String prefixMatch, final String middleMatch, final String suffixMatch) {
     final File parentDir = new File(dirPath);
     if (!parentDir.exists()) {
@@ -233,7 +324,7 @@ public final class FileUtil {
       final FilenameFilter filter = new FilenameFilter() {
         @Override
         public boolean accept(final File dir, final String name) {
-          final String[] names = FileUtil.splitFileTypeMark(name);
+          final String[] names = FileUtil.splitTypeMark(name);
           names[0] = names[0].toLowerCase();
           names[1] = names[1].toLowerCase();
           if (!ValUtil.isBlank(typeMarkL) && !names[1].equals(typeMarkL)) {
@@ -261,12 +352,16 @@ public final class FileUtil {
 
     final List<String> retList = new ArrayList<>();
     if (ValUtil.isNull(files)) {
-      return retList;
+      return new String[0];
     }
     for (final File file : files) {
+      if (!file.isFile()) {
+        // ディレクトリは対象外
+        continue;
+      }
       retList.add(file.getAbsolutePath());
     }
-    return retList;
+    return retList.toArray(new String[0]);
   }
 
   /**
@@ -380,8 +475,7 @@ public final class FileUtil {
     try {
       Files.delete(deletePath);
     } catch (IOException e) {
-      throw new RuntimeException("Exception error occurred in file deletion. "
-                                + LogUtil.joinKeyVal("path", deleteFilePath), e);
+      throw new RuntimeException("Exception error occurred in file deletion. " + LogUtil.joinKeyVal("path", deleteFilePath), e);
     }
     return true;
   }
@@ -418,5 +512,97 @@ public final class FileUtil {
     }
     return true;
   }
+  
+  /**
+   * 圧縮ファイル作成.
+   * 
+   * @param srcPath ソースファイルパス
+   * @param fileNameCharset ファイル名文字セット
+   * @param zipPath 圧縮ファイルパス
+   */
+  public static void zip(final String srcPath, final String fileNameCharset, final String zipPath) {
+    zip(List.of(srcPath), fileNameCharset, zipPath);
+  }
 
+  /**
+   * 圧縮ファイル作成.
+   * 
+   * @param srcPaths ソースファイルパスリスト
+   * @param fileNameCharset ファイル名文字セット
+   * @param zipPath 圧縮ファイルパス
+   */
+  public static void zip(final List<String> srcPaths, final String fileNameCharset, final String zipPath) {
+    // ファイル存在確認と Fileオブジェクトの作成
+    final List<File> srcFiles = new ArrayList<>();
+    for (final String path : srcPaths) {
+      final File f = new File(path);
+      if (!f.exists()) {
+        throw new RuntimeException("Source file to compress does not exist. " + LogUtil.joinKeyVal("path", f.getAbsolutePath()));
+      }
+      srcFiles.add(f);
+    }
+    // 圧縮ファイル
+    final File zipFile = new File(zipPath);
+    if (zipFile.exists()) {
+      throw new RuntimeException("Zip file already exists. " + LogUtil.joinKeyVal("path", zipFile.getAbsolutePath()));
+    }
+    if (zipFile.getParentFile() != null && !zipFile.getParentFile().exists()) {
+      throw new RuntimeException("Parent directory of zip file does not exist. " + LogUtil.joinKeyVal("path", zipFile.getAbsolutePath()));
+    }
+    // 圧縮
+    try (final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile), Charset.forName(fileNameCharset))) {
+      for (final File file : srcFiles) {
+        zos.putNextEntry(new ZipEntry(file.getName()));
+        try (final InputStream is = new BufferedInputStream(new FileInputStream(file))) {
+          is.transferTo(zos);
+        }
+      }
+    } catch (Exception e) {
+      // 圧縮に失敗した場合は作成されたzipファイルを削除
+      delete(zipFile);
+      throw new RuntimeException("Exception error occurred during zip file creation. " + LogUtil.joinKeyVal("path", zipFile.getAbsolutePath()), e);
+    }
+  }
+  
+  /**
+   * 圧縮ファイル解凍.
+   * 
+   * @param zipPath 圧縮ファイルパス
+   * @param destDirPath 解凍先ディレクトリパス
+   * @return 解凍したファイル名配列
+   */
+  public static String[] unzip(final String zipPath, final String destDirPath) {
+    final File destDir = new File(destDirPath);
+    if (!destDir.exists()) {
+      throw new RuntimeException("Destination directory for extraction does not exist. " + LogUtil.joinKeyVal("path", destDirPath));
+    }
+    
+    final List<String> retPaths = new ArrayList<>();
+    
+    try (final ZipFile zipFile = new ZipFile(zipPath)) {
+      for (final ZipEntry entry : zipFile.stream().toList()) {
+        final File outFile = new File(destDir, entry.getName());
+        if (!outFile.getCanonicalPath().startsWith(destDir.getCanonicalPath() + File.separator)) {
+          throw new RuntimeException("Invalid zip entry path. " + LogUtil.joinKeyVal("file", entry.getName()));
+        }
+        if (entry.isDirectory()) {
+          // ディレクトリエントリはディレクトリ作成のみ
+          outFile.mkdirs();
+          continue;
+        }
+        // 親ディレクトリが無ければ作成（ネスト対応）
+        outFile.getParentFile().mkdirs();
+        try (final InputStream is = zipFile.getInputStream(entry);
+             final FileOutputStream fos = new FileOutputStream(outFile)) {
+          is.transferTo(fos);
+          retPaths.add(outFile.getAbsolutePath());
+        } catch (IOException e) {
+          throw new RuntimeException("Exception error occurred during extraction. " + LogUtil.joinKeyVal("file", entry.getName()), e);
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Exception error occurred during zip file extraction. " + LogUtil.joinKeyVal("path", zipPath), e);
+    }
+    return retPaths.toArray(new String[0]);
+  }
 }

@@ -27,7 +27,7 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
   private final PreparedStatement stmt;
   /** 結果セット. */
   private final ResultSet rset;
-  /** DB項目名・クラスタイプマップ. */
+  /** DB項目名（小文字）・クラスタイプマップ. */
   private final Map<String, ItemClsType> nameClsMap;
   /** 接続シリアルコード. */
   private final String serialCode;
@@ -43,7 +43,7 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
    *
    * @param stmt ステートメント
    * @param rset 結果セット
-   * @param nameClsMap DB項目名・クラスタイプマップ
+   * @param nameClsMap DB項目名（小文字）・クラスタイプマップ
    * @param serialCode 接続シリアルコード
    */
   SqlResultSet(final PreparedStatement stmt, final ResultSet rset,
@@ -161,7 +161,7 @@ public final class SqlResultSet implements Iterable<IoItems>, AutoCloseable {
   /**
    * DB項目名取得.
    *
-   * @return DB項目名文字列配列
+   * @return DB項目名文字列配列（小文字）
    */
   public String[] getItemNames() {
     final String[] itemNames = new String[this.nameClsMap.size()];

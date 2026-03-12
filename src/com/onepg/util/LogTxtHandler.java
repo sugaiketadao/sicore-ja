@@ -31,11 +31,7 @@ public final class LogTxtHandler implements AutoCloseable {
   /** ログテキストハンドラープールマップ&lt;ファイルパス、ログテキストハンドラー&gt;（シングルトン）. */
   private static final Map<String, LogTxtHandler> logTxtPoolMaps_ = new ConcurrentHashMap<>();
 
-  /** 基本ファイルパス（拡張子抜き）. */
-  private final String baseFilePath;
-  /** 拡張子（ドット有り）. */
-  private final String fileTypeMark;
-  /** ファイルパス（基本ファイルパス＋拡張子）. */
+  /** ファイルパス. */
   private final String filePath;
   /** 前回出力日付（YYYYMMDD）. */
   private String beforePrintDate = null;
@@ -129,11 +125,7 @@ public final class LogTxtHandler implements AutoCloseable {
    * @param baseFilePath 基本ファイルパス
    */
   private LogTxtHandler(final String baseFilePath) {
-
-    final String[] tmp = FileUtil.splitFileTypeMark(baseFilePath);
-    this.baseFilePath = tmp[0];
-    this.fileTypeMark = "." + tmp[1];
-    this.filePath = this.baseFilePath + this.fileTypeMark;
+    this.filePath = baseFilePath;
 
     // 前回起動時ファイルが残っている場合はファイル更新日を前回出力日付とする
     if (FileUtil.exists(this.filePath)) {
@@ -208,7 +200,13 @@ public final class LogTxtHandler implements AutoCloseable {
       return;
     }
 
-    final String destPath = this.baseFilePath + "_" + this.beforePrintDate + this.fileTypeMark;
+    final String[] tmp = FileUtil.splitTypeMark(this.filePath);
+    final String destPath;
+    if (ValUtil.isBlank(tmp[1])) {
+      destPath = tmp[0] + "_" + this.beforePrintDate;
+    } else {
+      destPath = tmp[0] + "_" + this.beforePrintDate + "." + tmp[1];
+    }
     if (FileUtil.exists(destPath)) {
       // 基本的にありえないが既に日付の付いているファイルが存在する場合はリネームしない
       // ローリング失敗時も継続するため、エラーログを出力して処理継続

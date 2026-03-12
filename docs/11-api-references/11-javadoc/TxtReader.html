@@ -103,7 +103,13 @@
           <code>public boolean skip()</code>
         </div>
         <div class="method-description">
-          1行スキップ.
+          1行スキップ.<br>
+<ul>
+<li>ヘッダ行などをスキップする。</li>
+<li>ファイル行よりスキップ行数が多くてもエラーとならず戻り値が <code>false</code> になる。</li>
+<li>スキップ行数はカウントアップされない。</li>
+<li>イテレーター作成後はスキップできない。</li>
+</ul>
 
         </div>
         <div class="method-returns">
@@ -127,7 +133,8 @@
 <ul>
 <li>ヘッダ行などをスキップする。</li>
 <li>ファイル行よりスキップ行数が多くてもエラーとならず戻り値が <code>false</code> になる。</li>
-<li>読み込み行数はカウントアップされない。</li>
+<li>スキップ行数はカウントアップされない。</li>
+<li>イテレーター作成後はスキップできない。</li>
 </ul>
 
         </div>

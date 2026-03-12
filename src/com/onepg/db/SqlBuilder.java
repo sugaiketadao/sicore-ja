@@ -8,9 +8,9 @@ import java.util.List;
  * SQLビルダー.<br>
  * <ul>
  * <li>DBアクセス時に必要な SQLとパラメーターリストを内包するクラスです。</li>
+ * <li>おもにWebサービス処理での使用を想定しており、メソッド変数として宣言します。</li>
  * <li>SQLの組み立てとパラメーターのセットを同時に行えるメソッドを持ちます。</li>
  * <li><code>add*</code>メソッドは自インスタンスを返すのでメソッドチェーンで使えます。</li>
- * <li>おもにWebサービス処理での使用を想定しています。</li>
  * </ul>
  * <pre>
  * ［SQL追加例１］ <code>sqlBuilder.addQuery("AND a.user_id IS NOT NULL ");</code>
@@ -76,7 +76,8 @@ public final class SqlBuilder extends SqlBean {
   /**
    * SQLビルダー追加.<br>
    * <ul>
-   * <li>SQLとパラメーターを引き継ぐ。</li>
+   * <li>別の SqlBuilder が持つ SQL とパラメーターを引き継ぐ。</li>
+   * <li>サブクエリや条件ブロックを分割して組み立てる際に使用します。</li>
    * </ul>
    *
    * @param sb SQLビルダー
@@ -98,6 +99,7 @@ public final class SqlBuilder extends SqlBean {
    * ［例２］ <code>sqlBuilder.addQuery("AND a.user_id = ? ", userId);</code>
    * ［例３］ <code>sqlBuilder.addQuery("AND ? <= a.birth_dt AND a.birth_dt <= ?", birthDtFrom, birthDtTo);</code>
    * </pre>
+   *
    * @param sql    SQL
    * @param params パラメーター（複数可能）（省略可能）
    * @return 自インスタンス
@@ -168,6 +170,7 @@ public final class SqlBuilder extends SqlBean {
    * <pre>下記例では <code>userId</code> が <code>null</code>・ブランク以外の場合のみ SQLが追加されます。
    * ［例］ <code>sqlBuilder.addQueryIfNotBlankParameter("AND user_id = ? ", userId);</code>
    * </pre>
+   *
    * @see #addQuery(String, Object...)
    * @see #addQnotB(String, Object)
    * @param sql SQL

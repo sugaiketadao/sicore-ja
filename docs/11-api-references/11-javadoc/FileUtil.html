@@ -83,6 +83,47 @@
           <p><code>String</code> - ファイルパス</p>
         </div>
       </div>
+      <div class="method" id="replaceTypeMark">
+        <h3 class="method-name">replaceTypeMark</h3>
+        <div class="method-signature">
+          <code>public String replaceTypeMark(String path, String typeMark)</code>
+        </div>
+        <div class="method-description">
+          拡張子置き換え.<br>
+<ul>
+<li>ファイルパスの拡張子を置換する</li>
+</ul>
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>path</code></td>
+                <td><code>String</code></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><code>typeMark</code></td>
+                <td><code>String</code></td>
+                <td>置換後の拡張子</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - ファイルパス</p>
+        </div>
+      </div>
       <div class="method" id="convOsPath">
         <h3 class="method-name">convOsPath</h3>
         <div class="method-signature">
@@ -222,6 +263,39 @@
           <p><code>boolean</code> - 存在する場合は <code>true</code></p>
         </div>
       </div>
+      <div class="method" id="isDirectory">
+        <h3 class="method-name">isDirectory</h3>
+        <div class="method-signature">
+          <code>public boolean isDirectory(String checkPath)</code>
+        </div>
+        <div class="method-description">
+          ディレクトリか確認.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>checkPath</code></td>
+                <td><code>String</code></td>
+                <td>確認パス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>boolean</code> - ディレクトリの場合は <code>true</code></p>
+        </div>
+      </div>
       <div class="method" id="getFileName">
         <h3 class="method-name">getFileName</h3>
         <div class="method-signature">
@@ -261,7 +335,10 @@
           <code>public String getParentPath(String fullPath)</code>
         </div>
         <div class="method-description">
-          フルパスから親ディレクトリパス取得（ディレクトリも可）.
+          フルパスから親ディレクトリパス取得（ディレクトリも可）.<br>
+<ul>
+<li>親ディレクトリが無い場合は <code>null</code> を返す。</li>
+</ul>
 
         </div>
         <div class="method-parameters">
@@ -321,10 +398,10 @@
           <p><code>String</code> - ファイル更新日時（yyyyMMddHHmmss）</p>
         </div>
       </div>
-      <div class="method" id="splitFileTypeMark">
-        <h3 class="method-name">splitFileTypeMark</h3>
+      <div class="method" id="splitTypeMark">
+        <h3 class="method-name">splitTypeMark</h3>
         <div class="method-signature">
-          <code>public String[] splitFileTypeMark(String fileName)</code>
+          <code>public String[] splitTypeMark(String fileName)</code>
         </div>
         <div class="method-description">
           ファイル名またはフルパスを拡張子とそれ以外に分割.
@@ -354,10 +431,76 @@
           <p><code>String[]</code> - 文字配列｛拡張子より前の部分、拡張子｝（いずれもドットは含まない）</p>
         </div>
       </div>
+      <div class="method" id="trimTypeMark">
+        <h3 class="method-name">trimTypeMark</h3>
+        <div class="method-signature">
+          <code>public String trimTypeMark(String fileName)</code>
+        </div>
+        <div class="method-description">
+          ファイル名から拡張子を取り除く.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fileName</code></td>
+                <td><code>String</code></td>
+                <td>ファイル名またはフルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 拡張子より前の部分（ドットは含まない）</p>
+        </div>
+      </div>
+      <div class="method" id="getTypeMark">
+        <h3 class="method-name">getTypeMark</h3>
+        <div class="method-signature">
+          <code>public String getTypeMark(String fileName)</code>
+        </div>
+        <div class="method-description">
+          ファイル名から拡張子を取得.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>fileName</code></td>
+                <td><code>String</code></td>
+                <td>ファイル名またはフルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String</code> - 拡張子（ドットは含まない）</p>
+        </div>
+      </div>
       <div class="method" id="getFileList">
         <h3 class="method-name">getFileList</h3>
         <div class="method-signature">
-          <code>public List&lt;String&gt; getFileList(String dirPath, String typeMark, String prefixMatch, String middleMatch, String suffixMatch)</code>
+          <code>public String[] getFileList(String dirPath, String typeMark, String prefixMatch, String middleMatch, String suffixMatch)</code>
         </div>
         <div class="method-description">
           ファイルパス（絶対パス）リスト取得.<br>
@@ -407,7 +550,7 @@
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>List&lt;String&gt;</code> - ファイルパス（絶対パス）リスト</p>
+          <p><code>String[]</code> - ファイルパス（絶対パス）配列</p>
         </div>
       </div>
       <div class="method" id="move">
@@ -686,6 +829,122 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>boolean</code> - 既に存在する場合は <code>false</code></p>
+        </div>
+      </div>
+      <div class="method" id="zip">
+        <h3 class="method-name">zip</h3>
+        <div class="method-signature">
+          <code>public void zip(String srcPath, String fileNameCharset, String zipPath)</code>
+        </div>
+        <div class="method-description">
+          圧縮ファイル作成.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcPath</code></td>
+                <td><code>String</code></td>
+                <td>ソースファイルパス</td>
+              </tr>
+              <tr>
+                <td><code>fileNameCharset</code></td>
+                <td><code>String</code></td>
+                <td>ファイル名文字セット</td>
+              </tr>
+              <tr>
+                <td><code>zipPath</code></td>
+                <td><code>String</code></td>
+                <td>圧縮ファイルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="zip">
+        <h3 class="method-name">zip</h3>
+        <div class="method-signature">
+          <code>public void zip(List&lt;String&gt; srcPaths, String fileNameCharset, String zipPath)</code>
+        </div>
+        <div class="method-description">
+          圧縮ファイル作成.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>srcPaths</code></td>
+                <td><code>List&lt;String&gt;</code></td>
+                <td>ソースファイルパスリスト</td>
+              </tr>
+              <tr>
+                <td><code>fileNameCharset</code></td>
+                <td><code>String</code></td>
+                <td>ファイル名文字セット</td>
+              </tr>
+              <tr>
+                <td><code>zipPath</code></td>
+                <td><code>String</code></td>
+                <td>圧縮ファイルパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method" id="unzip">
+        <h3 class="method-name">unzip</h3>
+        <div class="method-signature">
+          <code>public String[] unzip(String zipPath, String destDirPath)</code>
+        </div>
+        <div class="method-description">
+          圧縮ファイル解凍.
+
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>zipPath</code></td>
+                <td><code>String</code></td>
+                <td>圧縮ファイルパス</td>
+              </tr>
+              <tr>
+                <td><code>destDirPath</code></td>
+                <td><code>String</code></td>
+                <td>解凍先ディレクトリパス</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>String[]</code> - 解凍したファイル名配列</p>
         </div>
       </div>
     </div>

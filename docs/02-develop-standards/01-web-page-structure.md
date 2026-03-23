@@ -453,10 +453,10 @@ JavaScriptの記述ルールを定義します。
 - JavaScript は HTML内に記述せず、外部ファイルに記述して参照する。
 - そのページ専用の JavaScript は１ファイルとし、ファイル名は HTMLファイルと同じとする。
   ［例］ `listpage.html` の場合は `listpage.js`
-- ボタン要素等のイベント処理内は、外部ファイルに定義した１つの関数を実行するのみとする。
+- ボタン要素等のイベント処理内は、外部ファイルに定義した１つのメソッドを実行するのみとする。
 - JavaScriptファイルは `<body>` 内の最後に記述して読み込む。その際 `defer`属性を付与する。
 - ページ表示時の初期処理 JavaScript は JavaScriptファイルの最後に記述する。
-- JavaScript 内で Webサービスを実行する場合は `await` を使った同期処理となるため、機能単位の JavaScriptファイル内の関数は `async` で定義する。
+- JavaScript 内で Webサービスを実行する場合は `await` を使った同期処理となるため、機能単位の JavaScriptファイル内のメソッドは `async` で定義する。
 
 ```HTML
     <button type="button" onclick="insert()">登録</button>

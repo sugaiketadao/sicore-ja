@@ -106,7 +106,6 @@ abstract class AbstractHttpHandler implements HttpHandler {
    *
    * @param exchange HTTP送受信データ
    * @return 検証成功の場合は <code>true</code>
-   * @throws IOException I/O例外エラー
    */
   private boolean validateJwt(final HttpExchange exchange) {
     final String authHeader = exchange.getRequestHeaders().getFirst("Authorization");
@@ -152,7 +151,6 @@ abstract class AbstractHttpHandler implements HttpHandler {
    *
    * @param clsName クラス名
    * @return Classオブジェクト
-   * @throws ClassNotFoundException クラスが見つからない場合
    */
   private Class<?> getCls(final String clsName) {
     try {

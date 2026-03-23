@@ -18,8 +18,8 @@
     - ［例１］ `const init = async function`
     - ［例２］ `const editMove = async function`
 - クラス名はアッパーキャメルケースとする。
-    - ［例１］ `const UowerCamelCase = /** @lends UowerCamelCase */ {`
-    - ［例２］ `class UowerCamelCase {`
+    - ［例１］ `const UpperCamelCase = /** @lends UpperCamelCase */ {`
+    - ［例２］ `class UpperCamelCase {`
 - `remove` 単体をメソッド名や変数名として使用しない。
     - ［NG例］ `const remove = function`
     - ［OK例］ `const removeLine = function`
@@ -55,16 +55,16 @@
 - `boolean`変数を `true`／`false` と比較しない。
     - ［NG例］ `if (hasError === true)`
     - ［OK例］ `if (hasError)`
-- 変数の値がブランク（`null` を含む）または変数自体が `undefined` かどうかを判断する際は、変数のみで判断せず、本フレームワークの部品を使用する。配列や連想配列の中身がゼロ件かどうかを判断する際も同様とする。
-    - ［NG例］ `if (!val)`
+- 変数の値がブランク（`null` を含む）または変数自体が `undefined` かどうかを判断する際は、直接評価せず、本フレームワークの部品を使用する。配列や連想配列の中身がゼロ件かどうかを判断する際も同様とする。
+    - ［NG例 直接評価］ `if (!val)`
     - ［OK例１］ `if (ValUtil.isBlank(val))`
     - ［OK例２］ `if (ValUtil.isEmpty(ary))`
 
 ## 処理方式
-- 機能単位の処理ではクラスを作成せず、1処理1メソッドとする。
-- 配列のループ処理は `of` を使用した方式を使用する。
+- 機能単位の処理ではクラスを作成せず、イベント処理ごとにメソッドを分けて作成する（1イベント1メソッド作成）。
+- 配列のループ処理は `of` を使用する。
     - ［例］ `for (const val of ary)`
-- 連想配列のループ処理は `in` を使用した方式を使用する。
+- 連想配列のループ処理は `in` を使用する。
     - ［例］ `for (const key in obj)`
 - 修正時の差分の可読性を最優先し、三項演算子およびアロー関数 `=>` の使用を禁止する。
 

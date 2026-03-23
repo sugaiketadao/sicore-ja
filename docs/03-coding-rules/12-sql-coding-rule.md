@@ -13,28 +13,28 @@
 - `INSERT`・`UPDATE`・`DELETE` 文は複数DBテーブルを使用する場合のみ別名を付加する。DBMS の制限によって付加できない場合はその限りではない。
 - 原則として DB項目には別名を付加しない。同じ DB項目名が複数存在する場合は適切な別名を付加する。
 - DB項目に別名を付加する場合は DB項目名のサフィックスを変更しない。
-    - ［NG例］ `u.user_nm creatorname`
-    - ［OK例］ `u.user_nm creator_nm`
-- 別名を付加する際の `AS` は省略する。
+    - ［NG例］ `u.user_nm AS creatorname`
+    - ［OK例］ `u.user_nm AS creator_nm`
+- 別名を付加する際の `AS` は省略しない。
 - 別名はサブクエリを含め全体を通してユニークになるよう命名する。
 
 ## テーブル結合
 - 内部結合は `JOIN` で記述する。`INNER` は省略する。
 - 外部結合は `LEFT JOIN` で記述する。
-- 結合条件 `ON`句は、左辺に `JOIN` するテーブルを記述する。
-    - ［OK例］ `FROM tbla ta JOIN tblz tz ON tz.id = ta.id`
-    - ［NG例］ `FROM tbla ta JOIN tblz tz ON ta.id = tz.id`
+- 結合条件 `ON`句は、`JOIN` したテーブルの項目を左辺に記述する。
+    - ［OK例］ `FROM tbla AS ta JOIN tblz AS tz ON tz.id = ta.id`
+    - ［NG例］ `FROM tbla AS ta JOIN tblz AS tz ON ta.id = tz.id`
 - テーブルの結合文は標準SQL で記述する。Oracle特有の `(+)` を使用した記述方式は不可とする。
 
 ## SELECT句
-- 原則として `SELECT *` は使用しない。サブクエリにて項目が指定されている場合は例外とする。
+- 原則として `SELECT *` は使用しない。サブクエリにて項目が指定されている場合は例外とする。（例: `SELECT * FROM (SELECT id, name FROM tbla)`）
 - `EXISTS` 内のサブクエリは `SELECT 1` とする。
 - 抽出した全件を数えたい場合は `COUNT(*)` を使用する。（引数を `*` とする。）
 
 ## 記述ルール
 - 不等号演算子には `!=` ではなく `<>` を使用する。
 - 暗黙の型変換は使用しない。
-- 固定値は SQLバインド変数 `?` を使用せず、SQL にリテラルで記述する。
+- 固定値（`WHERE status = '1'` の `'1'` など）は SQLバインド変数 `?` を使用せず、SQL にリテラルで記述する。
 - `GROUP BY` が使用可能であれば `DISTINCT` を使用しない。
 - `null` が入らない項目に対して `COALESCE` は使用しない。
 - サブクエリが不要な箇所でサブクエリを使用しない。

@@ -47,7 +47,7 @@ import java.util.Map;
  *     .addQuery(", u.user_nm ")
  *     .addQuery(", u.email ")
  *     .addQuery(", u.birth_dt ")
- *     .addQuery(" FROM t_user u ")
+ *     .addQuery(" FROM t_user AS u ")
  *     .addQuery(" ORDER BY u.user_id ")
  *     .end();</code>
  * ［SQL実行例 バインド項目無し］

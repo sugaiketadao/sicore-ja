@@ -50,7 +50,6 @@ public final class StandaloneServer {
    * </ul>
    *
    * @param args 引数
-   * @throws IOException I/O例外エラー
    */
   public static void main(final String[] args) {
     LogUtil.javaInfoStdout();

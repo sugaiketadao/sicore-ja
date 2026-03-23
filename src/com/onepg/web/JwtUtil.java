@@ -52,7 +52,6 @@ final class JwtUtil {
    *
    * @param token JWT 文字列
    * @return サインインID
-   * @throws Exception 署名不正・期限切れの場合
    */
   static String validateToken(final String token) {
     if (ValUtil.isBlank(token)) {
@@ -85,7 +84,6 @@ final class JwtUtil {
    *
    * @param data 署名対象データ
    * @return Base64URL エンコードされた署名
-   * @throws Exception 署名エラー
    */
   private static String sign(final String data) {
     try {

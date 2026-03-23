@@ -358,7 +358,6 @@ public final class PropertiesUtil {
    * </ul>
    *
    * @return バイナリファイル親ディレクトリパス
-   * @throws IllegalStateException クラスファイルのパス取得に失敗した場合
    */
   private static String getJavaClassParentPath() {
     final ProtectionDomain pd = FileUtil.class.getProtectionDomain();

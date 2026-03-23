@@ -301,7 +301,6 @@ public final class FileUtil {
    * @param middleMatch 検索ファイル名 中間一致（省略可能）省略した場合は <code>null</code>
    * @param suffixMatch 検索ファイル名 後方一致（省略可能）省略した場合は <code>null</code>
    * @return ファイルパス（絶対パス）配列
-   * @throws RuntimeException ディレクトリが存在しない場合
    */
   public static String[] getFileList(final String dirPath, final String typeMark,
       final String prefixMatch, final String middleMatch, final String suffixMatch) {
@@ -385,8 +384,6 @@ public final class FileUtil {
    * @param srcFile 移動元ファイル
    * @param destFile 移動先ファイル（ディレクトリ指定可）
    * @return 移動先ファイルオブジェクト
-   * @throws IllegalArgumentException 移動先ファイルが既に存在する場合
-   * @throws IllegalStateException ファイル移動に失敗した場合
    */
   public static File move(final File srcFile, final File destFile) {
     final Path srcPath = Paths.get(srcFile.getAbsolutePath());
@@ -426,8 +423,6 @@ public final class FileUtil {
    * @param srcFile コピー元ファイル
    * @param destFile コピー先ファイル（ディレクトリ指定可）
    * @return コピー先ファイルオブジェクト
-   * @throws IllegalArgumentException コピー先ファイルが既に存在する場合
-   * @throws IllegalStateException ファイルコピーに失敗した場合
    */
   public static File copy(final File srcFile, final File destFile) {
     final Path srcPath = Paths.get(srcFile.getAbsolutePath());
@@ -453,6 +448,9 @@ public final class FileUtil {
     if (destFile.isDirectory()) {
       return Paths.get(FileUtil.joinPath(destFile.getAbsolutePath(), srcFile.getName()));
     } else {
+      if (ValUtil.isBlank(getTypeMark(destFile.getAbsolutePath()))) {
+        throw new RuntimeException("Destination file path is neither a directory nor a file with an extension. " + LogUtil.joinKeyVal("path", destFile.getAbsolutePath()));
+      }
       return Paths.get(destFile.getAbsolutePath());
     }
   }
@@ -465,7 +463,6 @@ public final class FileUtil {
    *
    * @param deleteFilePath 削除ファイルパス
    * @return ファイルが無い場合は <code>false</code>
-   * @throws IllegalStateException ファイル削除に失敗した場合
    */
   public static boolean delete(final String deleteFilePath) {
     final Path deletePath = Paths.get(deleteFilePath);
@@ -496,7 +493,6 @@ public final class FileUtil {
    *
    * @param dirPath ディレクトリパス
    * @return 既に存在する場合は <code>false</code>
-   * @throws IllegalStateException ディレクトリ作成に失敗した場合
    */
   public static boolean makeDir(final String dirPath) {
     final Path path = Paths.get(dirPath);

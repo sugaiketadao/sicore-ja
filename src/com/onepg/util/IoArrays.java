@@ -8,6 +8,8 @@ import java.util.List;
  * 配列リスト.<br>
  * <ul>
  * <li>テーブルイメージのデータを保持する。</li>
+ * <li>複数行のマップより軽くテーブルイメージのデータを保持するためのクラス。</li>
+ * <li>API の使用を想定している。</li>
  * </ul>
  */
 public final class IoArrays extends ArrayList<List<String>> {

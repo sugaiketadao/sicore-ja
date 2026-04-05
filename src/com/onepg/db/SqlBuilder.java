@@ -2,6 +2,7 @@ package com.onepg.db;
 
 import com.onepg.util.ValUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,10 +26,55 @@ import java.util.List;
 public final class SqlBuilder extends SqlBean {
 
   /**
-   * コンストラクタ.
+   * コンストラクタ.<br>
+   * <ul>
+   * <li>SQL-IDはブランク固定。</li>
+   * </ul>
    */
   public SqlBuilder() {
-    super();
+    super(ValUtil.BLANK, null, new StringBuilder(), new ArrayList<>());
+  }
+  
+  /**
+   * コピー用コンストラクタ.<br>
+   * @param id SQL-ID
+   * @param query SQL文字列
+   * @param bindValues バインド値リスト
+   */
+  private SqlBuilder(final String id, final StringBuilder queryBuilder, final List<Object> bindValues) {
+    super(id, null, queryBuilder, bindValues);
+  }
+ 
+  /**
+   * インスタンスコピー生成.<br>
+   * <ul>
+   * <li>引数の SQL Bean の SQL文字列とバインド値をコピーして新しい SqlBuilder を生成します。</li>
+   * <li>コピー元が SqlConst の場合、SQL-IDはコピー元のIDに指定された文字列を付加したものになります。</li>
+   * </ul>
+   * @param sb コピー元の SQL Bean
+   * @param addId IDに付加する文字列
+   * @return コピーされた SqlBuilder
+   */
+  static SqlBuilder copy(final SqlBean sb, final String addId) {
+    final String id;
+    final StringBuilder queryBuilder;
+    final List<Object> bindValues;
+    if (ValUtil.isNull(sb.queryBuilder)) {
+      if (ValUtil.isBlank(sb.id)) {
+        throw new RuntimeException("Source SQL Bean must have an ID when copying from SqlConst.");
+      }
+      if (ValUtil.isBlank(addId)) {
+        throw new RuntimeException("addId must not be blank when copying from SqlConst.");
+      }
+      // コピー元が SqlConst の場合
+      id = sb.id + "-" + addId;
+      queryBuilder = new StringBuilder(sb.query);
+    } else {
+      id = ValUtil.BLANK;
+      queryBuilder = new StringBuilder(sb.queryBuilder);
+    }
+    bindValues = new ArrayList<>(sb.bindValues);
+    return new SqlBuilder(id, queryBuilder, bindValues);
   }
 
   /**

@@ -3,7 +3,6 @@ package com.onepg.db;
 import com.onepg.util.LogUtil;
 import com.onepg.util.ValUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,42 +24,19 @@ public class SqlBean {
   protected final List<Object> bindValues;
   
   /**
-   * SqlConst（固定SQL）用 コンストラクタ.
+   * コンストラクタ.
+   * @param id SQL-ID
+   * @param query SQL文字列
+   * @param queryBuilder SQL文字列ビルダー
+   * @param bindValues バインド値リスト
    */
-  protected SqlBean(final String query) {
-    // IDとしてクラスパッケージ＋クラス名＋行番号を取得
-    this.id = LogUtil.getClsNameAndLineNo(this.getClass());
-    this.query = query;
-    this.queryBuilder = null;
-    this.bindValues = new ArrayList<>();
-  }
-  
-  /**
-   * SqlConst（固定SQL）#bind用 バインド値付きコンストラクタ.<br>
-   * <ul>
-   * <li>SQL-IDは生成元のIDを引き継ぐ想定。</li>
-   * </ul>
-   */
-  protected SqlBean(final String id, final String query, final List<Object> bindValues) {
+  protected SqlBean(final String id, final String query, final StringBuilder queryBuilder, final List<Object> bindValues) {
     this.id = id;
     this.query = query;
-    this.queryBuilder = null;
+    this.queryBuilder = queryBuilder;
     this.bindValues = bindValues;
   }
   
-  /**
-   * SqlBuilder（動的SQL）用 コンストラクタ.<br>
-   * <ul>
-   * <li>SQL-IDはブランク固定。</li>
-   * </ul>
-   */
-  protected SqlBean() {
-    this.id = ValUtil.BLANK;
-    this.query = null;
-    this.queryBuilder = new StringBuilder();
-    this.bindValues = new ArrayList<>();
-  }
-
   /**
    * SQL-ID取得.
    *

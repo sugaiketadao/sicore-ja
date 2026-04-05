@@ -20,7 +20,7 @@
 
 ## テーブル結合
 - 内部結合は `JOIN` で記述する。`INNER` は省略する。
-- 外部結合は `LEFT JOIN` で記述する。
+- 外部結合は `LEFT JOIN` で記述する。`OUTER` は省略する。
 - 結合条件 `ON`句は、`JOIN` したテーブルの項目を左辺に記述する。
     - ［OK例］ `FROM tbla AS ta JOIN tblz AS tz ON tz.id = ta.id`
     - ［NG例］ `FROM tbla AS ta JOIN tblz AS tz ON ta.id = tz.id`

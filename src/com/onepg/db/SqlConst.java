@@ -87,12 +87,28 @@ public final class SqlConst extends SqlBean {
    * @param bindItemNames バインド項目名リスト
    * @param bindItems バインド項目定義マップ&lt;項目名、型&gt;
    */
-  SqlConst(final String query, final List<String> bindItemNames, final Map<String, BindType> bindItems) {
-    super(query);
+  private SqlConst(final String query, final List<String> bindItemNames, final Map<String, BindType> bindItems) {
+    // IDとしてクラスパッケージ＋クラス名＋行番号を取得
+    super(LogUtil.getClsNameAndLineNo(SqlConst.class), query, null, new ArrayList<>());
     this.bindItemNames = bindItemNames;
     this.bindItems = bindItems;
   }
-  
+    
+  /**
+   * バインド値付きコンストラクタ.<br>
+   * <ul>
+   * <li>SQL-IDは生成元のIDを引き継ぐ想定。</li>
+   * </ul>
+   * @param id SQL-ID
+   * @param query SQL文字列
+   * @param bindValues バインド値リスト
+   */
+  private SqlConst(final String id, final String query, final List<Object> bindValues) {
+    super(id, query, null, bindValues);
+    this.bindItemNames = null;
+    this.bindItems = null;
+  }
+
   /**
    * 固定SQLビルダーインスタンス生成.
    * 
@@ -112,9 +128,9 @@ public final class SqlConst extends SqlBean {
    * </ul>
    * 
    * @param params パラメーター値マップ
-   * @return SQL Bean
+   * @return 固定SQL
    */
-  public SqlBean bind(final AbstractIoTypeMap params) {
+  public SqlConst bind(final AbstractIoTypeMap params) {
     if (ValUtil.isNull(params)) {
       throw new RuntimeException("Parameter map must not be null.");
     }
@@ -143,7 +159,7 @@ public final class SqlConst extends SqlBean {
         bindValues.add(paramValue);
       }
     }
-    return new SqlBean(super.id, super.query, bindValues);
+    return new SqlConst(super.id, super.query, bindValues);
   }
 
   /**

@@ -1801,7 +1801,7 @@ const PageUtil = /** @lends PageUtil */ {
    *   <li>行内要素には <code>data-obj-row-idx</code>属性として行インデックス値が格納され、そのインデックスに基づいて配列化される。</li>
    *   <li>行内のラジオボタンは <code>name</code>属性の最後の [行インデックス] を除去して戻り値のキーとする。（<code>PageUtil#setValue</code> 参照）</li>
    * </ul>
-   * @param {Object} [outerElm] 取得範囲要素（省略可能）
+   * @param {Element} [outerElm] 取得範囲要素（省略可能）
    * @returns {Object} ページデータ連想配列（アンフォーマット済み）
    */
   getValues: function(outerElm) {

@@ -1,10 +1,10 @@
-# SICore Framework
+# SIcore Framework
 
 [English](https://github.com/sugaiketadao/sicore) | Japanese
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-SICoreフレームワークは、**「AIによるコード生成」** と **「プログラミングビギナー」** をサポートするために設計された軽量Javaフレームワークです。
+SIcoreフレームワークは、**「AIによるコード生成」** と **「プログラミングビギナー」** をサポートするために設計された軽量Javaフレームワークです。
 
 多機能なフレームワークとは対照的に、アノテーションや複雑な設定を排除し、シンプルで理解しやすいアーキテクチャを採用しています。
 

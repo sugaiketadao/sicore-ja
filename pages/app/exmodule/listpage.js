@@ -5,6 +5,9 @@
 const init = async function () {
   // メッセージクリア
   PageUtil.clearMsg();
+  // ページングボタンセット
+  PageUtil.initPagingBtn(DomUtil.selectById('searchBtn'));
+
   // 一覧初期処理 Webサービス呼び出し
   const res = await HttpUtil.callJsonService('/services/exmodule/ExampleListInit');
   // 前回の DB抽出条件を取得
@@ -12,7 +15,7 @@ const init = async function () {
   // レスポンスと前回の DB抽出条件をマージ
   Object.assign(res, old);
   // DB抽出条件エリアにレスポンスをセット
-  PageUtil.setValues(res, DomUtil.getById('searchConditionsArea'));
+  PageUtil.setValues(res, DomUtil.selectById('searchConditionsArea'));
 };
 
 /**
@@ -24,7 +27,9 @@ const search = async function () {
   // DB抽出結果エリアをクリア
   PageUtil.clearRows('list');
   // DB抽出条件エリアの値を取得
-  const req = PageUtil.getValues(DomUtil.getById('searchConditionsArea'));
+  const req = PageUtil.getValues(DomUtil.selectById('searchConditionsArea'));
+  // ページング情報追加
+  PageUtil.addPagingParam(req);
   // 今回の DB抽出条件をブラウザストレージ保存
   StorageUtil.setPageObj('searchConditions', req); 
   // 一覧検索 Webサービス呼び出し
@@ -36,7 +41,9 @@ const search = async function () {
     return;
   }
   // DB抽出結果エリアにレスポンスをセット
-  PageUtil.setValues(res, DomUtil.getById('searchResultsArea'));
+  PageUtil.setValues(res, DomUtil.selectById('searchResultsArea'));
+  // ページングボタン活性非活性操作
+  PageUtil.refreshPagingBtn(res);
 };
 
 /**

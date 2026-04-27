@@ -56,7 +56,7 @@ public class ExampleListSearch extends AbstractDbAccessWebService {
     sb.addQnotB("   AND u.birth_dt = ? ", io.getDateNullable("birth_dt"));
     sb.addQuery(" ORDER BY u.user_id ");
     // DB一括抽出
-    final IoRows rows = SqlUtil.selectBulk(getDbConn(), sb, 5);
+    final IoRows rows = SqlUtil.selectBulkPageing(getDbConn(), sb, 5, io);
     // 抽出結果セット
     io.putRows("list", rows);
     // 抽出件数セット
@@ -66,7 +66,6 @@ public class ExampleListSearch extends AbstractDbAccessWebService {
       io.putMsg(MsgType.INFO, "i0004", new String[] { String.valueOf(rows.size()) });
     }
   }
-
   
   /**
    * DB抽出条件バリデーション.

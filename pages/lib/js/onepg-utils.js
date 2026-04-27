@@ -339,6 +339,16 @@ const ValUtil = /** @lends ValUtil */ {
   },
 
   /**
+   * 数値変換.<br>
+   *
+   * @param {Object} obj オブジェクト
+   * @returns {number} 数値型
+   */
+  toNum : function(obj) {
+    return Number(obj);
+  },
+
+  /**
    * 文字列→Dateオブジェクト変換.<br>
    * <ul>
    * <li>日付文字列を Dateオブジェクトに変換する。</li>
@@ -372,6 +382,16 @@ const ValUtil = /** @lends ValUtil */ {
       return null;
     }
     return ValUtil._formatDate(dateObj, 'YYYYMMDD');
+  },
+
+  /**
+   * 真偽値変換.<br>
+   *
+   * @param {Object} obj オブジェクト
+   * @returns {boolean} 真偽値型
+   */
+  toBool : function(obj) {
+    return ValUtil.isTrue(obj);
   },
 
   /**
@@ -427,7 +447,6 @@ const ValUtil = /** @lends ValUtil */ {
     const pads = pad.repeat(len);
     return (value + pads).substring(0, len);
   },
-
 
   /**
    * オブジェクト型取得.<br>
@@ -913,7 +932,7 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {NodeList|Element} elm 対象HTML要素
    * @returns {Element|null} 最初の要素
    */
-  _getListFirst: function(elm) {
+  _getAryFirstElm: function(elm) {
     if (!DomUtil.isExists(elm)) {
       return null;
     }
@@ -961,12 +980,12 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  getById : function(id, outerElm) {
+  selectById : function(id, outerElm) {
     if (ValUtil.isBlank(id)) {
       return null;
     }
     if (DomUtil.isExists(outerElm)) {
-      const oElm = DomUtil._getListFirst(outerElm);
+      const oElm = DomUtil._getAryFirstElm(outerElm);
       if (!DomUtil.isExists(oElm)) {
         return null;
       }
@@ -989,12 +1008,12 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  getSelector: function(selector, outerElm) {
+  select: function(selector, outerElm) {
     if (ValUtil.isBlank(selector)) {
       return null;
     }
     if (DomUtil.isExists(outerElm)) {
-      const oElm = DomUtil._getListFirst(outerElm);
+      const oElm = DomUtil._getAryFirstElm(outerElm);
       if (!DomUtil.isExists(oElm)) {
         return null;
       }
@@ -1016,17 +1035,16 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  getByName: function(name, outerElm) {
+  selectByName: function(name, outerElm) {
     if (ValUtil.isBlank(name)) {
       return null;
     }
     const selector = `[name="${name}"]`;
-    const retElm = DomUtil.getSelector(selector, outerElm);
+    const retElm = DomUtil.select(selector, outerElm);
     return retElm;
   },
 
   /**
-   * @private
    * nameかつvalueセレクター（最初の要素取得）.<br>
    * <ul>
    * <li>ラジオボタン用。</li>
@@ -1037,12 +1055,12 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  _getByNameAndValue: function(name, value, outerElm) {
+  selectByNameAndValue: function(name, value, outerElm) {
     if (ValUtil.isBlank(name) || ValUtil.isBlank(value)) {
       return null;
     }
     const selector = `[name="${name}"][value="${value}"]`;
-    const retElm = DomUtil.getSelector(selector, outerElm);
+    const retElm = DomUtil.select(selector, outerElm);
     return retElm;
   },
 
@@ -1056,17 +1074,16 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  getByDataName: function(name, outerElm) {
+  selectByDataName: function(name, outerElm) {
     if (ValUtil.isBlank(name)) {
       return null;
     }
     const selector = `[${DomUtil._ORG_ATTR_NAME}="${name}"]`;
-    const retElm = DomUtil.getSelector(selector, outerElm);
+    const retElm = DomUtil.select(selector, outerElm);
     return retElm;
   },
 
   /**
-   * @private
    * tagセレクター（最初の要素取得）.<br>
    * <ul>
    * <li>引数が不正な場合や取得できなかった場合は <code>null</code> を返す。</li>
@@ -1075,12 +1092,12 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Element|null} 取得HTML要素
    */
-  _getByTag: function(tag, outerElm) {
+  selectByTag: function(tag, outerElm) {
     if (ValUtil.isBlank(tag)) {
       return null;
     }
     const selector = tag;
-    const retElm = DomUtil.getSelector(selector, outerElm);
+    const retElm = DomUtil.select(selector, outerElm);
     return retElm;
   },
 
@@ -1095,12 +1112,12 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Array<Element>|null} 複数HTML要素配列 
    */
-  getsSelector: function(selector, outerElm) {
+  selectAll: function(selector, outerElm) {
     if (ValUtil.isBlank(selector)) {
       return null;
     }
     if (DomUtil.isExists(outerElm)) {
-      const oElm = DomUtil._getListFirst(outerElm);
+      const oElm = DomUtil._getAryFirstElm(outerElm);
       if (!DomUtil.isExists(oElm)) {
         return null;
       }
@@ -1114,7 +1131,6 @@ const DomUtil = /** @lends DomUtil */ {
   },
 
   /**
-   * @private
    * classセレクター（複数要素取得）.<br>
    * <ul>
    * <li>HTML要素の配列を返す。</li>
@@ -1125,17 +1141,16 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Object} [outerElm] 検索範囲要素（省略可能）
    * @returns {Array<Element>|null} 複数HTML要素配列 
    */
-  _getsByClass: function(cls, outerElm) {
+  selectAllByClass: function(cls, outerElm) {
     if (ValUtil.isBlank(cls)) {
       return null;
     }
     const selector = '.' + cls;
-    const retElms = DomUtil.getsSelector(selector, outerElm);
+    const retElms = DomUtil.selectAll(selector, outerElm);
     return retElms;
   },
 
   /**
-   * @private
    * 祖先要素idセレクター（最初の要素取得）.<br>
    * <ul>
    * <li>指定要素から祖先要素を検索して id に一致する最も近い要素を返す。</li>
@@ -1145,7 +1160,7 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {string} id <code>id</code>属性
    * @returns {Element|null} 取得HTML要素
    */
-  _getParentById: function(baseElm, id) {
+  selectParentById: function(baseElm, id) {
     if (ValUtil.isBlank(id)) {
       return null;
     }
@@ -1171,7 +1186,7 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {string} tag HTMLタグ名
    * @returns {Element|null} 取得HTML要素
    */
-  getParentByTag: function(baseElm, tag) {
+  selectParentByTag: function(baseElm, tag) {
     if (ValUtil.isBlank(tag)) {
       return null;
     }
@@ -1186,7 +1201,6 @@ const DomUtil = /** @lends DomUtil */ {
   },
 
   /**
-   * @private
    * すべての直接子要素を取得.<br>
    * <ul>
    * <li>指定要素直下の子要素をすべて取得する（テキストノードは除く）。</li>
@@ -1197,7 +1211,7 @@ const DomUtil = /** @lends DomUtil */ {
    * @param {Element} parentElm 親要素
    * @returns {Array<Element>|null} 子要素配列
    */
-  _getAllChildren: function(parentElm) {
+  selectAllChildren: function(parentElm) {
     if (!DomUtil.isExists(parentElm)) {
       return null;
     }
@@ -1609,14 +1623,30 @@ const PageUtil = /** @lends PageUtil */ {
 
   /** @private メッセージ表示エリア要素の <code>id</code>属性名. */
   _ITEMID_MSG: '_msg',
-  /** @private レスポンスデータ内のメッセージ配列のキー（Io.java で指定）. */
+  /** @private レスポンスキー - メッセージ配列（Io.java で指定）. */
   _IOKEY_MSG: '_msg',
-  /** @private レスポンスデータ内のエラー存在フラグのキー（Io.java で指定）. */
+  /** @private レスポンスキー - エラー存在フラグ（Io.java で指定）. */
   _IOKEY_HAS_ERR: '_has_err',
   /** @private <code>title</code>属性バックアップ用の属性名. */
   _ORG_ATTR_TITLE_BACKUP: 'data-title-backup',
   /** @private リスト部ラジオボタンの連想配列化時の <code>name</code>属性名. */
   _ORG_ATTR_DETAIL_RADIO_OBJ_NAME: 'data-radio-obj-name',
+  /** @private ページングボタン表示エリア要素の <code>id</code>属性名. */
+  _ITEMID_PAGING: '_paging',
+  /** @private リクエスト・レスポンスキー - ページング情報 現在ページ番号（SqlUtil.java で指定）. */
+  _IOKEY_PAGENO: '_pageno',
+  /** @private レスポンスキー - ページング情報 次ページ存在フラグ（SqlUtil.java で指定）. */
+  _IOKEY_HAS_NEXT_PAGE: '_has_next_page',
+  /** @private ページングボタン押下時に発火する検索ボタンマーク用の属性名. */
+  _ORG_ATTR_PAGING_TRIGGER_MARK: 'data-paging-trigger-mark',
+  /** @private 「前へ」ボタンのキャプション. */
+  _CAPTION_PREV_BTN: '前へ',
+  /** @private 「次へ」ボタンのキャプション. */
+  _CAPTION_NEXT_BTN: '次へ',
+  /** @private 現在ページ番号. */
+  _currentPagingNo: 0,
+  /** @private リクエストページ番号. */
+  _requestPagingNo: 0,
 
   /**
    * メッセージ表示.<br>
@@ -1640,7 +1670,7 @@ const PageUtil = /** @lends PageUtil */ {
       return;
     }
     // メッセージ表示エリアにメッセージ表示
-    const msgElm = DomUtil.getById(PageUtil._ITEMID_MSG);
+    const msgElm = DomUtil.selectById(PageUtil._ITEMID_MSG);
     if (!DomUtil.isExists(msgElm)) {
       throw new Error('PageUtil#setMsg: Message element not found. ');
     }
@@ -1673,9 +1703,9 @@ const PageUtil = /** @lends PageUtil */ {
         let elm;
         if (!ValUtil.isBlank(rowIdx)) {
           // 行インデックス値が指定されている場合は <code>data-obj-row-idx</code>属性も考慮して取得
-          elm = DomUtil.getSelector(`[name="${itemName}"][${DomUtil._ORG_ATTR_OBJ_ROW_INDEX}="${rowIdx}"]`);
+          elm = DomUtil.select(`[name="${itemName}"][${DomUtil._ORG_ATTR_OBJ_ROW_INDEX}="${rowIdx}"]`);
         } else {
-          elm = DomUtil.getByName(itemName);
+          elm = DomUtil.selectByName(itemName);
         }
         if (DomUtil.isExists(elm)) {
           let cls = '';
@@ -1722,7 +1752,7 @@ const PageUtil = /** @lends PageUtil */ {
    * </ul>
    */
   clearMsg: function() {
-    const msgElm = DomUtil.getById(PageUtil._ITEMID_MSG);
+    const msgElm = DomUtil.selectById(PageUtil._ITEMID_MSG);
     if (!DomUtil.isExists(msgElm)) {
       throw new Error('PageUtil#clearMsg: Message element not found. ');
     }
@@ -1730,7 +1760,7 @@ const PageUtil = /** @lends PageUtil */ {
     DomUtil.setVisible(msgElm, false, false);
     
     // 項目のハイライト表示解除および <code>title</code>属性の復元
-    const elms = DomUtil.getsSelector('.info-item, .warn-item, .err-item');
+    const elms = DomUtil.selectAll('.info-item, .warn-item, .err-item');
     for (const elm of elms) {
       // CSSクラスを削除 
       DomUtil.removeClass(elm, 'info-item');
@@ -1743,6 +1773,133 @@ const PageUtil = /** @lends PageUtil */ {
         elm.title = '';
       }
     }
+  },
+
+  /**
+   * ページングボタン設置.<br>
+   * <ul>
+   *   <li><code>id</code>属性が <code>'_paging'</code> の要素を ページングボタン表示エリア要素とする。</li>
+   *   <li>ページングボタン表示エリア要素が複数存在する場合は最初の要素に設定する。</li>
+   *   <li>表示エリアにページング用の「前へ」「次へ」ボタンを追加する。</li>
+   *   <li>「前へ」「次へ」ボタン押下時は引数の検索ボタン要素のクリックイベントを発火させる。</li>
+   *   <li>検索ボタン要素にはページングトリガーマーク（独自属性）が設定される。</li>
+   * </ul>
+   * @param {Element} searchBtnElm ページングの起点となる検索ボタン要素
+   */
+  initPagingBtn : function(searchBtnElm) {
+    PageUtil._currentPagingNo = 0;
+    PageUtil._requestPagingNo = 0;
+    if (!DomUtil.isExists(searchBtnElm)) {
+      throw new Error('PageUtil#initPagingBtn: Argument element is invalid. ');
+    }
+    const pagingElm = DomUtil.selectById(PageUtil._ITEMID_PAGING);
+    if (!DomUtil.isExists(pagingElm)) {
+      throw new Error('PageUtil#initPagingBtn: Paging element not found. ');
+    }
+    pagingElm.innerHTML = `<button type="button" class="half-left" onclick="PageUtil._paging(-1);" disabled>前へ</button><button type="button" class="half-right" onclick="PageUtil._paging(1);" disabled>次へ</button>`;
+    DomUtil.setAttr(searchBtnElm, PageUtil._ORG_ATTR_PAGING_TRIGGER_MARK, '+');
+  },
+
+  /**
+   * ページングパラメーター追加.<br>
+   * <ul>
+   *   <li>引数のリクエストデータにページングパラメーターを追加する。</li>
+   * </ul>
+   * @param {Object} req リクエストデータ
+   */
+  addPagingParam : function(req) {
+    if (!ValUtil.isObj(req)) {
+      throw new Error('PageUtil#addPagingParam: Argument request is invalid. ');
+    }
+    if (PageUtil._requestPagingNo < 1) {
+      PageUtil._requestPagingNo = 1;
+    }
+    req[PageUtil._IOKEY_PAGENO] = PageUtil._requestPagingNo;
+  },
+
+  /**
+   * ページングボタン活性非活性操作.<br>
+   * <ul>
+   *   <li>引数のレスポンスデータからページング情報を取得する。</li>
+   *   <li>ページングボタンの活性/非活性を設定する。</li>
+   * </ul>
+   * @param {Object} res レスポンスデータ
+   */
+  refreshPagingBtn : function(res) {
+    if (!ValUtil.isObj(res)) {
+      throw new Error('PageUtil#refreshPagingBtn: Argument response is invalid. ');
+    }
+    // ページングボタン表示エリア
+    const pagingElm = DomUtil.selectById(PageUtil._ITEMID_PAGING);
+    if (!DomUtil.isExists(pagingElm)) {
+      throw new Error('PageUtil#refreshPagingBtn: Paging element not found. ');
+    }
+    if (ValUtil.isBlank(res[PageUtil._IOKEY_PAGENO]) 
+      || ValUtil.isBlank(res[PageUtil._IOKEY_HAS_NEXT_PAGE])) {
+      PageUtil.clearPaging();
+      return;
+    }
+    // ページ番号
+    const pagingNo = ValUtil.toNum(res[PageUtil._IOKEY_PAGENO]);
+    // 次ページ存在フラグ
+    const hasNextPage = ValUtil.toBool(res[PageUtil._IOKEY_HAS_NEXT_PAGE]);
+    // 次へ前へボタン
+    const buttons = DomUtil.selectAll('button', pagingElm);
+    // ページ番号が1より大きい場合は「前へ」ボタンを活性化
+    if (pagingNo > 1) {
+      buttons[0].disabled = false;
+    } else {
+      buttons[0].disabled = true;
+    }
+    // 次ページ存在フラグがtrueの場合は「次へ」ボタンを活性化
+    if (hasNextPage) {
+      buttons[1].disabled = false;
+    } else {
+      buttons[1].disabled = true;
+    }
+    // 現在ページ番号を更新
+    PageUtil._currentPagingNo = pagingNo;
+    // 検索ボタン自体が押下された場合に備えてリクエストページ番号を初期化
+    PageUtil._requestPagingNo = 0;
+  },
+
+  /**
+   * ページングクリア.<br>
+   * <ul>
+   *   <li>ページング用の「前へ」「次へ」ボタンを非活性化する。</li>
+   * </ul>
+   */
+  clearPaging : function() {
+    PageUtil._currentPagingNo = 0;
+    PageUtil._requestPagingNo = 0;
+    const pagingElm = DomUtil.selectById(PageUtil._ITEMID_PAGING);
+    if (!DomUtil.isExists(pagingElm)) {
+      throw new Error('PageUtil#clearPaging: Paging element not found. ');
+    }
+    const buttons = DomUtil.selectAll('button', pagingElm);
+    for (const button of buttons) {
+      button.disabled = true;
+    }
+  },
+
+  /**
+   * @private
+   * ページング処理.<br>
+   * @param {int} pagingDiff ページング差分値（「前へ」ボタン押下時は -1、「次へ」ボタン押下時は 1）
+   */
+  _paging : function(pagingDiff) {
+    if (PageUtil._currentPagingNo <= 1 && pagingDiff < 0) {
+      // 通常ありえないが、念のため
+      PageUtil._requestPagingNo = 1;
+    } else {
+      PageUtil._requestPagingNo = PageUtil._currentPagingNo + pagingDiff;
+    }
+    // ページングトリガーマークが設定されている検索ボタン要素を取得してクリックイベントを発火
+    const searchBtnElm = DomUtil.select(`[${PageUtil._ORG_ATTR_PAGING_TRIGGER_MARK}="+"]`);
+    if (!DomUtil.isExists(searchBtnElm)) {
+      throw new Error('PageUtil#_paging: Paging trigger element not found. ');
+    }
+    searchBtnElm.click();
   },
 
   /**
@@ -1805,7 +1962,7 @@ const PageUtil = /** @lends PageUtil */ {
    * @returns {Object} ページデータ連想配列（アンフォーマット済み）
    */
   getValues: function(outerElm) {
-    outerElm = outerElm || DomUtil._getByTag('main') || document.body;
+    outerElm = outerElm || DomUtil.selectByTag('main') || document.body;
     if (!DomUtil.isExists(outerElm)) {
       throw new Error('PageUtil#getValues: Argument element is invalid. ');
     }
@@ -1813,7 +1970,7 @@ const PageUtil = /** @lends PageUtil */ {
     // 行インデックスを付加
     PageUtil._setRowIndex(outerElm);
     // 対象要素を取得
-    const targetElms = DomUtil.getsSelector('input[name],select[name],textarea[name]', outerElm);
+    const targetElms = DomUtil.selectAll('input[name],select[name],textarea[name]', outerElm);
 
     const jsonData = {};
     const listObj = {};
@@ -1893,7 +2050,7 @@ const PageUtil = /** @lends PageUtil */ {
     }
 
     // 対象要素を取得
-    const targetElms = DomUtil.getsSelector('input[name],select[name],textarea[name]', rowElm);
+    const targetElms = DomUtil.selectAll('input[name],select[name],textarea[name]', rowElm);
 
     const jsonData = {};
     for (const elm of targetElms) {
@@ -1938,7 +2095,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (!DomUtil.isExists(baseElm)) {
       throw new Error('PageUtil#getRowValuesByInnerElm: Argument element is invalid. ');
     }
-    const rowElm = DomUtil.getParentByTag(baseElm, rowTag);
+    const rowElm = DomUtil.selectParentByTag(baseElm, rowTag);
     if (!DomUtil.isExists(rowElm)) {
       throw new Error(`Row element not found. rowTag = ${rowTag}, baseElm = ${baseElm.name}`);
     }
@@ -1985,7 +2142,7 @@ const PageUtil = /** @lends PageUtil */ {
       throw new Error('PageUtil#setValues: Argument is invalid. ');
     }
 
-    outerElm = outerElm || DomUtil._getByTag('main') || document.body;
+    outerElm = outerElm || DomUtil.selectByTag('main') || document.body;
     if (!DomUtil.isExists(outerElm)) {
       throw new Error('PageUtil#setValues: Argument element is invalid. ');
     }
@@ -2031,7 +2188,7 @@ const PageUtil = /** @lends PageUtil */ {
    */
   _addRows: function(listId, listElm, objAry) {
     // テンプレート行を取得
-    const templateScript = DomUtil._getByTag('script', listElm);
+    const templateScript = DomUtil.selectByTag('script', listElm);
     if (!DomUtil.isExists(templateScript)) {
       console.warn(`PageUtil#_addRows: Template script not found in list. id=${listId}`);
       return;
@@ -2056,12 +2213,12 @@ const PageUtil = /** @lends PageUtil */ {
 
     // ラジオボタン用行インデックス
     let radioRowIdx = -1;
-    const oldRowElms = DomUtil.getsSelector(`${rowElmTag}`, listElm);
+    const oldRowElms = DomUtil.selectAll(`${rowElmTag}`, listElm);
     // 現在の最大行インデックスを取得
     if (DomUtil.isExists(oldRowElms)) {
       // 各行要素内のラジオボタンで <code>name</code>属性の最後に [行インデックス] があるものを取得
       for (const oldRowElm of oldRowElms) {
-        const radioElm = DomUtil.getSelector('input[type="radio"][name*="["][name$="]"]', oldRowElm);
+        const radioElm = DomUtil.select('input[type="radio"][name*="["][name$="]"]', oldRowElm);
         if (DomUtil.isExists(radioElm)) {
           const name = DomUtil.getAttr(radioElm, 'name');
           const idx = ~~name.substring(name.lastIndexOf('[') + 1, name.length - 1);
@@ -2094,7 +2251,7 @@ const PageUtil = /** @lends PageUtil */ {
       // 行要素内のラジオボタンは <code>name</code>属性の最後に [行インデックス] を付加して行単位でグループ化する。
       // 元の <code>name</code>属性は <code>data-radio-obj-name</code>属性に格納する
       radioRowIdx++;
-      const radioElms = DomUtil.getsSelector('input[type="radio"][name]', rowElm);
+      const radioElms = DomUtil.selectAll('input[type="radio"][name]', rowElm);
       for (const radioElm of radioElms) {
         const name = radioElm.getAttribute('name');
         const rotName = name + `[${radioRowIdx}]`;
@@ -2134,7 +2291,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (ValUtil.isBlank(listId)) {
       throw new Error('PageUtil#addRow: Argument listId is invalid. ');
     }
-    const listElm = DomUtil.getById(listId);
+    const listElm = DomUtil.selectById(listId);
     if (!DomUtil.isExists(listElm)) {
       console.warn(`PageUtil#addRow: List element not found. id=${listId}`);
       return;
@@ -2161,7 +2318,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (ValUtil.isBlank(searchElmName) || ValUtil.isBlank(searchElmVal)) {
       throw new Error(`PageUtil#removeRow: Argument is invalid. name=${searchElmName} value=${searchElmVal}`);
     }
-    const searchElms = DomUtil.getsSelector(`[name="${searchElmName}"][value="${searchElmVal}"]`);
+    const searchElms = DomUtil.selectAll(`[name="${searchElmName}"][value="${searchElmVal}"]`);
     if (searchElms.length <= 0) {
       console.warn(`PageUtil#removeRow: Element not found. searchElmName=${searchElmName} searchElmVal=${searchElmVal}`);
       return false;
@@ -2172,7 +2329,7 @@ const PageUtil = /** @lends PageUtil */ {
         // チェックボックス・ラジオボタンでチェックされていないものは無視
         continue;
       }
-      const rowElm = DomUtil.getParentByTag(elm, rowTag);
+      const rowElm = DomUtil.selectParentByTag(elm, rowTag);
       if (!DomUtil.isExists(rowElm)) {
         console.warn(`PageUtil#removeRow: Row element not found. rowTag=${rowTag} searchElmName=${searchElmName} searchElmVal=${searchElmVal}`);
         continue;
@@ -2198,7 +2355,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (ValUtil.isBlank(listId)) {
       throw new Error('PageUtil#clearRows: Argument listId is invalid. ');
     }
-    const listElm = DomUtil.getById(listId);
+    const listElm = DomUtil.selectById(listId);
     if (!DomUtil.isExists(listElm)) {
       console.warn(`PageUtil#clearRows: List element not found. id=${listId}`);
       return;
@@ -2216,7 +2373,7 @@ const PageUtil = /** @lends PageUtil */ {
    */
   _removeAllRows: function(listElm) {
     // 既存の行をすべて削除（テンプレート行以外）
-    const oldRowElms = DomUtil._getAllChildren(listElm);
+    const oldRowElms = DomUtil.selectAllChildren(listElm);
     for (const rowElm of oldRowElms) {
       if (rowElm.tagName.toLowerCase() === 'script') {
         continue;
@@ -2244,7 +2401,7 @@ const PageUtil = /** @lends PageUtil */ {
       throw new Error('PageUtil#_setRowIndex: Target element required.');
     }
     // 行内要素を取得
-    const rowInElms = DomUtil.getsSelector('input[name*="."],select[name*="."],textarea[name*="."]', outerElm);
+    const rowInElms = DomUtil.selectAll('input[name*="."],select[name*="."],textarea[name*="."]', outerElm);
     // ページからリスト要素を見つける
     const listObj = {};
     for (const elm of rowInElms) {
@@ -2254,7 +2411,7 @@ const PageUtil = /** @lends PageUtil */ {
         // すでにマップに存在する場合はスキップ
         continue;
       }
-      const listElm = DomUtil._getParentById(elm, listId);
+      const listElm = DomUtil.selectParentById(elm, listId);
       if (!DomUtil.isExists(listElm)) {
         throw new Error(`PageUtil#_setRowIndex: List parent element not found. id=#${listId} `);
       }
@@ -2264,14 +2421,14 @@ const PageUtil = /** @lends PageUtil */ {
     // リストごとのループ
     for (const listId in listObj) {
       const listElm = listObj[listId];
-      const rowElms = DomUtil._getAllChildren(listElm);
+      const rowElms = DomUtil.selectAllChildren(listElm);
       // 行ループ
       let i = -1;
       for (const rowElm of rowElms) {
         if (rowElm.tagName.toLowerCase() === 'script') {
           continue;
         }
-        const colElms = DomUtil.getsSelector(`[name^="${listId}."]`, rowElm);
+        const colElms = DomUtil.selectAll(`[name^="${listId}."]`, rowElm);
         if (colElms.length <= 0) {
           continue;
         }
@@ -2296,9 +2453,9 @@ const PageUtil = /** @lends PageUtil */ {
    * @returns 要素
    */
   _getElmBynNameOrDataName: function(name, outerElm) {
-    let elm = DomUtil.getByName(name, outerElm);
+    let elm = DomUtil.selectByName(name, outerElm);
     if (!DomUtil.isExists(elm)) {
-      elm = DomUtil.getByDataName(name, outerElm);
+      elm = DomUtil.selectByDataName(name, outerElm);
     }
     return elm;
   },
@@ -2316,7 +2473,7 @@ const PageUtil = /** @lends PageUtil */ {
     if (DomUtil.getAttr(outerElm, 'id') === listId) {
       listElm = outerElm;
     } else {
-      listElm = DomUtil.getById(listId, outerElm);
+      listElm = DomUtil.selectById(listId, outerElm);
     }
     if (!DomUtil.isExists(listElm)) {
       console.warn(`PageUtil#_setRowValues: List element not found. id=${listId}`);
@@ -2392,7 +2549,7 @@ const PageUtil = /** @lends PageUtil */ {
     }
     if (PageUtil._isRadioNotVal(elm, val)) {
       // ラジオボタンで値が指定値でない要素が渡された（同name要素の先頭が指定値でなかった）場合は指定値の要素に差し替え
-      elm = DomUtil._getByNameAndValue(name, val, outerElm);
+      elm = DomUtil.selectByNameAndValue(name, val, outerElm);
       if (!DomUtil.isExists(elm)) {
         console.warn(`PageUtil#_getElmToSetElmFormatVal: Element not found. name=${name} value=${val}`);
         return false;
@@ -3145,7 +3302,7 @@ const StorageUtil = /** @lends StorageUtil */ {
  */
 const SessionUtil = /** @lends SessionUtil */ {
 
-  /** @private リクエスト・レスポンスデータ内のキー（Io.java で指定）. */
+  /** @private リクエスト・レスポンスキー（Io.java で指定）. */
   _IOKEY: '_session',
   /** @private セッションキー - JWT */
   _SSKEY_JWT: 'token',

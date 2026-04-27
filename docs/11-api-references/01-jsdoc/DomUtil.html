@@ -97,9 +97,9 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getById" class="method-name">getById</h3>
+        <h3 id="selectById" class="method-name">selectById</h3>
         <div class="method-signature">
-          <code>getById(id, outerElm)</code>
+          <code>selectById(id, outerElm)</code>
         </div>
         <div class="method-description">
           idセレクター（最初の要素取得）.<br>
@@ -137,9 +137,9 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getSelector" class="method-name">getSelector</h3>
+        <h3 id="select" class="method-name">select</h3>
         <div class="method-signature">
-          <code>getSelector(selector, outerElm)</code>
+          <code>select(selector, outerElm)</code>
         </div>
         <div class="method-description">
           セレクター（最初の要素取得）.<br>
@@ -177,9 +177,9 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getByName" class="method-name">getByName</h3>
+        <h3 id="selectByName" class="method-name">selectByName</h3>
         <div class="method-signature">
-          <code>getByName(name, outerElm)</code>
+          <code>selectByName(name, outerElm)</code>
         </div>
         <div class="method-description">
           nameセレクター（最初の要素取得）.<br>
@@ -217,9 +217,55 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getByDataName" class="method-name">getByDataName</h3>
+        <h3 id="selectByNameAndValue" class="method-name">selectByNameAndValue</h3>
         <div class="method-signature">
-          <code>getByDataName(name, outerElm)</code>
+          <code>selectByNameAndValue(name, value, outerElm)</code>
+        </div>
+        <div class="method-description">
+          nameかつvalueセレクター（最初の要素取得）.<br>
+<ul>
+<li>ラジオボタン用。</li>
+<li>引数が不正な場合や取得できなかった場合は <code>null</code> を返す。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>name</code></td>
+                <td><code>string</code></td>
+                <td><code>name</code>属性</td>
+              </tr>
+              <tr>
+                <td><code>value</code></td>
+                <td><code>string</code></td>
+                <td><code>value</code>属性</td>
+              </tr>
+              <tr>
+                <td><code>[outerElm]</code></td>
+                <td><code>Object</code></td>
+                <td>検索範囲要素（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Element|null</code> - 取得HTML要素</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="selectByDataName" class="method-name">selectByDataName</h3>
+        <div class="method-signature">
+          <code>selectByDataName(name, outerElm)</code>
         </div>
         <div class="method-description">
           data-nameセレクター（最初の要素取得）.<br>
@@ -258,9 +304,49 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getsSelector" class="method-name">getsSelector</h3>
+        <h3 id="selectByTag" class="method-name">selectByTag</h3>
         <div class="method-signature">
-          <code>getsSelector(selector, outerElm)</code>
+          <code>selectByTag(tag, outerElm)</code>
+        </div>
+        <div class="method-description">
+          tagセレクター（最初の要素取得）.<br>
+<ul>
+<li>引数が不正な場合や取得できなかった場合は <code>null</code> を返す。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>tag</code></td>
+                <td><code>string</code></td>
+                <td>HTMLタグ名</td>
+              </tr>
+              <tr>
+                <td><code>[outerElm]</code></td>
+                <td><code>Object</code></td>
+                <td>検索範囲要素（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Element|null</code> - 取得HTML要素</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="selectAll" class="method-name">selectAll</h3>
+        <div class="method-signature">
+          <code>selectAll(selector, outerElm)</code>
         </div>
         <div class="method-description">
           セレクター（複数要素取得）.<br>
@@ -300,9 +386,92 @@
         </div>
       </div>
       <div class="method">
-        <h3 id="getParentByTag" class="method-name">getParentByTag</h3>
+        <h3 id="selectAllByClass" class="method-name">selectAllByClass</h3>
         <div class="method-signature">
-          <code>getParentByTag(baseElm, tag)</code>
+          <code>selectAllByClass(cls, outerElm)</code>
+        </div>
+        <div class="method-description">
+          classセレクター（複数要素取得）.<br>
+<ul>
+<li>HTML要素の配列を返す。</li>
+<li>取得できなかった場合は長さゼロの配列を返す。</li>
+<li>引数が不正な場合は <code>null</code> を返す。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>cls</code></td>
+                <td><code>string</code></td>
+                <td><code>class</code>属性</td>
+              </tr>
+              <tr>
+                <td><code>[outerElm]</code></td>
+                <td><code>Object</code></td>
+                <td>検索範囲要素（省略可能）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Array&lt;Element&gt;|null</code> - 複数HTML要素配列</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="selectParentById" class="method-name">selectParentById</h3>
+        <div class="method-signature">
+          <code>selectParentById(baseElm, id)</code>
+        </div>
+        <div class="method-description">
+          祖先要素idセレクター（最初の要素取得）.<br>
+<ul>
+<li>指定要素から祖先要素を検索して id に一致する最も近い要素を返す。</li>
+<li>引数が不正な場合や取得できなかった場合は <code>null</code> を返す。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>baseElm</code></td>
+                <td><code>Element</code></td>
+                <td>指定要素</td>
+              </tr>
+              <tr>
+                <td><code>id</code></td>
+                <td><code>string</code></td>
+                <td><code>id</code>属性</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Element|null</code> - 取得HTML要素</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="selectParentByTag" class="method-name">selectParentByTag</h3>
+        <div class="method-signature">
+          <code>selectParentByTag(baseElm, tag)</code>
         </div>
         <div class="method-description">
           祖先要素tagセレクター（最初の要素取得）.<br>
@@ -339,6 +508,44 @@
         <div class="method-returns">
           <h4>戻り値</h4>
           <p><code>Element|null</code> - 取得HTML要素</p>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="selectAllChildren" class="method-name">selectAllChildren</h3>
+        <div class="method-signature">
+          <code>selectAllChildren(parentElm)</code>
+        </div>
+        <div class="method-description">
+          すべての直接子要素を取得.<br>
+<ul>
+<li>指定要素直下の子要素をすべて取得する（テキストノードは除く）。</li>
+<li>HTML要素の配列を返す。</li>
+<li>子要素がない場合は長さゼロの配列を返す。</li>
+<li>引数が不正な場合は <code>null</code> を返す。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>parentElm</code></td>
+                <td><code>Element</code></td>
+                <td>親要素</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-returns">
+          <h4>戻り値</h4>
+          <p><code>Array&lt;Element&gt;|null</code> - 子要素配列</p>
         </div>
       </div>
       <div class="method">

@@ -88,7 +88,7 @@ const init = async function () {
   const old = StorageUtil.getPageObj('searchConditions');
   // マージしてセット
   Object.assign(res, old);
-  PageUtil.setValues(res, DomUtil.getById('searchConditionsArea'));
+  PageUtil.setValues(res, DomUtil.selectById('searchConditionsArea'));
 };
 
 // 初期処理実行
@@ -150,7 +150,7 @@ const search = async function () {
   // 一覧クリア
   PageUtil.clearRows('list');
   // 検索条件取得
-  const req = PageUtil.getValues(DomUtil.getById('searchConditionsArea'));
+  const req = PageUtil.getValues(DomUtil.selectById('searchConditionsArea'));
   // 検索条件をブラウザストレージ保存（任意）
   StorageUtil.setPageObj('searchConditions', req);
   // Webサービス呼び出し
@@ -162,7 +162,7 @@ const search = async function () {
     return;
   }
   // 結果セット
-  PageUtil.setValues(res, DomUtil.getById('searchResultsArea'));
+  PageUtil.setValues(res, DomUtil.selectById('searchResultsArea'));
 };
 ```
 
@@ -342,7 +342,7 @@ const initInsert = function () {
 // 更新初期処理
 const initUpdate = async function (params) {
   // キー項目を非活性化
-  DomUtil.setEnable(DomUtil.getByName('user_id'), false);
+  DomUtil.setEnable(DomUtil.selectByName('user_id'), false);
   // データ取得
   const res = await HttpUtil.callJsonService('/services/exmodule/ExampleLoad', params);
   PageUtil.setMsg(res);

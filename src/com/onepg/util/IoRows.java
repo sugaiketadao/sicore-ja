@@ -12,12 +12,8 @@ import java.util.Map;
  */
 public final class IoRows extends ArrayList<IoItems> {
 
-  /** 始端行番号. */
-  private int beginRowNo = -1;
-  /** 終端行番号. */
-  private int endRowNo = -1;
-  /** 制限超え判定. */
-  private boolean limitOverFlag = false;
+  /** 次行存在フラグ. */
+  private boolean hasNextRow = false;
 
   /**
    * コンストラクタ.
@@ -45,14 +41,6 @@ public final class IoRows extends ArrayList<IoItems> {
       }
       add(new IoItems(row));
     }
-
-    if (srcList instanceof IoRows) {
-      // ソースマップが本クラスの場合はクラス変数値をコピー
-      final IoRows tlist = (IoRows) srcList;
-      setBeginRowNo(tlist.getBeginRowNo());
-      setEndRowNo(tlist.getEndRowNo());
-      setLimitOver(tlist.isLimitOver());
-    }
   }
 
   /**
@@ -63,56 +51,20 @@ public final class IoRows extends ArrayList<IoItems> {
   }
 
   /**
-   * 始端行番号取得.
+   * 次行存在判定.
    *
-   * @return 始端行番号
+   * @return 次行が存在する場合は <code>true</code>
    */
-  public int getBeginRowNo() {
-    return beginRowNo;
+  public boolean hasNextRow() {
+    return hasNextRow;
   }
 
   /**
-   * 始端行番号格納.
+   * 次行存在フラグ格納.
    *
-   * @param beginRowNo 始端行番号
+   * @param hasNextRow 次行が存在する場合は <code>true</code>
    */
-  public void setBeginRowNo(final int beginRowNo) {
-    this.beginRowNo = beginRowNo;
-  }
-
-  /**
-   * 終端行番号取得.
-   *
-   * @return 終端行番号
-   */
-  public int getEndRowNo() {
-    return endRowNo;
-  }
-
-  /**
-   * 終端行番号格納.
-   *
-   * @param endRowNo 終端行番号
-   */
-  public void setEndRowNo(final int endRowNo) {
-    this.endRowNo = endRowNo;
-  }
-
-  /**
-   * 制限超え判定.
-   *
-   * @return 制限超えの場合は <code>true</code>
-   */
-  public boolean isLimitOver() {
-    return limitOverFlag;
-  }
-
-  /**
-   * 制限超え判定格納.
-   *
-   * @param limitOver 制限超えの場合は <code>true</code>
-   */
-  public void setLimitOver(final boolean limitOver) {
-    this.limitOverFlag = limitOver;
+  public void setHasNextRow(final boolean hasNextRow) {
+    this.hasNextRow = hasNextRow;
   }
 }

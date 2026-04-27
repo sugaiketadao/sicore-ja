@@ -2231,56 +2231,22 @@ public int putAllByBatParam(String[] args)
 
 ### Methods
 
-#### getBeginRowNo
+#### hasNextRow
 
 ```
-public int getBeginRowNo()
-```
-
-**Returns**: `int`
-
-#### setBeginRowNo
-
-```
-public void setBeginRowNo(int beginRowNo)
-```
-
-**Parameters**:
-- `beginRowNo`: `int`
-
-#### getEndRowNo
-
-```
-public int getEndRowNo()
-```
-
-**Returns**: `int`
-
-#### setEndRowNo
-
-```
-public void setEndRowNo(int endRowNo)
-```
-
-**Parameters**:
-- `endRowNo`: `int`
-
-#### isLimitOver
-
-```
-public boolean isLimitOver()
+public boolean hasNextRow()
 ```
 
 **Returns**: `boolean`
 
-#### setLimitOver
+#### setHasNextRow
 
 ```
-public void setLimitOver(boolean limitOver)
+public void setHasNextRow(boolean hasNextRow)
 ```
 
 **Parameters**:
-- `limitOver`: `boolean`
+- `hasNextRow`: `boolean`
 
 ## IoTsvReader
 
@@ -3022,6 +2988,20 @@ public IoRows selectBulk(Connection conn, SqlBean sb, int limitCount)
 - `conn`: `Connection`
 - `sb`: `SqlBean`
 - `limitCount`: `int`
+
+**Returns**: `IoRows`
+
+#### selectBulkPageing
+
+```
+public IoRows selectBulkPageing(Connection conn, SqlBean sb, int limitCount, Io io)
+```
+
+**Parameters**:
+- `conn`: `Connection`
+- `sb`: `SqlBean`
+- `limitCount`: `int`
+- `io`: `Io`
 
 **Returns**: `IoRows`
 

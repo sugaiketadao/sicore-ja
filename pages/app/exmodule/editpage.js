@@ -31,7 +31,7 @@ const initInsert = function () {
  */
 const initUpdate = async function (params) {
   // キー項目を非活性化
-  const codeElm = DomUtil.getByName('user_id');
+  const codeElm = DomUtil.selectByName('user_id');
   DomUtil.setEnable(codeElm, false);
   // データ取得 Webサービス呼び出し
   const res = await HttpUtil.callJsonService('/services/exmodule/ExampleLoad', params);

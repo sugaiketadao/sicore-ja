@@ -118,6 +118,117 @@
         </div>
       </div>
       <div class="method">
+        <h3 id="initPagingBtn" class="method-name">initPagingBtn</h3>
+        <div class="method-signature">
+          <code>initPagingBtn(searchBtnElm)</code>
+        </div>
+        <div class="method-description">
+          ページングボタン設置.<br>
+<ul>
+  <li><code>id</code>属性が <code>'_paging'</code> の要素を ページングボタン表示エリア要素とする。</li>
+  <li>ページングボタン表示エリア要素が複数存在する場合は最初の要素に設定する。</li>
+  <li>表示エリアにページング用の「前へ」「次へ」ボタンを追加する。</li>
+  <li>「前へ」「次へ」ボタン押下時は引数の検索ボタン要素のクリックイベントを発火させる。</li>
+  <li>検索ボタン要素にはページングトリガーマーク（独自属性）が設定される。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>searchBtnElm</code></td>
+                <td><code>Element</code></td>
+                <td>ページングの起点となる検索ボタン要素</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="addPagingParam" class="method-name">addPagingParam</h3>
+        <div class="method-signature">
+          <code>addPagingParam(req)</code>
+        </div>
+        <div class="method-description">
+          ページングパラメーター追加.<br>
+<ul>
+  <li>引数のリクエストデータにページングパラメーターを追加する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>req</code></td>
+                <td><code>Object</code></td>
+                <td>リクエストデータ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="refreshPagingBtn" class="method-name">refreshPagingBtn</h3>
+        <div class="method-signature">
+          <code>refreshPagingBtn(res)</code>
+        </div>
+        <div class="method-description">
+          ページングボタン活性非活性操作.<br>
+<ul>
+  <li>引数のレスポンスデータからページング情報を取得する。</li>
+  <li>ページングボタンの活性/非活性を設定する。</li>
+</ul>
+        </div>
+        <div class="method-parameters">
+          <h4>パラメータ</h4>
+          <table class="parameter-table">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>型</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>res</code></td>
+                <td><code>Object</code></td>
+                <td>レスポンスデータ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="method">
+        <h3 id="clearPaging" class="method-name">clearPaging</h3>
+        <div class="method-signature">
+          <code>clearPaging()</code>
+        </div>
+        <div class="method-description">
+          ページングクリア.<br>
+<ul>
+  <li>ページング用の「前へ」「次へ」ボタンを非活性化する。</li>
+</ul>
+  
+        </div>
+      </div>
+      <div class="method">
         <h3 id="getValues" class="method-name">getValues</h3>
         <div class="method-signature">
           <code>getValues(outerElm)</code>

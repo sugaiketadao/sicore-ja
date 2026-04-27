@@ -455,6 +455,16 @@ button {
   color: var(--onepg-base--color--button-text);
   cursor: pointer;
 }
+button.half-left {
+  /* 右側が半円ではないボタン */
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+button.half-right {
+  /* 左側が半円ではないボタン */
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 /* 入力エリア内のボタン要素の左右余白を除去 */
 div.item-body button,
 div.table table > tbody button {

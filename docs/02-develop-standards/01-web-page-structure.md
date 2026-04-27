@@ -512,8 +512,8 @@ init();
 | `HttpUtil.getUrlParams()` | URLパラメーター取得 |
 | `StorageUtil.getPageObj()` | ページ単位ブラウザストレージ取得 |
 | `StorageUtil.setPageObj()` | ページ単位ブラウザストレージ格納 |
-| `DomUtil.getByName()` | `name`属性セレクター要素取得 |
-| `DomUtil.getById()` | `id`属性セレクター要素取得 |
+| `DomUtil.selectByName()` | `name`属性セレクター要素取得 |
+| `DomUtil.selectById()` | `id`属性セレクター要素取得 |
 | `DomUtil.setEnable()` | 要素の活性切替 |
 | `DomUtil.setVisible()` | 要素の表示切替 |
 

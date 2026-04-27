@@ -3,6 +3,7 @@ package com.onepg.db;
 import com.onepg.db.DbUtil.DbmsName;
 import com.onepg.db.SqlConst.BindType;
 import com.onepg.util.AbstractIoTypeMap;
+import com.onepg.util.Io;
 import com.onepg.util.IoItems;
 import com.onepg.util.IoRows;
 import com.onepg.util.LogUtil;
@@ -36,6 +37,11 @@ public final class SqlUtil {
 
   /** デフォルトフェッチサイズ. */
   private static final int DEFAULT_FETCH_SIZE = 500;
+
+  /** IOキー - ページング情報 現在ページ番号. */
+  private static final String IOKEY_PAGENO = "_pageno";
+  /** IOキー - ページング情報 次ページ存在フラグ. */
+  private static final String IOKEY_HAS_NEXT_PAGE = "_has_next_page";
 
   /** 日時フォーマッター：日付 SQL標準. */
   private static final DateTimeFormatter DTF_SQL_DATE =
@@ -147,7 +153,7 @@ public final class SqlUtil {
       return null;
     }
 
-    if (rows.isLimitOver()) {
+    if (rows.hasNextRow()) {
       // １行以上取得
       if (!multiDataIgnore) {
         throw new RuntimeException("Multiple records were retrieved. " + sb.toString());
@@ -229,6 +235,45 @@ public final class SqlUtil {
   }
 
   /**
+   * ページング複数件一括取得.<br>
+   * <ul>
+   * <li>本メソッドはページング機能を持つ画面で使用する。</li>
+   * <li>複数行リストを返す。</li>
+   * <li>結果がゼロ件の場合はサイズゼロのリストを返す。</li>
+   * <li>１行のマップの項目物理名は英字小文字となる。（<code>AbstractIoTypeMap</code> のキールール）</li>
+   * <li>本メソッドで大量件数取得するとメモリエラーが発生する可能性がある。</li>
+   * </ul>
+   *
+   * @param conn DB接続
+   * @param sb SQL Bean
+   * @param limitCount 取得件数上限
+   * @param io 画面リクエスト情報（ページング情報を含む）
+   * @return 複数行リスト
+   */
+  public static IoRows selectBulkPageing(final Connection conn, final SqlBean sb, final int limitCount, final Io io) {
+    // リクエストページ番号
+    final int pageNo = io.getIntOrDefault(IOKEY_PAGENO, 1);
+    // SQLのオフセット値
+    final int offset = (pageNo - 1) * limitCount;
+    // ページング用SQL
+    final SqlBuilder sbPageing = SqlBuilder.copy(sb, "pageing");
+    final DbmsName dbmsName = DbUtil.getDbmsName(conn);
+    // SQLにページング用のLIMIT句を追加
+    appendQueryOffset(sbPageing, offset, limitCount + 1, dbmsName);
+    // 1ページ分取得
+    final IoRows rows = selectBulkByLimitCount(conn, sbPageing, limitCount);
+    if (rows.size() <= 0) {
+      // 通常ありえないが、データなしの場合はページ番号をクリアする
+      io.remove(IOKEY_PAGENO);
+      return rows;
+    }
+    // 次ページ存在フラグ
+    final boolean hasNextPage = rows.hasNextRow();
+    io.put(IOKEY_HAS_NEXT_PAGE, hasNextPage);
+    return rows;
+  }
+
+  /**
    * 複数件一括取得（全件取得）.<br>
    * <ul>
    * <li>複数行リストを返す。</li>
@@ -276,15 +321,10 @@ public final class SqlUtil {
           // 制限件数に達したため終了
           if (ite.hasNext()) {
             // まだデータがある = 制限超え
-            rows.setLimitOver(true);
+            rows.setHasNextRow(true);
           }
           break;
         }
-      }
-      if (rSet.getReadedCount() > 0) {
-        // ゼロ件以外の場合は始端行番号と終端行番号をセット
-        rows.setBeginRowNo(1);
-        rows.setEndRowNo(rSet.getReadedCount());
       }
     }
     return rows;
@@ -1707,4 +1747,25 @@ public final class SqlUtil {
     return ret.toString();
   }
 
+  /**
+   * OFFSETクエリ追加.<br>
+   * <ul>
+   * <li>各DBMSの OFFSET/LIMIT 構文に応じたSQL文字列を追加する。</li>
+   * </ul>
+   *
+   * @param sb       追加先 SqlBuilder
+   * @param offset   オフセット行数
+   * @param limit    取得行数
+   * @param dbmsName DBMS名
+   */
+  private static void appendQueryOffset(final SqlBuilder sb, final int offset, final int limit, final DbmsName dbmsName) {
+    if (offset <= 0) {
+      return;
+    }
+    if (dbmsName == DbmsName.ORACLE || dbmsName == DbmsName.MSSQL || dbmsName == DbmsName.DB2) {
+      sb.addQuery(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", offset, limit);
+    } else {
+      sb.addQuery(" LIMIT ? OFFSET ?", limit, offset);
+    }
+  }
 }

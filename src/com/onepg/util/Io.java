@@ -1122,7 +1122,7 @@ public final class Io extends AbstractIoTypeMap {
       }
 
       if (key.endsWith("[]")) {
-        final String lsKey = key.substring(key.length() - 2);
+        final String lsKey = key.substring(0, key.length() - 2);
         final List<String> list;
         if (aryList.containsKey(lsKey)) {
           list = aryList.get(lsKey);
@@ -1208,7 +1208,7 @@ public final class Io extends AbstractIoTypeMap {
           continue;
         }
         if (isArys) {
-          // 複数行リスト追加
+          // 配列リスト追加
           final IoArrays arys = jsonArrayToArys(val);
           putArys(key, arys);
           continue;

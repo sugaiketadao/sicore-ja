@@ -26,10 +26,10 @@ isVisible(elm)
 
 **Returns**: `boolean`
 
-#### getById
+#### selectById
 
 ```
-getById(id, outerElm)
+selectById(id, outerElm)
 ```
 
 **Parameters**:
@@ -38,10 +38,10 @@ getById(id, outerElm)
 
 **Returns**: `Element|null`
 
-#### getSelector
+#### select
 
 ```
-getSelector(selector, outerElm)
+select(selector, outerElm)
 ```
 
 **Parameters**:
@@ -50,22 +50,10 @@ getSelector(selector, outerElm)
 
 **Returns**: `Element|null`
 
-#### getByName
+#### selectByName
 
 ```
-getByName(name, outerElm)
-```
-
-**Parameters**:
-- `name`: `string`
-- `[outerElm]`: `Object`
-
-**Returns**: `Element|null`
-
-#### getByDataName
-
-```
-getByDataName(name, outerElm)
+selectByName(name, outerElm)
 ```
 
 **Parameters**:
@@ -74,10 +62,47 @@ getByDataName(name, outerElm)
 
 **Returns**: `Element|null`
 
-#### getsSelector
+#### selectByNameAndValue
 
 ```
-getsSelector(selector, outerElm)
+selectByNameAndValue(name, value, outerElm)
+```
+
+**Parameters**:
+- `name`: `string`
+- `value`: `string`
+- `[outerElm]`: `Object`
+
+**Returns**: `Element|null`
+
+#### selectByDataName
+
+```
+selectByDataName(name, outerElm)
+```
+
+**Parameters**:
+- `name`: `string`
+- `[outerElm]`: `Object`
+
+**Returns**: `Element|null`
+
+#### selectByTag
+
+```
+selectByTag(tag, outerElm)
+```
+
+**Parameters**:
+- `tag`: `string`
+- `[outerElm]`: `Object`
+
+**Returns**: `Element|null`
+
+#### selectAll
+
+```
+selectAll(selector, outerElm)
 ```
 
 **Parameters**:
@@ -86,10 +111,34 @@ getsSelector(selector, outerElm)
 
 **Returns**: `Array<Element>|null`
 
-#### getParentByTag
+#### selectAllByClass
 
 ```
-getParentByTag(baseElm, tag)
+selectAllByClass(cls, outerElm)
+```
+
+**Parameters**:
+- `cls`: `string`
+- `[outerElm]`: `Object`
+
+**Returns**: `Array<Element>|null`
+
+#### selectParentById
+
+```
+selectParentById(baseElm, id)
+```
+
+**Parameters**:
+- `baseElm`: `Element`
+- `id`: `string`
+
+**Returns**: `Element|null`
+
+#### selectParentByTag
+
+```
+selectParentByTag(baseElm, tag)
 ```
 
 **Parameters**:
@@ -97,6 +146,17 @@ getParentByTag(baseElm, tag)
 - `tag`: `string`
 
 **Returns**: `Element|null`
+
+#### selectAllChildren
+
+```
+selectAllChildren(parentElm)
+```
+
+**Parameters**:
+- `parentElm`: `Element`
+
+**Returns**: `Array<Element>|null`
 
 #### getVal
 
@@ -365,6 +425,39 @@ hasError(res)
 
 ```
 clearMsg()
+```
+
+#### initPagingBtn
+
+```
+initPagingBtn(searchBtnElm)
+```
+
+**Parameters**:
+- `searchBtnElm`: `Element`
+
+#### addPagingParam
+
+```
+addPagingParam(req)
+```
+
+**Parameters**:
+- `req`: `Object`
+
+#### refreshPagingBtn
+
+```
+refreshPagingBtn(res)
+```
+
+**Parameters**:
+- `res`: `Object`
+
+#### clearPaging
+
+```
+clearPaging()
 ```
 
 #### getValues
@@ -821,6 +914,17 @@ isTrue(val)
 
 **Returns**: `boolean`
 
+#### toNum
+
+```
+toNum(obj)
+```
+
+**Parameters**:
+- `obj`: `Object`
+
+**Returns**: `number`
+
 #### toDate
 
 ```
@@ -842,6 +946,17 @@ dateTo(dateObj)
 - `dateObj`: `Date`
 
 **Returns**: `string`
+
+#### toBool
+
+```
+toBool(obj)
+```
+
+**Parameters**:
+- `obj`: `Object`
+
+**Returns**: `boolean`
 
 #### isAry
 

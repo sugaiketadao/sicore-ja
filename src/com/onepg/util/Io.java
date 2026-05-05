@@ -1,5 +1,6 @@
 package com.onepg.util;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1423,17 +1424,17 @@ public final class Io extends AbstractIoTypeMap {
   private class MsgBean {
 
     /** メッセージタイプ. */
-    private MsgType type;
+    private final MsgType type;
     /** メッセージID. */
-    private String msgId;
+    private final String msgId;
     /** メッセージ内置換文字列. */
-    private String[] replaceVals;
+    private final String[] replaceVals;
     /** 対象項目ID. */
-    private String itemId;
+    private final String itemId;
     /** 行リストID. */
-    private String rowListId;
+    private final String rowListId;
     /** 行インデックス. */
-    private int rowIndex;
+    private final int rowIndex;
 
     /**
      * コンストラクタ.
@@ -1449,7 +1450,15 @@ public final class Io extends AbstractIoTypeMap {
         final String rowListId, final int rowIndex) {
       this.type = type;
       this.msgId = msgId;
-      this.replaceVals = replaceVals;
+      // 配列のディープコピーかつ null置換
+      if (ValUtil.isEmpty(replaceVals)) {
+        this.replaceVals = null;
+      } else {
+        this.replaceVals = new String[replaceVals.length];
+        for (int i = 0; i < replaceVals.length; i++) {
+          this.replaceVals[i] = ValUtil.nvl(replaceVals[i]);
+        }
+      }
       this.itemId = itemId;
       this.rowListId = rowListId;
       this.rowIndex = rowIndex;
@@ -1566,11 +1575,7 @@ public final class Io extends AbstractIoTypeMap {
     private String replaceText(final String text, final String[] replaceVals) {
       String ret = text;
       if (!ValUtil.isEmpty(replaceVals)) {
-        for (int i = 0; i < replaceVals.length; i++) {
-          final String key = "{" + i + "}";
-          final String val = ValUtil.nvl(replaceVals[i]);
-          ret = ret.replace(key, val);
-        }
+        ret = MessageFormat.format(ret, (Object[]) replaceVals);
       }
       // {0}, {1}, ... が残っている場合は空文字に置換
       final String regex = "\\{[0-9]+\\}";

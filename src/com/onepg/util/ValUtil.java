@@ -367,7 +367,7 @@ public final class ValUtil {
       return BLANK;
     }
     if (list.size() == 1) {
-      return list.get(0);
+      return ValUtil.nvl(list.get(0));
     }
     final String[] values = list.toArray(new String[] {});
     return join(joint, values);
@@ -389,7 +389,7 @@ public final class ValUtil {
       return BLANK;
     }
     if (list.size() == 1) {
-      return list.toArray(new String[] {})[0];
+      return ValUtil.nvl(list.toArray(new String[] {})[0]);
     }
     final String[] values = list.toArray(new String[] {});
     return join(joint, values);
@@ -511,6 +511,9 @@ public final class ValUtil {
    * @return 連結したTSV文字列
    */
   static String joinIoTsv(final String[] values) {
+    if (isEmpty(values)) {
+      return BLANK;
+    }
     final StringBuilder sb = new StringBuilder();
     for (final String value : values) {
       sb.append(ValUtil.escIoTsv(value)).append(ValUtil.TAB);
@@ -533,9 +536,9 @@ public final class ValUtil {
     if (isNull(value)) {
       return IOTSV_NULL;
     }
-    final String ret = value.replaceAll(TAB, IOTSV_TAB)
-                      .replaceAll(CR, IOTSV_CR)
-                      .replaceAll(LF, IOTSV_LF);
+    final String ret = value.replace(TAB, IOTSV_TAB)
+                      .replace(CR, IOTSV_CR)
+                      .replace(LF, IOTSV_LF);
     return ret;
   }
 
@@ -552,9 +555,9 @@ public final class ValUtil {
     if (IOTSV_NULL.equals(value)) {
       return null;
     }
-    final String ret = value.replaceAll(IOTSV_TAB, TAB)
-                      .replaceAll(IOTSV_CR, CR)
-                      .replaceAll(IOTSV_LF, LF);
+    final String ret = value.replace(IOTSV_TAB, TAB)
+                      .replace(IOTSV_CR, CR)
+                      .replace(IOTSV_LF, LF);
     return ret;
   }
 
@@ -782,26 +785,26 @@ public final class ValUtil {
       // ブランクの場合
       return false;
     }
-    final String checkVal = trimLeftZeroByIsNumber(value);
+    final String checkVal = normalizeNumberString(value);
     if (minusNg && decNg) {
-      return VALID_NUMBER_PATTERN.matcher(checkVal).find();
+      return VALID_NUMBER_PATTERN.matcher(checkVal).matches();
     } else if (minusNg) {
-      return VALID_NUMBER_PATTERN_DEC.matcher(checkVal).find();
+      return VALID_NUMBER_PATTERN_DEC.matcher(checkVal).matches();
     } else if (decNg) {
-      return VALID_NUMBER_PATTERN_MINUS.matcher(checkVal).find();
+      return VALID_NUMBER_PATTERN_MINUS.matcher(checkVal).matches();
     }
-    return VALID_NUMBER_PATTERN_DEC_MINUS.matcher(checkVal).find();
+    return VALID_NUMBER_PATTERN_DEC_MINUS.matcher(checkVal).matches();
   }
 
   /**
    * 桁数チェック.<br>
    * <ul>
-   * <li><code>#isBlank(String)</code> が <code>true</code> の前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
+   * <li>チェック対象がブランク以外の場合に実行される前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
    * </ul>
    * 
    * @param value      チェック対象
    * @param len 有効桁数
-   * @return 有効な場合は <code>true</code>
+   * @return 有効な（桁あふれしていない）場合は <code>true</code>
    */
   public static boolean checkLength(final String value, final int len) {
     if (isBlank(value)) {
@@ -816,14 +819,13 @@ public final class ValUtil {
    * <ul>
    * <li>整数部分と小数点以下の桁数が指定された範囲内であることを確認する。</li>
    * <li>引数はDB項目定義と同じで整数部と小数部を足した桁数と小数部だけの桁数で指定する。</li>
-   * <li><code>#isNumber(String)</code> が <code>true</code> の前提とし、チェック対象がブランクの場合は
-   * <code>false</code> を返す。</li>
+   * <li>チェック対象が数値として有効な場合に実行される前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
    * </ul>
    * 
    * @param value      チェック対象
    * @param intPartLen 整数部と小数部を足した有効桁数
    * @param decPartLen 小数部の有効桁数
-   * @return 有効な場合は <code>true</code>
+   * @return 有効な（桁あふれしていない）場合は <code>true</code>
    */
   public static boolean checkLengthNumber(final String value, final int intPartLen,
       final int decPartLen) {
@@ -831,7 +833,7 @@ public final class ValUtil {
       // ブランクの場合
       return false;
     }
-    final String checkVal = trimLeftZeroByIsNumber(value);
+    final String checkVal = normalizeNumberString(value);
     final String patternStr;
     if (decPartLen > 0) {
       patternStr = "^[-]?\\d{1," + intPartLen + "}(\\.\\d{1," + decPartLen + "})?$";
@@ -843,16 +845,20 @@ public final class ValUtil {
   }
 
   /**
-   * 数値チェック用左ゼロ除去.<br>
+   * 数値文字列正規化.<br>
    * <ul>
-   * <li>小数点を含む数値にも対応。</li>
+   * <li>数値チェック用に文字列を正規化する。</li>
+   * <li>左ゼロを除去する（例："001" → "1"）。</li>
+   * <li>整数部が空の場合は "0" を補完する（例：".5" → "0.5"）。</li>
+   * <li>小数点で終わる場合は ".0" を補完する（例："1." → "1.0"、"0." → "0.0"）。</li>
+   * <li>"." のみの場合は無効な入力としてそのまま返す。</li>
    * <li>"-0" や "-000" は "0" に正規化される。</li>
    * </ul>
    *
    * @param value 文字列
-   * @return 処理後の文字
+   * @return 正規化後の文字列
    */
-  private static String trimLeftZeroByIsNumber(final String value) {
+  private static String normalizeNumberString(final String value) {
     final boolean hasMinus = value.startsWith("-");
     final String tmp;
     if (hasMinus) {
@@ -879,8 +885,20 @@ public final class ValUtil {
     }
     
     // すべてゼロだった場合
-    if (isBlank(ret) || ret.equals(".")) {
+    if (isBlank(ret)) {
       return "0";
+    }
+    // "." だけの場合
+    if (ret.equals(".")) {
+      // 元の値が "." だけなら無効として返す
+      if (tmp.equals(".")) {
+        return ".";
+      }
+      // "0." などの場合は "0.0" に変換
+      if (hasMinus) {
+        return "-0.0";
+      }
+      return "0.0";
     }
     
     // 整数部分が空 → "0" を補完
@@ -889,6 +907,14 @@ public final class ValUtil {
         return "-0" + ret;
       }
       return "0" + ret;
+    }
+    
+    // 小数点で終わる場合（"1." など）は ".0" を補完
+    if (ret.endsWith(".")) {
+      if (hasMinus) {
+        return "-" + ret + "0";
+      }
+      return ret + "0";
     }
 
     if (hasMinus) {
@@ -1261,6 +1287,10 @@ public final class ValUtil {
             break;
           case 't':
             sb.append('\t');
+            i++;
+            break;
+          case '/':
+            sb.append('/');
             i++;
             break;
           case 'u':

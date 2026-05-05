@@ -879,10 +879,10 @@ isEmpty(obj)
 
 **Returns**: `boolean`
 
-#### isNum
+#### isNumber
 
 ```
-isNum(value, minusNg, decNg)
+isNumber(value, minusNg, decNg)
 ```
 
 **Parameters**:

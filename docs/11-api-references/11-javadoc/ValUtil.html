@@ -1158,7 +1158,7 @@
         <div class="method-description">
           桁数チェック.<br>
 <ul>
-<li><code>#isBlank(String)</code> が <code>true</code> の前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
+<li>チェック対象がブランク以外の場合に実行される前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
 </ul>
 
         </div>
@@ -1188,7 +1188,7 @@
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>boolean</code> - 有効な場合は <code>true</code></p>
+          <p><code>boolean</code> - 有効な（桁あふれしていない）場合は <code>true</code></p>
         </div>
       </div>
       <div class="method" id="checkLengthNumber">
@@ -1201,8 +1201,7 @@
 <ul>
 <li>整数部分と小数点以下の桁数が指定された範囲内であることを確認する。</li>
 <li>引数はDB項目定義と同じで整数部と小数部を足した桁数と小数部だけの桁数で指定する。</li>
-<li><code>#isNumber(String)</code> が <code>true</code> の前提とし、チェック対象がブランクの場合は
-<code>false</code> を返す。</li>
+<li>チェック対象が数値として有効な場合に実行される前提とし、チェック対象がブランクの場合は <code>false</code> を返す。</li>
 </ul>
 
         </div>
@@ -1237,7 +1236,7 @@
         </div>
         <div class="method-returns">
           <h4>戻り値</h4>
-          <p><code>boolean</code> - 有効な場合は <code>true</code></p>
+          <p><code>boolean</code> - 有効な（桁あふれしていない）場合は <code>true</code></p>
         </div>
       </div>
       <div class="method" id="isDate">

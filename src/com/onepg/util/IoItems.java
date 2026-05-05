@@ -145,7 +145,7 @@ public final class IoItems extends AbstractIoTypeMap {
   String createIoTsv() {
     final StringBuilder sb = new StringBuilder();
     for (final Entry<String, String> ent : super.getValMap().entrySet()) {
-      final String val = ValUtil.nvl(ent.getValue());
+      final String val = ent.getValue();
       sb.append(ValUtil.escIoTsv(val)).append(ValUtil.TAB);
     }
     ValUtil.deleteLastChar(sb);

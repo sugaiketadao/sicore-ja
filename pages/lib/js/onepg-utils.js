@@ -231,13 +231,14 @@ const ValUtil = /** @lends ValUtil */ {
   },
   
   /** @private 正の整数チェック正規表現 */
-  _IS_NUM_UNSIGNED_INT: /^([1-9]\d*|0)$/,
+  _IS_NUM_UNSIGNED_INT: /^\d+$/,
   /** @private 正の小数チェック正規表現 */
-  _IS_NUM_UNSIGNED_FLOAT: /^([1-9]\d*|0)(\.\d+)?$/,
+  _IS_NUM_UNSIGNED_FLOAT: /^\d+(\.\d+)?$/,
   /** @private 整数チェック正規表現 */
-  _IS_NUM_INT: /^[-]?([1-9]\d*|0)$/,
+  _IS_NUM_INT: /^[-]?\d+$/,
   /** @private 小数チェック正規表現 */
-  _IS_NUM_FLOAT: /^[-]?([1-9]\d*|0)(\.\d+)?$/,
+  _IS_NUM_FLOAT: /^[-]?\d+(\.\d+)?$/,
+
   /**
    * 数値チェック.<br>
    * <ul>
@@ -249,7 +250,7 @@ const ValUtil = /** @lends ValUtil */ {
    * @param {boolean} [decNg] 小数をNGとする場合 <code>true</code>（省略可能）
    * @returns {boolean} 有効な場合は <code>true</code>
    */
-  isNum : function(value, minusNg, decNg) {
+  isNumber : function(value, minusNg, decNg) {
     if (ValUtil.isNull(value)) {
       return false;
     }
@@ -283,7 +284,7 @@ const ValUtil = /** @lends ValUtil */ {
    * @returns {boolean} 有効な場合は <code>true</code>
    */
   isDate : function(yyyymmdd) {
-    if (!ValUtil.isNum(yyyymmdd)) {
+    if (!ValUtil.isNumber(yyyymmdd)) {
       return false;
     }
     if (yyyymmdd.length !== 8) {
@@ -503,7 +504,7 @@ const FrmUtil = /** @lends FrmUtil */ {
       return value;
     }
     const unVal = UnFrmUtil.num(value);
-    if (!ValUtil.isNum(unVal)) {
+    if (!ValUtil.isNumber(unVal)) {
       return value;
     }
     // 小数部を分離
@@ -543,7 +544,7 @@ const FrmUtil = /** @lends FrmUtil */ {
     }
     const unVal = UnFrmUtil.hms(value);
     const unValTrim = unVal.trim();
-    if (unValTrim.length !== 6 || !ValUtil.isNum(unValTrim)) {
+    if (unValTrim.length !== 6 || !ValUtil.isNumber(unValTrim)) {
       return unValTrim;
     }
     return unValTrim.substring(0, 2) + ':' + unValTrim.substring(2, 4) + ':' + unValTrim.substring(4, 6);
@@ -2975,7 +2976,7 @@ const StorageUtil = /** @lends StorageUtil */ {
       console.error('StorageUtil#removeSystem: key is required.');
       return false;
     }
-    const sysKey = StorageUtil._STKEY_PREFIX_SYSTEM + key;
+    const sysKey = StorageUtil._createSystemKey(key);
     return StorageUtil._remove(sysKey);
   },
 

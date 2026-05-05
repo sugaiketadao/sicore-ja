@@ -433,10 +433,6 @@ public final class LogUtil {
       if (msec <= 0) {
         return "0T00:00:00.000";
       }
-      // オーバーフロー対策
-      if (Long.MAX_VALUE < (msec / 1_000)) {
-        return ValUtil.BLANK;
-      }
 
       final long sec = msec / 1_000;
       final long min = sec / 60;
